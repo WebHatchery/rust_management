@@ -1,0 +1,23 @@
+{
+  "game_title": "Love Season",
+  "weeks_total": 8,
+  "relationship_cap": 100.0,
+  "player_stat_cap": 100.0,
+  "week_one_event_ids": [
+    "week1_arrival_mixer",
+    "week1_private_invitation",
+    "week1_rose_ceremony"
+  ],
+  "score_weights": {
+    "chemistry": 1.4,
+    "trust": 1.0,
+    "fit": 1.2,
+    "sincerity_bonus": 0.12,
+    "composure_bonus": 0.08,
+    "pressure_penalty": 0.25
+  },
+  "thresholds": {
+    "romance_route_min": 58.0,
+    "self_choice_sincerity_min": 72.0
+  }
+}

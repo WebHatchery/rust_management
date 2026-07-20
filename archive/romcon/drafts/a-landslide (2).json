@@ -1,0 +1,198 @@
+{
+    "meta": {
+        "app": "RomCon",
+        "exported_at": "2026-03-12T06:54:35+01:00",
+        "plan_id": 2,
+        "title": "A landslide",
+        "target_words": 30000,
+        "heat_level": "sweet",
+        "romance_configuration": "m/f"
+    },
+    "ai_novel_prompt_package": {
+        "instruction": "Use this plan package to write a romantic comedy novella. Preserve the leads, pairing logic, premise engine, chapter-beat intent, and tone.",
+        "writer_profile": "## Part 1: The Author's DNA\n\n### Core Voice & Lens\n* **Close Emotional Comedy**: The narration stays intimate with the lead's embarrassment, desire, misread signals, and private rationalizations. Comedy comes from emotional specificity, not detached snark.\n* **Warm, Clever, Contemporary**: The prose is bright, modern, and emotionally literate. Scenes should feel quick on their feet without becoming weightless.\n* **Chemistry Through Contrast**: Attraction is built through opposites rubbing together in ways that are inconvenient, revealing, and funny.\n\n### Thematic Pillars\n* **Love as Disruption**: Romance interrupts the neat story each lead tells about their life and exposes what they actually need.\n* **Vulnerability Beneath Competence**: Each lead should be good at something visible and bad at something emotionally costly.\n* **Earned Optimism**: Endings are hopeful because both leads choose honesty, not because conflict evaporates.\n\n### World-Building Signature\n* **Social Pressure Cookers**: The setting should naturally keep leads colliding through work, family, housing, community, weddings, events, or shared obligations.\n* **Concrete Modern Texture**: Use jobs, routines, group chats, schedules, logistics, money pressure, and reputation as practical story engines.\n* **Contained Scale**: Favor a vivid local ecosystem over sprawling mythology. The story should feel inhabitable and production-ready.",
+        "title": "A landslide",
+        "concept_brief": "Samantha on a holiday, when disaster strikes when a landslide happens, she gets trapped with the tourist guide and other tourists",
+        "setting": "Mount Everest Japan",
+        "romance_configuration": "m/f",
+        "main_character_focus": "",
+        "romance_structure_notes": "",
+        "pov_mode": "single_close_third",
+        "pov_notes": "",
+        "dominant_romance_arc": "",
+        "central_external_pressure": "",
+        "emotional_question": "",
+        "heat_level": "sweet",
+        "target_words": 30000,
+        "selected_trope": "Forced Proximity",
+        "lead_one": {
+            "name": "Samantha \"Sam\" Hayes",
+            "age": "Late 20s",
+            "occupation": "Efficiency Consultant for Tech Startups",
+            "personality_summary": "Hyper-organized, detail-oriented, and a meticulous planner who believes life's chaos can be conquered with enough spreadsheets. Beneath the controlled exterior, she's surprisingly earnest and prone to internal panic when her carefully constructed plans unravel.",
+            "core_desire": "To achieve flawless execution in all areas of her life, proving her capability and worth.",
+            "core_fear": "Loss of control, public embarrassment, and being perceived as unprepared or incompetent.",
+            "public_competence": "Can streamline any process, analyze data like a pro, and manage complex projects under tight deadlines. Known for her impeccable travel itineraries and emergency preparedness kits.",
+            "private_mess": "Struggles with spontaneity, overthinks social interactions, and often prioritizes productivity over genuine emotional connection. Her 'perfect' life often feels lonely.",
+            "everyday_strength": "Problem-solving, resourcefulness in a structured way, meticulous planning.",
+            "comedic_weakness": "Extreme literalism, a tendency to categorize emotional responses, and an inability to improvise without a flowchart. Gets flustered when plans deviate even slightly, leading to internal monologues of escalating absurdity.",
+            "romantic_blind_spot": "Looks for partners who fit neatly into her 'life plan,' often overlooking genuine connection for perceived compatibility on paper. Avoids anyone who seems too 'unpredictable.'",
+            "secret_pressure": "Her family expects her to always be the 'responsible one,' leading her to constantly strive for perfection to maintain their approval and her self-worth.",
+            "social_circle_role": "The reliable friend who organizes everything, but often misses out on the spontaneous fun because she's too busy managing logistics.",
+            "dialogue_rhythm": "Precise, slightly formal, often asking clarifying questions or offering solutions, even when inappropriate. Prone to internal monologues about efficiency.",
+            "sample_dialogue": [
+                "According to my itinerary, we should have reached the summit by now, factoring in the 15-minute buffer I allotted for scenic photography.",
+                "Is there an algorithm for determining optimal morale boosts in a disaster scenario? Because I'm fairly certain 'singing campfire songs' is not data-driven.",
+                "My emergency kit has everything from a solar charger to a lint roller. But apparently, it doesn't account for geological instability."
+            ],
+            "thinks_they_want": "A stable, predictable life with a partner who respects her ambition and adheres to a well-structured routine.",
+            "actually_needs": "To embrace the beautiful chaos of life, to connect authentically without a plan, and to discover that true strength lies in vulnerability, not just control."
+        },
+        "lead_two": {
+            "name": "Kenji Tanaka",
+            "age": "Early 30s",
+            "occupation": "Freelance Mountain Guide and Adventure Photographer",
+            "personality_summary": "Laid-back, intuitive, and deeply connected to the natural world. He's calm under pressure in a crisis but can be frustratingly unorganized in his personal life. Carries a quiet wisdom about the mountains and a healthy skepticism for overly rigid plans.",
+            "core_desire": "To live authentically, connected to nature and his passion, while maintaining his freedom and independence.",
+            "core_fear": "Being tied down, trapped by routine or expectations, and failing to protect those under his care.",
+            "public_competence": "Expert survival skills, uncanny navigational abilities, and a natural leader in emergencies. Knows every trail, every weather pattern, and how to keep spirits up in challenging conditions.",
+            "private_mess": "Avoids long-term commitments, struggles with administrative tasks and financial planning, and has a habit of letting personal relationships drift because he's always chasing the next adventure or prioritizing his clients.",
+            "everyday_strength": "Adaptability, improvisation, empathy, and a deep well of practical knowledge.",
+            "comedic_weakness": "A tendency to be *too* relaxed, forgetting appointments, misplacing essential items (outside of his guide gear), and sometimes relying too much on 'gut feelings' over concrete plans, which drives Sam insane.",
+            "romantic_blind_spot": "Mistakes passion for stability, tends to date people who fit his transient lifestyle, and avoids deep emotional dives, fearing they'll restrict his freedom. Sees 'organized' as 'boring'.",
+            "secret_pressure": "Carries the weight of past mistakes (perhaps a previous guiding incident, or family expectations he abandoned) and feels a responsibility to live up to the legacy of his family's connection to the mountains, but on his own terms.",
+            "social_circle_role": "The adventurous, slightly elusive friend who always has an amazing story, but rarely shows up on time for casual dinners.",
+            "dialogue_rhythm": "Calm, observational, often uses metaphors from nature. Can be a bit laconic, but delivers precise, reassuring instructions when necessary. Prefers actions over words.",
+            "sample_dialogue": [
+                "The mountain isn't on a schedule, Sam. She's got her own rhythm.",
+                "You can plan for everything, but sometimes, the universe just hands you a curveball. The trick is how you catch it.",
+                "My biggest concern isn't a lack of Wi-Fi, it's that we still have three full bars of your efficiency consultant energy. You'll bore the squirrels."
+            ],
+            "thinks_they_want": "Unfettered freedom, a life dictated by the seasons and the trails, and shallow, no-strings-attached relationships.",
+            "actually_needs": "To find a true partner who challenges him to build something lasting, to embrace emotional depth, and to realize that commitment doesn't mean sacrificing his spirit of adventure, but rather sharing it."
+        },
+        "supporting_cast": [
+            {
+                "name": "Hiroki Sato",
+                "role": "Sam's Colleague / Professional Rival / On-Paper Romantic Prospect",
+                "summary": "Polished, ambitious, and meticulously organized, Hiroki is a fellow efficiency consultant at a rival firm (or within Sam's own company) who is also at the retreat. He embodies everything Sam *thinks* she wants in a partner and a career: control, predictability, and a clear path to success.",
+                "connection_to_leads": "He's Sam's professional peer, a potential romantic interest she has previously considered or is subtly pursuing. He's also a direct contrast to Kenji, highlighting Kenji's 'chaos' in Sam's eyes.",
+                "story_function": "Provides romantic interference for Kenji, acts as a mirror for Sam's 'thinks she wants,' exacerbates Sam's anxiety by either performing 'better' or by also struggling, and ultimately highlights what Sam *actually needs* through his inability to adapt.",
+                "core_desire": "To climb the corporate ladder, maintain a flawless professional image, and secure a partner who complements his ambitious life plan.",
+                "core_fear": "Public failure, losing control, being outmaneuvered professionally, and any situation that exposes his vulnerabilities.",
+                "secret_pressure": "His family is highly successful and has instilled in him a relentless drive for perfection, making him feel constant pressure to outshine his peers.",
+                "comedic_angle": "His rigid professionalism and attempts to 'optimize' social situations or even wilderness survival scenarios, which are often even more absurd than Sam's because they lack her underlying earnestness. He tries to out-plan Sam, often to his own detriment.",
+                "include_in_story": true,
+                "is_main": false
+            },
+            {
+                "name": "Akari Suzuki",
+                "role": "Kenji's Free-Spirited Friend / Alternative Romantic Prospect",
+                "summary": "A vibrant, independent freelance adventure photographer who shares Kenji's love for the outdoors and freedom. She's the type of woman Kenji usually dates or *thinks* he wants to date: unattached and adventurous.",
+                "connection_to_leads": "A casual friend or acquaintance of Kenji, perhaps encountered at the base camp or through shared contacts. She represents Kenji's 'safe' romantic option \u2013 no strings attached and no expectations of settling down.",
+                "story_function": "Provides romantic interference for Sam, makes Sam question Kenji's commitment, and forces Kenji to confront his fear of commitment by presenting a choice between his old life and a potential new one with Sam.",
+                "core_desire": "To live life on her own terms, explore the world, and experience new adventures without being tied down by conventional expectations.",
+                "core_fear": "Losing her independence, being constrained by routine or others' expectations, and settling for a predictable life.",
+                "secret_pressure": "She's seen many friends get 'trapped' by conventional relationships and is determined not to follow that path, reinforcing Kenji's own fears about commitment.",
+                "comedic_angle": "Her utterly unfazed attitude towards chaos and dirt, contrasting sharply with Sam's fastidiousness. Her casual dismissal of 'schedules' or 'plans' resonates with Kenji but exasperates Sam.",
+                "include_in_story": true,
+                "is_main": false
+            },
+            {
+                "name": "Haruko-san",
+                "role": "Wise Local / Guesthouse Owner",
+                "summary": "The warm, observant proprietor of a rustic guesthouse or tea shop at the base of the mountain. A long-time local with a deep understanding of both the natural world and human nature.",
+                "connection_to_leads": "Kenji knows her from his years guiding in the area. She offers a grounded, philosophical perspective to both Sam and Kenji, often providing a quiet, non-judgmental ear.",
+                "story_function": "Provides wisdom and gentle perspective, subtly challenging Kenji's avoidance of commitment and Sam's over-reliance on logic. She can offer cultural insights, local lore, and act as a sounding board, facilitating emotional honesty.",
+                "core_desire": "To maintain the peace and traditions of her community, pass on her accumulated wisdom, and observe the ever-changing cycles of nature and humanity.",
+                "core_fear": "The loss of local traditions, the encroachment of overly commercial tourism, and the solitude that comes with age.",
+                "secret_pressure": "Feeling responsible for upholding the legacy of her family's long-standing presence in the mountain community and protecting its authentic spirit.",
+                "comedic_angle": "Her calm, philosophical responses to Sam's frantic problem-solving, often using nature metaphors that fly over Sam's head. Her gentle teasing of Kenji about his bachelor ways, delivered with a knowing smile.",
+                "include_in_story": true,
+                "is_main": false
+            },
+            {
+                "name": "Brenda 'The Synergist' Chen",
+                "role": "Tech Client / Enthusiastic Incompetent",
+                "summary": "An overly enthusiastic but completely naive software developer from SynergyTech. She approaches the wilderness retreat with boundless, misguided optimism, convinced it's a profound 'spiritual journey,' despite her absolute lack of practical skills.",
+                "connection_to_leads": "One of the corporate clients Sam is consulting for and Kenji is guiding. Her incompetence creates direct challenges for both of them.",
+                "story_function": "Provides constant low-level comedic pressure and logistical headaches for Sam and Kenji. Her helplessness highlights Kenji's practical competence and pushes Sam's planning to its absurd limits, forcing them to collaborate.",
+                "core_desire": "To connect with nature, find inner peace, and bond with her colleagues, all while maintaining her cheerful demeanor and proving her 'synergy' skills.",
+                "core_fear": "Being perceived as negative, not being a 'team player,' or missing out on a 'transformative' experience.",
+                "secret_pressure": "Believes she needs to constantly project positivity and enthusiasm to be liked and valued by her peers, hiding any genuine discomfort or fear.",
+                "comedic_angle": "Her absurdly positive outlook in dire situations, her complete lack of practical skills (e.g., trying to use a yoga mat as a raft, taking selfies during a crisis), and her use of corporate buzzwords in hilariously inappropriate wilderness contexts.",
+                "include_in_story": true,
+                "is_main": false
+            },
+            {
+                "name": "Derek Yoshida",
+                "role": "Tech Client / Cynical Doubter",
+                "summary": "A jaded, sharp-witted senior developer from SynergyTech. He questions everything, especially the value of 'synergy' and mandatory wilderness retreats, and is not afraid to vocalize his skepticism.",
+                "connection_to_leads": "Another corporate client at the retreat. His cynical commentary creates friction and challenges for both Sam and Kenji.",
+                "story_function": "Provides cynical commentary and challenges to both Sam's planning and Kenji's guiding, adding external pressure. He forces Sam to defend her methods and Kenji to prove his expertise, inadvertently exposing underlying truths about both.",
+                "core_desire": "To get through the retreat with minimal effort, return to his comfortable city life, and avoid any forced 'bonding' or emotional displays.",
+                "core_fear": "Wasting his valuable time, being forced into uncomfortable emotional situations, and witnessing incompetence from those in charge.",
+                "secret_pressure": "Feels undervalued despite his years of experience and harbors a quiet resentment towards younger, 'buzzword-heavy' consultants like Sam who seem to get ahead with less substance.",
+                "comedic_angle": "His dry, sarcastic remarks about the futility of the retreat, his deadpan reactions to Brenda's unwavering optimism, and his technologically-driven 'solutions' for wilderness problems (e.g., trying to find cell signal to order a drone delivery for supplies).",
+                "include_in_story": true,
+                "is_main": false
+            }
+        ],
+        "pairing": {
+            "pairing_hook": "The ultimate planner meets the ultimate improviser when a hyper-organized tech consultant's meticulously orchestrated corporate retreat is thrown into beautiful chaos by a free-spirited mountain guide, forcing them to navigate not just the unpredictable wilderness, but each other's wildly different operating systems.",
+            "selected_trope": "Forced Proximity",
+            "why_they_clash": [
+                "Sam's rigid adherence to schedules and data-driven solutions directly conflicts with Kenji's intuitive, 'go with the flow' approach to life and work.",
+                "Sam's fear of loss of control and public embarrassment is constantly triggered by Kenji's casual disregard for conventional order and his comfort with improvisation.",
+                "Kenji's 'too relaxed' comedic weakness (forgetting appointments, misplacing items) will be a perpetual source of frustration for Sam's detail-oriented personality.",
+                "Their romantic blind spots are diametrically opposed: Sam seeks partners who fit her 'life plan,' while Kenji avoids deep emotional dives, seeing 'organized' as 'boring' and a threat to his freedom.",
+                "Sam's tendency to categorize emotional responses will clash with Kenji's more empathetic, experience-based understanding of human nature and the environment."
+            ],
+            "why_they_fit": [
+                "Their contrasting approaches create immediate 'Chemistry Through Contrast'; Sam provides the structure Kenji needs in his personal life, while Kenji offers Sam the spontaneity and connection to life she unknowingly craves.",
+                "Kenji's calm under pressure in crisis situations can help Sam learn to trust the unpredictable and let go of her need for absolute control, challenging her 'loss of control' fear.",
+                "Sam's problem-solving and planning skills can bring a new, grounding dimension to Kenji's life, showing him that commitment doesn't mean sacrificing adventure, but perhaps enhancing it with shared purpose.",
+                "Both characters embody 'Vulnerability Beneath Competence'; Kenji's natural leadership in the wild masks his fear of commitment, while Sam's professional efficiency hides her loneliness and fear of imperfection. They can see past each other's facades.",
+                "Kenji's deep connection to nature can pull Sam out of her highly analytical, screen-dominated world, offering her a different kind of 'data' and a path to authentic connection."
+            ],
+            "scene_engines": [
+                "A corporate 'team-building' mountain retreat (Sam's design) led by Kenji, where Sam's elaborate itinerary is constantly disrupted by weather, wildlife, or Kenji's relaxed interpretation of 'timing.'",
+                "A forced cohabitation scenario in a remote cabin or tent due to unexpected wilderness conditions, pushing Sam's organizational limits and Kenji's patience for meticulousness.",
+                "Sam attempting to 'optimize' a rustic task (e.g., building a fire, navigating by compass without GPS) with spreadsheets, to Kenji's bemused and practical interventions.",
+                "Kenji's accidental misplacement of a crucial non-survival item (e.g., keys, phone, client contact list) forcing Sam to apply her problem-solving skills to his chaos.",
+                "Shared obligations to a group of unprepared tech clients, showcasing Kenji's practical leadership and Sam's logistical prowess, while highlighting their personal friction."
+            ],
+            "emotional_lessons": {
+                "lead_one": "Sam will learn that true strength lies in vulnerability and adaptability, not in flawless execution or absolute control. She'll discover that embracing the 'beautiful chaos' of life and connecting authentically is far more fulfilling than a perfectly planned but lonely existence. She'll realize that the most valuable connections don't fit into a spreadsheet.",
+                "lead_two": "Kenji will learn that commitment and a lasting partnership don't mean sacrificing his spirit of adventure or his freedom. He'll realize that building something deep and meaningful with another person can amplify his passion for life, rather than restricting it, and that true strength also involves embracing emotional depth and a shared future."
+            },
+            "risk_notes": [
+                "Ensuring Kenji's 'too relaxed' quality doesn't cross into irresponsibility or incompetence, especially given his role as a guide and his fear of failing those under his care. His comedic flaws must remain endearing.",
+                "Preventing Sam's meticulousness and internal monologues from becoming tiresome or overly analytical; the 'Close Emotional Comedy' must highlight her earnestness and internal panic with warmth.",
+                "Balancing the extreme differences between the leads so they feel like well-rounded individuals with understandable motivations, rather than caricatures of 'order' and 'chaos.'",
+                "The 30,000-word novella length requires a focused, high-impact 'Social Pressure Cooker' event to drive the emotional arcs efficiently without feeling rushed."
+            ]
+        },
+        "premise": {
+            "logline": "A hyper-organized efficiency consultant's meticulously planned corporate team-building retreat goes gloriously off-script when it's led by a free-spirited mountain guide who believes in improvisation, forcing them to navigate unexpected wilderness challenges and their undeniable, chaotic chemistry.",
+            "premise": "Samantha 'Sam' Hayes, a hyper-efficient tech consultant, is determined to flawlessly execute a high-stakes corporate 'synergy' retreat in the unforgiving mountains. This is her chance to prove her capability and conquer chaos with spreadsheets. Her meticulously crafted itinerary and extensive emergency preparedness kits are her armor. But her perfect plan is instantly derailed by Kenji Tanaka, the retreat's laid-back freelance mountain guide. Kenji operates on instinct, nature's rhythm, and a healthy skepticism for anything that can be 'optimized' \u2013 especially human connection. When an unforeseen natural event traps them and their bewildered tech clients deep in the wilderness, Sam's control-freak tendencies clash violently with Kenji's 'go with the flow' philosophy. Forced into intense proximity, they must learn to rely on each other's wildly different strengths: Sam's analytical problem-solving and Kenji's intuitive survival skills. As their professional friction gives way to personal vulnerability, Sam realizes her 'perfect' life has been lonely, and Kenji discovers that true freedom might just be found in a commitment worth planning for.",
+            "forced_proximity_device": "An unexpected and severe weather event (e.g., a flash flood, an early blizzard, a rockslide blocking the trail) during the corporate mountain retreat, forcing the entire group to take shelter in a remote, rustic cabin or makeshift camp for an extended period.",
+            "primary_obstacle": "Their diametrically opposed operating systems and core fears. Sam's overwhelming need for absolute control and flawless execution directly clashes with Kenji's intuitive, improvisational approach to life and leadership. Sam fears public embarrassment and loss of control, while Kenji fears being tied down and losing his freedom. Their romantic blind spots further compound this, with Sam overlooking genuine connection for 'on-paper' compatibility and Kenji avoiding deep emotional dives.",
+            "midpoint_shift": "During the intense forced proximity caused by the unexpected wilderness event, a critical moment arises where both Sam's planning and Kenji's improvisation are simultaneously essential to resolve a dangerous situation for the group. They are forced to actively combine their skills and witness the profound competence beneath each other's 'flaws.' In the aftermath, a shared moment of vulnerability allows them to see past their initial judgments, sparking a grudging respect that begins to morph into undeniable attraction and a deeper understanding of each other's true character and hidden fears.",
+            "finale_payoff": "Sam embraces the beautiful chaos of life, realizing that authentic connection and vulnerability are more fulfilling than a perfectly planned but lonely existence. She learns to trust the unpredictable and finds a new definition of strength beyond control. Kenji, in turn, understands that true commitment doesn't mean sacrificing his adventurous spirit or freedom, but rather amplifying it through shared purpose and emotional depth. They choose honesty, finding a way to integrate their contrasting worlds, perhaps with Sam planning a 'flexible' adventure and Kenji teaching her to read the 'data' of the natural world.",
+            "chapter_beats": [
+                "**The Flawless Plan**: Introduce Sam, her hyper-organized life, and her meticulously designed corporate 'synergy' retreat for 'SynergyTech' \u2013 a career-defining moment to prove her ultimate efficiency. Showcase her detailed binders and contingency plans.",
+                "**The Un-Plannable Variable**: Sam meets Kenji, the retreat's mountain guide. Immediate clash as Kenji calmly dismisses her precise itinerary, 'optimal morale boost' metrics, and schedule buffers with nature-based analogies, triggering Sam's internal panic.",
+                "**Chaos on the Trail**: The retreat begins. Sam's plan slowly unravels due to minor wilderness mishaps, Kenji's 'go with the flow' guidance, and the hapless tech clients. Sam's internal monologue escalates, while Kenji finds her flustered precision oddly captivating.",
+                "**The Storm & The Shelter**: An unexpected, severe weather event (or other significant emergency like a small rockslide blocking the only pass) traps the group. Sam's emergency kit is put to the test, but it's Kenji's practical skills and calm leadership that truly save the day, with Sam providing critical, structured (if panicked) support.",
+                "**Vulnerability in the Wild**: Forced into intense proximity in a remote cabin or makeshift camp, they share genuine, unguarded conversations. Sam reveals her deep-seated fear of failure and loneliness. Kenji shares his past experiences and fears about responsibility, realizing Sam isn't just 'organized' but deeply earnest and yearning for connection. Their physical attraction grows amidst the shared challenge.",
+                "**The Return & The Choice**: The group is safely guided back to civilization. Sam and Kenji must now confront what their intense connection means for their wildly different lives. Sam grapples with letting go of her life plan for Kenji's unpredictability. Kenji struggles with the idea of commitment. A final, honest conversation where they articulate their needs and fears.",
+                "**Earned Optimism**: Sam and Kenji find a path forward, integrating their worlds. Perhaps Kenji agrees to a shared (but flexible) calendar, and Sam learns to embrace spontaneous detours, discovering joy in the unplanned. They're ready to share their unique spirits of adventure and build something lasting, together."
+            ],
+            "recurring_comedic_motif": "Sam's attempts to 'optimize' or 'spreadsheet' natural phenomena or emotional responses (e.g., categorizing stages of wilderness panic, calculating optimal campfire warmth). This is often met with Kenji's calm, nature-based analogies or simple, practical solutions that drive Sam to internal monologues of escalating absurdity. Also, Sam's detailed emergency kit producing a highly specific, but often comically inappropriate, item for a given crisis."
+        },
+        "chapter_details": [],
+        "flavor_seeds": [],
+        "notes": ""
+    }
+}

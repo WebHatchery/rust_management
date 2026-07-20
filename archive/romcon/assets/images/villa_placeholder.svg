@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Villa lounge placeholder background</title>
+  <desc id="desc">Placeholder background for the villa lounge scene with arched windows, chandelier shapes, and layered evening lighting.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1d2741"/>
+      <stop offset="100%" stop-color="#684f72"/>
+    </linearGradient>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a3048"/>
+      <stop offset="100%" stop-color="#4c4158"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4f3542"/>
+      <stop offset="100%" stop-color="#241821"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#sky)"/>
+  <rect y="150" width="1280" height="360" fill="url(#wall)"/>
+  <rect y="510" width="1280" height="210" fill="url(#floor)"/>
+  <rect x="118" y="120" width="220" height="260" rx="110" fill="#c0d3ff" opacity="0.15"/>
+  <rect x="530" y="120" width="220" height="260" rx="110" fill="#c0d3ff" opacity="0.15"/>
+  <rect x="942" y="120" width="220" height="260" rx="110" fill="#c0d3ff" opacity="0.15"/>
+  <rect x="98" y="108" width="260" height="292" rx="130" fill="none" stroke="#ddcaa7" stroke-opacity="0.25" stroke-width="8"/>
+  <rect x="510" y="108" width="260" height="292" rx="130" fill="none" stroke="#ddcaa7" stroke-opacity="0.25" stroke-width="8"/>
+  <rect x="922" y="108" width="260" height="292" rx="130" fill="none" stroke="#ddcaa7" stroke-opacity="0.25" stroke-width="8"/>
+  <path d="M640 52 L604 110 L676 110 Z" fill="#f2d2a0" opacity="0.75"/>
+  <circle cx="640" cy="126" r="36" fill="#f2d2a0" opacity="0.25"/>
+  <circle cx="602" cy="140" r="16" fill="#f2d2a0" opacity="0.35"/>
+  <circle cx="678" cy="140" r="16" fill="#f2d2a0" opacity="0.35"/>
+  <rect x="244" y="470" width="792" height="34" rx="17" fill="#826270" opacity="0.4"/>
+  <rect x="316" y="432" width="650" height="84" rx="22" fill="#3f465a" opacity="0.55"/>
+  <rect x="360" y="552" width="564" height="88" rx="24" fill="#221923" opacity="0.5"/>
+  <text x="60" y="74" fill="#f4ece0" font-family="Georgia, serif" font-size="28" letter-spacing="4">LOVE SEASON • VILLA</text>
+</svg>

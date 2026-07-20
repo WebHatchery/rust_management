@@ -1,0 +1,50 @@
+{
+  "theo_portrait_placeholder": {
+    "prompt": "Half-body romance game portrait of Theo Vale, warm chaotic noble bachelor, tousled dark hair, open collar formalwear, confident grin, soft painterly placeholder style, readable silhouette, muted jewel-tone palette",
+    "filename": "images/theo_placeholder.svg",
+    "png_filename": "images/theo_placeholder.png",
+    "width": 768,
+    "height": 1024,
+    "status": "placeholder"
+  },
+  "julian_portrait_placeholder": {
+    "prompt": "Half-body romance game portrait of Julian Cross, polished heir bachelor, dark tailored formalwear, controlled posture, cool expression with hidden warmth, painterly placeholder style, elegant silhouette, muted sapphire palette",
+    "filename": "images/julian_placeholder.svg",
+    "png_filename": "images/julian_placeholder.png",
+    "width": 768,
+    "height": 1024,
+    "status": "placeholder"
+  },
+  "seraphina_portrait_placeholder": {
+    "prompt": "Half-body romance game portrait of Seraphina Rowe, poised rival contestant, immaculate evening styling, sharp gaze, refined silhouette, painterly placeholder style, rose and plum palette",
+    "filename": "images/seraphina_placeholder.svg",
+    "png_filename": "images/seraphina_placeholder.png",
+    "width": 768,
+    "height": 1024,
+    "status": "placeholder"
+  },
+  "villa_background_placeholder": {
+    "prompt": "Romance game background placeholder for a lavish villa lounge, chandeliers, arch windows, evening ambience, readable layered composition, painterly placeholder style",
+    "filename": "images/villa_placeholder.svg",
+    "png_filename": "images/villa_placeholder.png",
+    "width": 1280,
+    "height": 720,
+    "status": "placeholder"
+  },
+  "garden_background_placeholder": {
+    "prompt": "Romance game background placeholder for a glass conservatory garden, warm afternoon light, greenery silhouettes, painterly placeholder style",
+    "filename": "images/garden_placeholder.svg",
+    "png_filename": "images/garden_placeholder.png",
+    "width": 1280,
+    "height": 720,
+    "status": "placeholder"
+  },
+  "ceremony_background_placeholder": {
+    "prompt": "Romance game background placeholder for a dramatic rose ceremony platform, stage lights, velvet drapery, elegant geometric framing, painterly placeholder style",
+    "filename": "images/ceremony_placeholder.svg",
+    "png_filename": "images/ceremony_placeholder.png",
+    "width": 1280,
+    "height": 720,
+    "status": "placeholder"
+  }
+}

@@ -1,0 +1,246 @@
+{
+  "nodes": [
+    {
+      "id": "arrival_intro",
+      "speaker_id": "host",
+      "text": "Welcome to Love Season. Tonight is not about perfection. It is about where your attention goes when everyone is trying to guide it.",
+      "choices": [
+        {
+          "label": "Step toward Theo and answer his grin with one of your own.",
+          "next_node": "arrival_theo",
+          "effects": [
+            { "kind": "bachelor_stat", "bachelor_id": "theo", "stat": "chemistry", "amount": 22.0 },
+            { "kind": "player_stat", "stat": "sincerity", "amount": 4.0 }
+          ]
+        },
+        {
+          "label": "Cross to Julian and open with something precise instead of flirty.",
+          "next_node": "arrival_julian",
+          "effects": [
+            { "kind": "bachelor_stat", "bachelor_id": "julian", "stat": "chemistry", "amount": 12.0 },
+            { "kind": "bachelor_stat", "bachelor_id": "julian", "stat": "trust", "amount": 12.0 },
+            { "kind": "player_stat", "stat": "spotlight", "amount": 5.0 }
+          ]
+        },
+        {
+          "label": "Intercept Seraphina before she turns the room into a contest you did not agree to.",
+          "next_node": "arrival_seraphina",
+          "effects": [
+            { "kind": "player_stat", "stat": "sincerity", "amount": 8.0 },
+            { "kind": "player_stat", "stat": "composure", "amount": -8.0 },
+            { "kind": "rival_pressure", "amount": -4.0 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arrival_theo",
+      "speaker_id": "theo",
+      "text": "Theo laughs like you just cut through the script everyone else rehearsed. Good. I was hoping at least one person here still looked curious instead of coached.",
+      "choices": [
+        {
+          "label": "Tell him the house seems brighter when someone stops performing.",
+          "next_node": null,
+          "finish_event": true,
+          "effects": [
+            { "kind": "bachelor_stat", "bachelor_id": "theo", "stat": "trust", "amount": 10.0 },
+            { "kind": "player_stat", "stat": "sincerity", "amount": 6.0 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arrival_julian",
+      "speaker_id": "julian",
+      "text": "Julian studies you for one beat too long, then inclines his head. Most people lead with sparkle in a room like this. Precision is rarer. I respect rarer things.",
+      "choices": [
+        {
+          "label": "Admit you would rather be understood than adored.",
+          "next_node": null,
+          "finish_event": true,
+          "effects": [
+            { "kind": "bachelor_stat", "bachelor_id": "julian", "stat": "fit", "amount": 10.0 },
+            { "kind": "bachelor_stat", "bachelor_id": "julian", "stat": "trust", "amount": 8.0 },
+            { "kind": "player_stat", "stat": "sincerity", "amount": 4.0 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arrival_seraphina",
+      "speaker_id": "seraphina",
+      "text": "Seraphina smiles without warmth. How brave. Most newcomers wait three days before challenging the woman already winning the room. You smile back. Then I am ahead of schedule.",
+      "choices": [
+        {
+          "label": "Leave the exchange with your spine still straight.",
+          "next_node": null,
+          "finish_event": true,
+          "effects": [
+            { "kind": "player_stat", "stat": "spotlight", "amount": 4.0 },
+            { "kind": "player_stat", "stat": "composure", "amount": -6.0 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "private_intro",
+      "speaker_id": "narrator",
+      "text": "By afternoon the estate has softened. Cameras remain, but the conversation now is really about who gets your uncertainty and who only gets your polish.",
+      "choices": [
+        {
+          "label": "Take Theo's invitation to the conservatory and ask what he hides under all that ease.",
+          "next_node": "private_theo",
+          "effects": [
+            { "kind": "bachelor_stat", "bachelor_id": "theo", "stat": "chemistry", "amount": 10.0 },
+            { "kind": "bachelor_stat", "bachelor_id": "theo", "stat": "fit", "amount": 8.0 }
+          ]
+        },
+        {
+          "label": "Meet Julian in the library and ask what it costs to always be composed.",
+          "next_node": "private_julian",
+          "effects": [
+            { "kind": "bachelor_stat", "bachelor_id": "julian", "stat": "chemistry", "amount": 8.0 },
+            { "kind": "bachelor_stat", "bachelor_id": "julian", "stat": "fit", "amount": 10.0 }
+          ]
+        },
+        {
+          "label": "Keep the time for yourself and write down what the cameras keep trying to edit out of you.",
+          "next_node": "private_self",
+          "effects": [
+            { "kind": "player_stat", "stat": "sincerity", "amount": 14.0 },
+            { "kind": "player_stat", "stat": "composure", "amount": 8.0 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "private_theo",
+      "speaker_id": "theo",
+      "text": "Theo looks startled when you ask a real question. Everyone here likes me best when I am effortless, he says. You might be the first person who sounded interested in the effort underneath it.",
+      "choices": [
+        {
+          "label": "Tell him you trust effort more than charm.",
+          "next_node": null,
+          "finish_event": true,
+          "effects": [
+            { "kind": "bachelor_stat", "bachelor_id": "theo", "stat": "trust", "amount": 12.0 },
+            { "kind": "bachelor_stat", "bachelor_id": "theo", "stat": "chemistry", "amount": 10.0 },
+            { "kind": "player_stat", "stat": "sincerity", "amount": 5.0 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "private_julian",
+      "speaker_id": "julian",
+      "text": "Julian exhales like no one ever gave him permission to. Composure is useful, he says. But usefulness is not the same as being known. It is the first time he sounds his age instead of his training.",
+      "choices": [
+        {
+          "label": "Tell him being chosen for his actual self would be worth the risk.",
+          "next_node": null,
+          "finish_event": true,
+          "effects": [
+            { "kind": "bachelor_stat", "bachelor_id": "julian", "stat": "trust", "amount": 12.0 },
+            { "kind": "bachelor_stat", "bachelor_id": "julian", "stat": "chemistry", "amount": 8.0 },
+            { "kind": "player_stat", "stat": "sincerity", "amount": 6.0 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "private_self",
+      "speaker_id": "narrator",
+      "text": "For twenty quiet minutes nobody can narrate you. The silence is so relieving it feels almost romantic in its own right.",
+      "choices": [
+        {
+          "label": "Carry that steadier version of yourself into the evening.",
+          "next_node": null,
+          "finish_event": true,
+          "effects": [
+            { "kind": "player_stat", "stat": "spotlight", "amount": 2.0 },
+            { "kind": "player_stat", "stat": "composure", "amount": 4.0 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ceremony_intro",
+      "speaker_id": "host",
+      "text": "The ceremony platform glows under a hundred deliberate lights. Lady Coris asks the question the audience wants answered already: What are you actually looking for here?",
+      "choices": [
+        {
+          "label": "Say you want a future sturdy enough to survive bad days, not just good camera angles.",
+          "next_node": "ceremony_honest",
+          "effects": [
+            { "kind": "player_stat", "stat": "sincerity", "amount": 10.0 },
+            { "kind": "player_stat", "stat": "spotlight", "amount": 4.0 }
+          ]
+        },
+        {
+          "label": "Give a polished answer about destiny, elegance, and trusting the process.",
+          "next_node": "ceremony_polished",
+          "effects": [
+            { "kind": "player_stat", "stat": "spotlight", "amount": 10.0 },
+            { "kind": "player_stat", "stat": "sincerity", "amount": -6.0 }
+          ]
+        },
+        {
+          "label": "Deflect with a joke and let the room decide whether you are mysterious or terrified.",
+          "next_node": "ceremony_deflect",
+          "effects": [
+            { "kind": "player_stat", "stat": "composure", "amount": -12.0 },
+            { "kind": "rival_pressure", "amount": 6.0 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ceremony_honest",
+      "speaker_id": "host",
+      "text": "The room stills. Even Seraphina's smile falters for a beat. Honesty is messier than spectacle, but it lands harder.",
+      "choices": [
+        {
+          "label": "Accept the uncertainty and end the night without pretending you know the ending yet.",
+          "next_node": null,
+          "finish_event": true,
+          "effects": [
+            { "kind": "player_stat", "stat": "composure", "amount": 6.0 },
+            { "kind": "bachelor_stat", "bachelor_id": "theo", "stat": "fit", "amount": 5.0 },
+            { "kind": "bachelor_stat", "bachelor_id": "julian", "stat": "fit", "amount": 5.0 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ceremony_polished",
+      "speaker_id": "seraphina",
+      "text": "Seraphina applauds with exquisite restraint. The house approves. So do the cameras. You are less sure your own heart does.",
+      "choices": [
+        {
+          "label": "Hold the mask a little longer and hope clarity catches up.",
+          "next_node": null,
+          "finish_event": true,
+          "effects": [
+            { "kind": "player_stat", "stat": "composure", "amount": -8.0 },
+            { "kind": "rival_pressure", "amount": 4.0 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ceremony_deflect",
+      "speaker_id": "narrator",
+      "text": "Laughter saves you for the moment, but it also keeps everyone at arm's length. Safety and distance are cousins in this place.",
+      "choices": [
+        {
+          "label": "Smile through it and promise yourself you will be braver next week.",
+          "next_node": null,
+          "finish_event": true,
+          "effects": [
+            { "kind": "player_stat", "stat": "sincerity", "amount": 2.0 }
+          ]
+        }
+      ]
+    }
+  ]
+}

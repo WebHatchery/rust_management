@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="768" height="1024" viewBox="0 0 768 1024" role="img" aria-labelledby="title desc">
+  <title id="title">Theo Vale placeholder portrait</title>
+  <desc id="desc">Stylized placeholder portrait for Theo Vale with a warm expression, tousled hair, and dark formalwear.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#25314a"/>
+      <stop offset="100%" stop-color="#6f4d6d"/>
+    </linearGradient>
+    <linearGradient id="coat" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#202534"/>
+      <stop offset="100%" stop-color="#3a4357"/>
+    </linearGradient>
+    <linearGradient id="shirt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ece7e1"/>
+      <stop offset="100%" stop-color="#c8beb8"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f0c2a2"/>
+      <stop offset="100%" stop-color="#d69a78"/>
+    </linearGradient>
+    <linearGradient id="hair" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2f221f"/>
+      <stop offset="100%" stop-color="#4f392f"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#101521" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="768" height="1024" fill="url(#bg)"/>
+  <circle cx="584" cy="176" r="136" fill="#ffffff" opacity="0.06"/>
+  <circle cx="132" cy="832" r="170" fill="#ffffff" opacity="0.04"/>
+
+  <g filter="url(#shadow)">
+    <path d="M222 1000 L184 700 Q176 570 226 516 Q272 462 384 452 Q496 462 542 516 Q592 570 584 700 L546 1000 Z" fill="url(#coat)"/>
+    <path d="M324 534 Q384 560 444 534 L466 792 Q424 822 384 822 Q344 822 302 792 Z" fill="url(#shirt)"/>
+    <path d="M330 522 L384 616 L438 522 Q418 492 384 492 Q350 492 330 522 Z" fill="#d7a662"/>
+    <ellipse cx="384" cy="356" rx="138" ry="164" fill="url(#skin)"/>
+    <path d="M256 334 Q252 236 322 194 Q390 150 460 180 Q530 210 534 322 Q506 284 476 276 Q434 264 390 270 Q322 280 256 334 Z" fill="url(#hair)"/>
+    <path d="M232 336 Q254 250 310 202 Q272 214 248 246 Q220 284 232 336 Z" fill="#241916"/>
+    <path d="M526 316 Q520 240 462 194 Q508 202 536 236 Q564 270 554 324 Z" fill="#3a2a25"/>
+    <path d="M300 438 Q336 468 384 468 Q432 468 468 438 Q440 508 384 514 Q328 508 300 438 Z" fill="#cc8f6e" opacity="0.75"/>
+    <ellipse cx="334" cy="350" rx="18" ry="11" fill="#ffffff" opacity="0.13"/>
+    <ellipse cx="442" cy="350" rx="18" ry="11" fill="#ffffff" opacity="0.13"/>
+    <circle cx="334" cy="354" r="6" fill="#342a35"/>
+    <circle cx="442" cy="354" r="6" fill="#342a35"/>
+    <path d="M312 322 Q334 312 356 324" stroke="#2c1d1b" stroke-width="8" stroke-linecap="round" fill="none"/>
+    <path d="M414 324 Q436 312 456 322" stroke="#2c1d1b" stroke-width="8" stroke-linecap="round" fill="none"/>
+    <path d="M384 366 Q374 404 390 418" stroke="#b97c60" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.8"/>
+    <path d="M334 432 Q384 462 436 424" stroke="#8b4f52" stroke-width="8" stroke-linecap="round" fill="none"/>
+    <path d="M286 564 Q240 612 214 694" stroke="#4a556d" stroke-width="28" stroke-linecap="round" fill="none"/>
+    <path d="M482 564 Q528 612 554 694" stroke="#4a556d" stroke-width="28" stroke-linecap="round" fill="none"/>
+    <path d="M278 534 Q316 500 342 520" stroke="#151922" stroke-width="18" stroke-linecap="round" fill="none"/>
+    <path d="M490 534 Q452 500 426 520" stroke="#151922" stroke-width="18" stroke-linecap="round" fill="none"/>
+    <path d="M288 214 Q360 142 474 204" stroke="#584038" stroke-width="20" stroke-linecap="round" fill="none"/>
+    <path d="M278 214 Q314 154 366 154" stroke="#2c201c" stroke-width="24" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <rect x="44" y="44" width="680" height="936" rx="18" fill="none" stroke="#d8c5aa" stroke-opacity="0.28" stroke-width="2"/>
+  <text x="64" y="92" fill="#f2e9db" font-family="Georgia, serif" font-size="28" letter-spacing="4">LOVE SEASON</text>
+  <text x="64" y="944" fill="#f2e9db" font-family="Georgia, serif" font-size="48">Theo Vale</text>
+  <text x="64" y="980" fill="#d6c7ce" font-family="Georgia, serif" font-size="24">Placeholder portrait • warm chaos route</text>
+</svg>

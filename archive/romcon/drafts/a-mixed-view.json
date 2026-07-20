@@ -1,0 +1,116 @@
+{
+    "meta": {
+        "app": "RomCon",
+        "exported_at": "2026-03-12T06:54:14+01:00",
+        "plan_id": 6,
+        "title": "A Mixed View",
+        "target_words": 45000,
+        "heat_level": "warm",
+        "romance_configuration": "m/f"
+    },
+    "ai_novel_prompt_package": {
+        "instruction": "Use this plan package to write a romantic comedy novella. Preserve the leads, pairing logic, premise engine, chapter-beat intent, and tone.",
+        "writer_profile": "## Part 1: The Author's DNA\n\n### Core Voice & Lens\n* **Close Emotional Comedy**: The narration stays intimate with the lead's embarrassment, desire, misread signals, and private rationalizations. Comedy comes from emotional specificity, not detached snark.\n* **Warm, Clever, Contemporary**: The prose is bright, modern, and emotionally literate. Scenes should feel quick on their feet without becoming weightless.\n* **Chemistry Through Contrast**: Attraction is built through opposites rubbing together in ways that are inconvenient, revealing, and funny.\n\n### Thematic Pillars\n* **Love as Disruption**: Romance interrupts the neat story each lead tells about their life and exposes what they actually need.\n* **Vulnerability Beneath Competence**: Each lead should be good at something visible and bad at something emotionally costly.\n* **Earned Optimism**: Endings are hopeful because both leads choose honesty, not because conflict evaporates.\n\n### World-Building Signature\n* **Social Pressure Cookers**: The setting should naturally keep leads colliding through work, family, housing, community, weddings, events, or shared obligations.\n* **Concrete Modern Texture**: Use jobs, routines, group chats, schedules, logistics, money pressure, and reputation as practical story engines.\n* **Contained Scale**: Favor a vivid local ecosystem over sprawling mythology. The story should feel inhabitable and production-ready.",
+        "title": "A Mixed View",
+        "concept_brief": "Analytical Sarah, meticulous in her lab, and charming John, a natural but chaotic presenter, are forced to collaborate on a volatile biopharma project with high stakes. A lab accident swaps their bodies, forcing them to navigate each other's professional and personal lives, exposing their hidden vulnerabilities, and disrupting their carefully constructed realities as they attempt to reverse the transformation.",
+        "setting": "A high-stakes, boutique biopharma startup in a close-knit urban science community, present day.",
+        "romance_configuration": "m/f",
+        "main_character_focus": "Sarah's perspective as she struggles with John's body and reputation, seeing her own life through his eyes.",
+        "romance_structure_notes": "Initial antagonism and friction over perceived incompetence, leading to reluctant cooperation to solve the body swap. Shared vulnerability emerges as they experience each other's lives, fostering private understanding and unexpected attraction. The climax involves a choice between reversing the swap and embracing the insights gained, leading to an earned resolution where they choose honesty and mutual support.",
+        "pov_mode": "single_close_third",
+        "pov_notes": "Primarily Sarah's internal experience, observing John's reactions and behavior.",
+        "dominant_romance_arc": "Two professional rivals learn to value each other's strengths and accept their own vulnerabilities by literally walking in each other's shoes.",
+        "central_external_pressure": "The urgent need to reverse the body swap before a critical project deadline or their careers/reputations are ruined.",
+        "emotional_question": "Can they truly know and accept another person, and themselves, without the pretense of their own familiar skin and established identity?",
+        "heat_level": "warm",
+        "target_words": 45000,
+        "selected_trope": "Accidental Partnership",
+        "lead_one": {
+            "name": "Sarah Chen",
+            "age": "Early 30s",
+            "occupation": "Lead Research Scientist (Biopharma)",
+            "personality_summary": "Highly analytical, risk-averse, detail-oriented, internalizes stress, prioritizes data over social interaction, values precision and control.",
+            "core_desire": "Achieve scientific breakthrough through meticulous, controlled research; gain professional recognition for intellectual rigor.",
+            "core_fear": "Professional failure due to uncontrolled variables or perceived incompetence; public humiliation or loss of reputation.",
+            "public_competence": "Unparalleled analytical skill, methodical experimental design, precise execution, deep scientific knowledge.",
+            "private_mess": "Overthinks everything, struggles with spontaneity, emotionally guarded, prone to anxiety, finds social situations exhausting.",
+            "everyday_strength": "Problem-solving under pressure (data/logic), extreme focus, reliability, excellent at planning.",
+            "comedic_weakness": "Socially awkward, poor impromptu speaking skills, physically uncoordinated in non-lab settings, struggles to fake emotions.",
+            "romantic_blind_spot": "Assumes attraction is based on shared intellectual interests and predictable behavior; dismisses emotional chemistry as irrational or distracting.",
+            "secret_pressure": "Imposter syndrome despite achievements; family expectations for career pinnacle; looming grant deadline requiring project success.",
+            "social_circle_role": "The quiet expert everyone respects but rarely approaches for casual conversation; the one who brings data to arguments.",
+            "dialogue_rhythm": "Precise, often technical, slightly formal, prone to explaining things in detail, can be blunt without realizing it.",
+            "sample_dialogue": [
+                "No, that's statistically improbable. We need to re-run the controls.",
+                "Do you really just... *lean* on the counter like that? What if it's unsanitized?",
+                "My data indicates your 'gut feeling' has a 3% success rate, at best."
+            ],
+            "thinks_they_want": "A perfectly predictable life, a partner who understands her scientific pursuits without needing emotional translation, professional autonomy.",
+            "actually_needs": "To embrace spontaneity and emotional vulnerability, to find joy in imperfection, a partner who challenges her analytical rigidity and connects with her on a deeper level."
+        },
+        "lead_two": {
+            "name": "John 'Jax' Miller",
+            "age": "Early 30s",
+            "occupation": "Head of Project Development / Public Relations (Biopharma)",
+            "personality_summary": "Charismatic, intuitive, adaptable, thrives on social interaction, a natural presenter and persuader, often chaotic in methods but achieves results.",
+            "core_desire": "Inspire and lead, make big ideas happen, be admired for vision and energy.",
+            "core_fear": "Being seen as superficial or incompetent; failing to deliver on promises; losing easy charm and connection with people.",
+            "public_competence": "Exceptional communication, charismatic pitching, networking, quick thinking under social pressure, big-picture project management.",
+            "private_mess": "Disorganized at home and with personal admin, procrastinates on details, emotionally avoids deep introspection, relies on charm to smooth problems.",
+            "everyday_strength": "Reads people well, diffuses tension, motivates others, quick to adapt to changing social dynamics.",
+            "comedic_weakness": "Easily distracted, terrible with detailed paperwork, prone to over-promising, can't sit still for long, struggles with precise manual tasks.",
+            "romantic_blind_spot": "Confuses surface-level charm and immediate connection with genuine emotional depth; overlooks partners who don't immediately 'spark' with him.",
+            "secret_pressure": "Maintaining public image of effortless success; financial pressures from an ambitious lifestyle; past failure leading to fear of deep commitment.",
+            "social_circle_role": "The life of the party, the connector, the person everyone wants to talk to; often seen as carefree, but carries hidden burdens.",
+            "dialogue_rhythm": "Engaging, persuasive, uses anecdotes and humor, sometimes vague on specifics, adapts to audience, quick witty comebacks.",
+            "sample_dialogue": [
+                "Okay, okay, I get it. More data. But imagine the presentation! It'll be a game-changer.",
+                "My face isn't supposed to... *do* that, is it? Did I just accidentally frown at the CEO?",
+                "Look, sometimes you just gotta feel it out, you know? Not everything needs a spreadsheet."
+            ],
+            "thinks_they_want": "A partner who matches his energy and social magnetism, a life filled with exciting opportunities and public acclaim, freedom from mundane responsibilities.",
+            "actually_needs": "A partner who provides grounding and challenges his superficiality, someone who values his true self beyond his charm, stability and help managing practicalities."
+        },
+        "supporting_cast": [],
+        "pairing": {
+            "pairing_hook": "A meticulous research scientist and a charismatic project lead find themselves literally inhabiting each other's bodies, forcing them to confront their professional rivalry and personal blind spots through the ultimate act of empathy: living each other's lives.",
+            "selected_trope": "Accidental Partnership",
+            "why_they_clash": [
+                "Sarah sees John as all style and no substance, his methods chaotic and his success built on superficial charm. John views Sarah as rigid, overly cautious, and socially inept, her meticulousness a barrier to innovation.",
+                "Their communication styles are diametrically opposed: Sarah is data-driven and literal; John is intuitive and relies on social cues and charisma. This leads to constant misunderstandings and frustration.",
+                "Sarah's need for control clashes with John's adaptable, improvisational approach to problems.",
+                "They both project competence in their professional lives but hide significant private vulnerabilities that the other would instinctively dismiss."
+            ],
+            "why_they_fit": [
+                "Beneath the antagonism, they both possess a deep-seated drive for success and a hidden desire for recognition, albeit through different means.",
+                "Sarah's analytical rigor can be the missing piece that grounds John's ambitious ideas, while John's people skills and ability to see the big picture can help Sarah break out of her analytical loops.",
+                "Both are highly competent in their respective fields, showing a shared commitment to excellence that, when viewed through the other's perspective, can breed grudging respect.",
+                "Their shared plight (the body swap) creates an immediate, unavoidable, and intimate bond, forcing them to rely on each other for survival and success.",
+                "John's emotional expressiveness (in Sarah's body) may begin to unlock Sarah's guardedness, while Sarah's analytical approach (in John's body) may provide structure John secretly craves."
+            ],
+            "scene_engines": [
+                "Navigating daily routines: Sarah (in John's body) struggling with his chaotic social calendar and public-facing demands; John (in Sarah's body) bumbling through her precise lab work and data analysis.",
+                "Professional crises: They must collaborate to salvage a critical project, with each having to perform the other's job under intense scrutiny.",
+                "Social blunders: One character, in the other's body, accidentally reveals embarrassing personal details or misinterprets social cues, leading to comedic mishaps and potential romantic complications.",
+                "Forced proximity during research/problem-solving: Working late nights together in the lab or during a crisis, leading to shared vulnerability and moments of unexpected understanding.",
+                "Confronting each other's 'private mess': Discovering hidden anxieties, personal struggles, or vulnerabilities that contradict their public persona."
+            ],
+            "emotional_lessons": {
+                "lead_one": "Sarah learns that vulnerability is not weakness, that emotional connection is as vital as data, and that her rigid control can stifle growth and joy. She discovers that understanding someone else's perspective can lead to a deeper understanding of herself.",
+                "lead_two": "John learns that true success involves not just charisma but also integrity and diligent effort, that superficial charm can mask deeper insecurities, and that genuine connection requires emotional honesty and facing one's own flaws."
+            },
+            "risk_notes": [
+                "Ensure the body swap mechanics are consistent and serve the emotional arc, not just the plot.",
+                "Avoid making either character purely a caricature of the other; maintain their core personalities even when inhabiting the other's body.",
+                "The 'comedic weakness' of each character must be evident and cause genuine problems when in the other's body, creating stakes.",
+                "The 'secret pressure' for each character should be revealed or exacerbated by the swap, adding depth to their motivations.",
+                "Balance the comedy of the situation with the genuine emotional stakes and romantic development.",
+                "Ensure Sarah's internal experience of John's body and reputation is a key driver of her character arc and attraction."
+            ]
+        },
+        "premise": null,
+        "chapter_details": [],
+        "flavor_seeds": [],
+        "notes": ""
+    }
+}

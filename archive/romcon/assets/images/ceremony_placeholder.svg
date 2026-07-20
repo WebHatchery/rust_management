@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Rose ceremony placeholder background</title>
+  <desc id="desc">Placeholder background for the ceremony scene with stage lights, a central platform, and dramatic drapery.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#26192e"/>
+      <stop offset="100%" stop-color="#6d3559"/>
+    </linearGradient>
+    <linearGradient id="stage" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5f4a5c"/>
+      <stop offset="100%" stop-color="#241a24"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <path d="M0 0 L212 0 L112 420 Z" fill="#4d203d" opacity="0.65"/>
+  <path d="M1280 0 L1068 0 L1168 420 Z" fill="#4d203d" opacity="0.65"/>
+  <circle cx="240" cy="94" r="84" fill="#ffd6a4" opacity="0.12"/>
+  <circle cx="1040" cy="94" r="84" fill="#ffd6a4" opacity="0.12"/>
+  <circle cx="640" cy="76" r="100" fill="#fff2d0" opacity="0.10"/>
+  <path d="M420 470 L860 470 L948 720 L332 720 Z" fill="url(#stage)"/>
+  <rect x="484" y="400" width="312" height="56" rx="28" fill="#caa16d" opacity="0.48"/>
+  <rect x="540" y="346" width="200" height="70" rx="18" fill="#f1d0a3" opacity="0.22"/>
+  <path d="M380 184 Q640 24 900 184" stroke="#f0d4aa" stroke-opacity="0.24" stroke-width="10" fill="none"/>
+  <path d="M294 262 Q640 64 986 262" stroke="#f0d4aa" stroke-opacity="0.16" stroke-width="8" fill="none"/>
+  <path d="M640 210 L668 258 L640 306 L612 258 Z" fill="#d06a79" opacity="0.82"/>
+  <text x="60" y="74" fill="#f7e9ef" font-family="Georgia, serif" font-size="28" letter-spacing="4">LOVE SEASON • CEREMONY</text>
+</svg>

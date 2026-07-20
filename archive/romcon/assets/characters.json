@@ -1,0 +1,35 @@
+{
+  "bachelors": [
+    {
+      "id": "theo",
+      "name": "Theo Vale",
+      "archetype": "Warm chaos",
+      "public_mask": "Charming golden boy who never seems rattled",
+      "private_need": "Wants someone who will ask for truth instead of performance"
+    },
+    {
+      "id": "julian",
+      "name": "Julian Cross",
+      "archetype": "Safe choice with hidden teeth",
+      "public_mask": "Polished heir who always knows the room",
+      "private_need": "Needs someone who chooses him for more than optics"
+    }
+  ],
+  "rivals": [
+    {
+      "id": "seraphina",
+      "name": "Seraphina Rowe",
+      "strategy": "Stay impeccable in public and make everyone else look messy by comparison"
+    }
+  ],
+  "speakers": [
+    {
+      "id": "host",
+      "display_name": "Lady Coris"
+    },
+    {
+      "id": "narrator",
+      "display_name": "Narrator"
+    }
+  ]
+}

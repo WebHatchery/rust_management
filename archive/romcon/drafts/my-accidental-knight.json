@@ -1,0 +1,37 @@
+{
+    "meta": {
+        "app": "RomCon",
+        "exported_at": "2026-03-12T06:54:18+01:00",
+        "plan_id": 5,
+        "title": "My Accidental Knight",
+        "target_words": 45000,
+        "heat_level": "warm",
+        "romance_configuration": "m/f"
+    },
+    "ai_novel_prompt_package": {
+        "instruction": "Use this plan package to write a romantic comedy novella. Preserve the leads, pairing logic, premise engine, chapter-beat intent, and tone.",
+        "writer_profile": "## Part 1: The Author's DNA\n\n### Core Voice & Lens\n* **Close Emotional Comedy**: The narration stays intimate with the lead's embarrassment, desire, misread signals, and private rationalizations. Comedy comes from emotional specificity, not detached snark.\n* **Warm, Clever, Contemporary**: The prose is bright, modern, and emotionally literate. Scenes should feel quick on their feet without becoming weightless.\n* **Chemistry Through Contrast**: Attraction is built through opposites rubbing together in ways that are inconvenient, revealing, and funny.\n\n### Thematic Pillars\n* **Love as Disruption**: Romance interrupts the neat story each lead tells about their life and exposes what they actually need.\n* **Vulnerability Beneath Competence**: Each lead should be good at something visible and bad at something emotionally costly.\n* **Earned Optimism**: Endings are hopeful because both leads choose honesty, not because conflict evaporates.\n\n### World-Building Signature\n* **Social Pressure Cookers**: The setting should naturally keep leads colliding through work, family, housing, community, weddings, events, or shared obligations.\n* **Concrete Modern Texture**: Use jobs, routines, group chats, schedules, logistics, money pressure, and reputation as practical story engines.\n* **Contained Scale**: Favor a vivid local ecosystem over sprawling mythology. The story should feel inhabitable and production-ready.",
+        "title": "My Accidental Knight",
+        "concept_brief": "When pragmatic modern woman Suzy tumbles into a medieval fantasy realm, she's saved by a stoic, chivalrous knight. Tasked with protecting her, he finds her disruptive pragmatism a baffling challenge, while she views his rigid honor as an inconvenient obstacle. Their forced proximity and clashing worldviews spark unexpected chemistry as they navigate the perils of his realm and the bewildering logic of each other's hearts.",
+        "setting": "Medieval-inspired fantasy kingdom of Eldoria, focused on a specific border village and its immediate surroundings, with a grounded, lived-in feel.",
+        "romance_configuration": "m/f",
+        "main_character_focus": "Suzy's journey adapting to a bewildering fantasy world and navigating an unexpected connection with her knight protector.",
+        "romance_structure_notes": "Romance builds through forced proximity as Suzy relies on the knight's protection and he grapples with her unconventional nature. Their chemistry emerges from constant cultural friction, shared dangerous encounters, and the discovery of unexpected vulnerabilities beneath their contrasting competencies. The knight's sense of duty will conflict with personal desire, and Suzy's longing for her own world will complicate her growing feelings.",
+        "pov_mode": "single_close_third",
+        "pov_notes": "Focused tightly on Suzy's internal experience, observations, and emotional reactions to the fantasy world and her protector.",
+        "dominant_romance_arc": "From reluctant cultural friction to a bond forged through mutual respect and inconvenient desire.",
+        "central_external_pressure": "Suzy's need to survive and understand the harsh, unfamiliar rules of the fantasy world, complicated by the knight's strict code of honor and local expectations.",
+        "emotional_question": "Can two people from vastly different worlds truly bridge their divides and find belonging, or is their connection merely a temporary necessity?",
+        "heat_level": "warm",
+        "target_words": 45000,
+        "selected_trope": "",
+        "lead_one": null,
+        "lead_two": null,
+        "supporting_cast": [],
+        "pairing": null,
+        "premise": null,
+        "chapter_details": [],
+        "flavor_seeds": [],
+        "notes": ""
+    }
+}

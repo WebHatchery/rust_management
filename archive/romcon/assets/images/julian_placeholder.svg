@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="768" height="1024" viewBox="0 0 768 1024" role="img" aria-labelledby="title desc">
+  <title id="title">Julian Cross placeholder portrait</title>
+  <desc id="desc">Stylized placeholder portrait for Julian Cross with controlled posture, tailored formalwear, and a cool reserved expression.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1c2c46"/>
+      <stop offset="100%" stop-color="#4a5576"/>
+    </linearGradient>
+    <linearGradient id="coat" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#182131"/>
+      <stop offset="100%" stop-color="#2f3b54"/>
+    </linearGradient>
+    <linearGradient id="vest" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#54627f"/>
+      <stop offset="100%" stop-color="#39445c"/>
+    </linearGradient>
+    <linearGradient id="shirt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f0efed"/>
+      <stop offset="100%" stop-color="#d4d0cc"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e9c0a6"/>
+      <stop offset="100%" stop-color="#cc9779"/>
+    </linearGradient>
+    <linearGradient id="hair" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#201d24"/>
+      <stop offset="100%" stop-color="#37323d"/>
+    </linearGradient>
+  </defs>
+  <rect width="768" height="1024" fill="url(#bg)"/>
+  <rect x="60" y="60" width="648" height="904" rx="22" fill="#ffffff" opacity="0.03"/>
+  <circle cx="590" cy="160" r="120" fill="#ffffff" opacity="0.05"/>
+  <g>
+    <path d="M220 1000 L202 682 Q196 550 244 500 Q286 454 384 444 Q482 454 524 500 Q572 550 566 682 L548 1000 Z" fill="url(#coat)"/>
+    <path d="M300 546 L468 546 L450 818 Q416 842 384 842 Q352 842 318 818 Z" fill="url(#vest)"/>
+    <path d="M334 532 L384 612 L434 532 Q416 500 384 500 Q352 500 334 532 Z" fill="#bba27e"/>
+    <path d="M342 532 L384 592 L426 532 Z" fill="url(#shirt)"/>
+    <ellipse cx="384" cy="346" rx="132" ry="160" fill="url(#skin)"/>
+    <path d="M258 334 Q262 222 332 186 Q406 146 476 184 Q526 212 520 326 Q480 280 426 268 Q352 254 258 334 Z" fill="url(#hair)"/>
+    <path d="M304 246 Q356 220 414 222" stroke="#4c4553" stroke-width="16" stroke-linecap="round" fill="none"/>
+    <path d="M322 320 Q340 310 362 318" stroke="#241f29" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <path d="M408 318 Q428 310 448 320" stroke="#241f29" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <ellipse cx="336" cy="352" rx="18" ry="10" fill="#ffffff" opacity="0.12"/>
+    <ellipse cx="438" cy="352" rx="18" ry="10" fill="#ffffff" opacity="0.12"/>
+    <circle cx="336" cy="354" r="5" fill="#2a2834"/>
+    <circle cx="438" cy="354" r="5" fill="#2a2834"/>
+    <path d="M384 368 Q376 404 388 416" stroke="#b57d63" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.8"/>
+    <path d="M338 432 Q384 448 430 430" stroke="#824b57" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <path d="M276 560 Q244 612 226 690" stroke="#2c3549" stroke-width="24" stroke-linecap="round" fill="none"/>
+    <path d="M492 560 Q524 612 542 690" stroke="#2c3549" stroke-width="24" stroke-linecap="round" fill="none"/>
+  </g>
+  <text x="68" y="90" fill="#eef2fa" font-family="Georgia, serif" font-size="28" letter-spacing="4">LOVE SEASON</text>
+  <text x="68" y="944" fill="#eef2fa" font-family="Georgia, serif" font-size="48">Julian Cross</text>
+  <text x="68" y="980" fill="#d6dceb" font-family="Georgia, serif" font-size="24">Placeholder portrait • safe choice route</text>
+</svg>

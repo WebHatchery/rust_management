@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Standing</title>
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+    <div class="game-page">
+        <header class="game-header">
+            <h1 id="title">Game Standing</h1>
+        </header>
+
+        <div id="loading" class="state-message">Loading standing.md&hellip;</div>
+        <div id="error" class="state-error" style="display: none;"></div>
+
+        <div id="content" style="display: none;">
+            <div class="page-meta" id="meta"></div>
+            <div class="sidebar-section" id="criteria"></div>
+            <div id="extra"></div>
+
+            <table class="data-table">
+                <thead>
+                    <tr id="tableHead"></tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+
+            <div class="game-footer">
+                <p>This page renders <code>standing.md</code> live via JavaScript &mdash; edit the Markdown file and reload; nothing here is duplicated by hand.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SOURCE = 'standing.md';
+        // Columns map 1:1 to standing.md's table, in order: Rank | Game | Genre | Est. to finish | Brief read.
+        const COLUMN_CLASSES = ['', 'col-name', 'col-genre', 'col-estimate', 'col-brief'];
+
+        function escapeHtml(s) {
+            return s
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        // Minimal inline Markdown: **bold**, `code`, *italic* (in that order, so ** isn't eaten by *).
+        function inlineMd(s) {
+            let t = escapeHtml(s);
+            t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            t = t.replace(/`([^`]+?)`/g, '<code>$1</code>');
+            t = t.replace(/\*(.+?)\*/g, '<em>$1</em>');
+            return t;
+        }
+
+        function splitTableRow(line) {
+            let cells = line.trim();
+            if (cells.startsWith('|')) cells = cells.slice(1);
+            if (cells.endsWith('|')) cells = cells.slice(0, -1);
+            return cells.split('|').map(c => c.trim());
+        }
+
+        function isSeparatorRow(cells) {
+            return cells.every(c => /^:?-+:?$/.test(c));
+        }
+
+        function parseMarkdown(md) {
+            const lines = md.replace(/\r\n/g, '\n').split('\n');
+            let title = null;
+            const paragraphs = [];
+            const tableLines = [];
+            let buffer = [];
+
+            const flush = () => {
+                if (buffer.length) {
+                    paragraphs.push(buffer.join(' '));
+                    buffer = [];
+                }
+            };
+
+            for (const raw of lines) {
+                const line = raw.trim();
+                if (line.startsWith('#')) {
+                    flush();
+                    if (title === null) title = line.replace(/^#+\s*/, '');
+                } else if (line.startsWith('|')) {
+                    flush();
+                    tableLines.push(line);
+                } else if (line === '') {
+                    flush();
+                } else {
+                    buffer.push(line);
+                }
+            }
+            flush();
+
+            return { title: title || 'Game Standing', paragraphs, tableLines };
+        }
+
+        function parseTable(tableLines) {
+            if (tableLines.length < 2) return null;
+            const header = splitTableRow(tableLines[0]);
+            const rest = tableLines.slice(1).map(splitTableRow);
+            // Second row is the `| --- | --- |` alignment separator; drop it wherever it lands.
+            const rows = rest.filter(cells => !isSeparatorRow(cells));
+            return { header, rows };
+        }
+
+        function render(md) {
+            const { title, paragraphs, tableLines } = parseMarkdown(md);
+
+            document.title = title;
+            document.getElementById('title').textContent = title;
+
+            const metaEl = document.getElementById('meta');
+            const criteriaEl = document.getElementById('criteria');
+            const extraEl = document.getElementById('extra');
+            metaEl.innerHTML = '';
+            criteriaEl.innerHTML = '';
+            extraEl.innerHTML = '';
+
+            for (const p of paragraphs) {
+                const html = `<p>${inlineMd(p)}</p>`;
+                if (/^Scope:|^Last updated:/.test(p)) {
+                    metaEl.insertAdjacentHTML('beforeend', html);
+                } else if (/^Criteria:|^\*\*Finish estimates:\*\*/.test(p)) {
+                    criteriaEl.insertAdjacentHTML('beforeend', html);
+                } else {
+                    extraEl.insertAdjacentHTML('beforeend', `<div class="callout">${html}</div>`);
+                }
+            }
+
+            const table = parseTable(tableLines);
+            const headRow = document.getElementById('tableHead');
+            const body = document.getElementById('tableBody');
+            headRow.innerHTML = '';
+            body.innerHTML = '';
+
+            if (table) {
+                for (const h of table.header) {
+                    const th = document.createElement('th');
+                    th.textContent = h;
+                    headRow.appendChild(th);
+                }
+                for (const cells of table.rows) {
+                    if (cells.every(c => c === '')) continue;
+                    const tr = document.createElement('tr');
+                    cells.forEach((cell, i) => {
+                        const td = document.createElement('td');
+                        td.innerHTML = inlineMd(cell);
+                        if (COLUMN_CLASSES[i]) td.className = COLUMN_CLASSES[i];
+                        tr.appendChild(td);
+                    });
+                    body.appendChild(tr);
+                }
+            }
+
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+        }
+
+        function showError(err) {
+            document.getElementById('loading').style.display = 'none';
+            const el = document.getElementById('error');
+            el.style.display = 'block';
+            el.innerHTML = `
+                <p><strong>Couldn't load ${SOURCE}:</strong> ${escapeHtml(err.message || String(err))}</p>
+                <p>This page fetches <code>${SOURCE}</code> from the same folder at load time, which browsers block when the file is opened directly via <code>file://</code>. Serve this directory over HTTP instead, e.g.:</p>
+                <pre>python -m http.server 8080</pre>
+                <p>&hellip;then open <code>http://localhost:8080/standing.html</code>.</p>
+            `;
+        }
+
+        async function load() {
+            try {
+                const res = await fetch(SOURCE, { cache: 'no-store' });
+                if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${SOURCE}`);
+                render(await res.text());
+            } catch (err) {
+                showError(err);
+            }
+        }
+
+        load();
+    </script>
+</body>
+</html>

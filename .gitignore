@@ -1,0 +1,16 @@
+# Publish transcripts and build outputs live in the workspace root, not here,
+# but ignore them defensively in case a script is ever run from this directory.
+publish-logs/
+Release/
+target/
+
+# Chrome profiles created by capture-title-screenshots.ps1
+chrome-title-screenshots-*/
+
+# Archived projects that are still their own git repositories. Committing them
+# here would create broken gitlinks (submodule stubs with no URL), so they stay
+# independent -- their history lives in their own repos.
+archive/fracture/
+archive/god_manager/
+archive/nft_adventurers/
+archive/quiteville/

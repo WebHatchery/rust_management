@@ -1,0 +1,26 @@
+[
+  {
+    "id": "week1_arrival_mixer",
+    "week": 1,
+    "title": "Arrival Mixer",
+    "subtitle": "First impressions under chandeliers and camera lenses.",
+    "scene_type": "villa",
+    "start_node": "arrival_intro"
+  },
+  {
+    "id": "week1_private_invitation",
+    "week": 1,
+    "title": "Private Invitation",
+    "subtitle": "A quiet moment to decide what kind of connection you want.",
+    "scene_type": "garden",
+    "start_node": "private_intro"
+  },
+  {
+    "id": "week1_rose_ceremony",
+    "week": 1,
+    "title": "Rose Ceremony",
+    "subtitle": "The house wants clarity before you have all the answers.",
+    "scene_type": "ceremony",
+    "start_node": "ceremony_intro"
+  }
+]

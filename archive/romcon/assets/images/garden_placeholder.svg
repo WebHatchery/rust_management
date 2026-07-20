@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Conservatory garden placeholder background</title>
+  <desc id="desc">Placeholder background for the garden scene with glass framing, soft light, and layered plant silhouettes.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8dbba3"/>
+      <stop offset="100%" stop-color="#f0d8b1"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#607057"/>
+      <stop offset="100%" stop-color="#334131"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#sky)"/>
+  <rect y="458" width="1280" height="262" fill="url(#floor)"/>
+  <rect x="124" y="80" width="1032" height="452" rx="18" fill="#ffffff" opacity="0.10"/>
+  <rect x="124" y="80" width="1032" height="452" rx="18" fill="none" stroke="#dce7d0" stroke-opacity="0.45" stroke-width="8"/>
+  <path d="M254 82 L254 532 M384 82 L384 532 M514 82 L514 532 M644 82 L644 532 M774 82 L774 532 M904 82 L904 532 M1034 82 L1034 532" stroke="#f6f8ee" stroke-opacity="0.22" stroke-width="6"/>
+  <path d="M126 206 L1154 206 M126 330 L1154 330" stroke="#f6f8ee" stroke-opacity="0.18" stroke-width="6"/>
+  <circle cx="1064" cy="122" r="74" fill="#fff4d7" opacity="0.33"/>
+  <path d="M110 560 Q176 446 238 560 T366 560 T494 560 T622 560 T750 560 T878 560 T1006 560 T1134 560 T1262 560" fill="#46614c" opacity="0.7"/>
+  <path d="M80 620 Q160 510 240 620 T400 620 T560 620 T720 620 T880 620 T1040 620 T1200 620" fill="#2c4534" opacity="0.82"/>
+  <rect x="454" y="490" width="372" height="26" rx="13" fill="#c8b48f" opacity="0.5"/>
+  <rect x="520" y="452" width="240" height="58" rx="16" fill="#7f6e57" opacity="0.55"/>
+  <text x="60" y="74" fill="#f7f4e9" font-family="Georgia, serif" font-size="28" letter-spacing="4">LOVE SEASON • GARDEN</text>
+</svg>

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="768" height="1024" viewBox="0 0 768 1024" role="img" aria-labelledby="title desc">
+  <title id="title">Seraphina Rowe placeholder portrait</title>
+  <desc id="desc">Stylized placeholder portrait for Seraphina Rowe with poised evening styling, sharp expression, and plum-toned formalwear.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#351f35"/>
+      <stop offset="100%" stop-color="#7b4a65"/>
+    </linearGradient>
+    <linearGradient id="dress" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#301826"/>
+      <stop offset="100%" stop-color="#5a2c43"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f2d0bc"/>
+      <stop offset="100%" stop-color="#d9a189"/>
+    </linearGradient>
+    <linearGradient id="hair" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#312328"/>
+      <stop offset="100%" stop-color="#5d4047"/>
+    </linearGradient>
+  </defs>
+  <rect width="768" height="1024" fill="url(#bg)"/>
+  <circle cx="150" cy="160" r="118" fill="#ffffff" opacity="0.05"/>
+  <rect x="52" y="52" width="664" height="920" rx="24" fill="#ffffff" opacity="0.03"/>
+  <g>
+    <path d="M176 1000 L228 662 Q246 546 292 500 Q330 460 384 450 Q438 460 476 500 Q522 546 540 662 L592 1000 Z" fill="url(#dress)"/>
+    <path d="M304 560 Q344 514 384 514 Q424 514 464 560 L432 1000 L336 1000 Z" fill="#7d5167" opacity="0.5"/>
+    <ellipse cx="384" cy="342" rx="126" ry="156" fill="url(#skin)"/>
+    <path d="M270 336 Q260 228 326 188 Q394 144 458 176 Q516 204 514 334 Q490 276 452 256 Q418 238 384 238 Q344 238 308 264 Q286 280 270 336 Z" fill="url(#hair)"/>
+    <path d="M282 206 Q326 156 388 154 Q448 156 486 210" stroke="#6c4c56" stroke-width="18" stroke-linecap="round" fill="none"/>
+    <path d="M324 320 Q344 310 364 320" stroke="#341f25" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <path d="M406 320 Q426 310 446 320" stroke="#341f25" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <circle cx="338" cy="350" r="5" fill="#362b33"/>
+    <circle cx="432" cy="350" r="5" fill="#362b33"/>
+    <path d="M384 366 Q378 402 388 414" stroke="#b87b68" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <path d="M336 430 Q382 446 432 424" stroke="#7d4458" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <path d="M302 516 Q384 568 466 516" stroke="#e8d8d4" stroke-width="10" stroke-linecap="round" fill="none" opacity="0.9"/>
+    <path d="M290 566 Q256 612 234 688" stroke="#64344d" stroke-width="24" stroke-linecap="round" fill="none"/>
+    <path d="M478 566 Q512 612 534 688" stroke="#64344d" stroke-width="24" stroke-linecap="round" fill="none"/>
+  </g>
+  <text x="66" y="90" fill="#f8eef2" font-family="Georgia, serif" font-size="28" letter-spacing="4">LOVE SEASON</text>
+  <text x="66" y="944" fill="#f8eef2" font-family="Georgia, serif" font-size="48">Seraphina Rowe</text>
+  <text x="66" y="980" fill="#ecd3df" font-family="Georgia, serif" font-size="24">Placeholder portrait • rival contestant</text>
+</svg>

@@ -1,0 +1,219 @@
+{
+    "meta": {
+        "app": "RomCon",
+        "exported_at": "2026-03-12T06:54:29+01:00",
+        "plan_id": 1,
+        "title": "Paw-sitive Planning",
+        "target_words": 30000,
+        "heat_level": "sweet",
+        "romance_configuration": "m/f"
+    },
+    "ai_novel_prompt_package": {
+        "instruction": "Use this plan package to write a romantic comedy novella. Preserve the leads, pairing logic, premise engine, chapter-beat intent, and tone.",
+        "writer_profile": "## Part 1: The Author's DNA\n\n### Core Voice & Lens\n* **Close Emotional Comedy**: The narration stays intimate with the lead's embarrassment, desire, misread signals, and private rationalizations. Comedy comes from emotional specificity, not detached snark.\n* **Warm, Clever, Contemporary**: The prose is bright, modern, and emotionally literate. Scenes should feel quick on their feet without becoming weightless.\n* **Chemistry Through Contrast**: Attraction is built through opposites rubbing together in ways that are inconvenient, revealing, and funny.\n\n### Thematic Pillars\n* **Love as Disruption**: Romance interrupts the neat story each lead tells about their life and exposes what they actually need.\n* **Vulnerability Beneath Competence**: Each lead should be good at something visible and bad at something emotionally costly.\n* **Earned Optimism**: Endings are hopeful because both leads choose honesty, not because conflict evaporates.\n\n### World-Building Signature\n* **Social Pressure Cookers**: The setting should naturally keep leads colliding through work, family, housing, community, weddings, events, or shared obligations.\n* **Concrete Modern Texture**: Use jobs, routines, group chats, schedules, logistics, money pressure, and reputation as practical story engines.\n* **Contained Scale**: Favor a vivid local ecosystem over sprawling mythology. The story should feel inhabitable and production-ready.",
+        "title": "Paw-sitive Planning",
+        "concept_brief": "A buttoned-up wedding planner and a chaotic rescue-dog photographer are forced to save a society wedding after a viral disaster.",
+        "setting": "Contemporary small-city Australia",
+        "romance_configuration": "m/f",
+        "main_character_focus": "",
+        "romance_structure_notes": "",
+        "pov_mode": "single_close_third",
+        "pov_notes": "",
+        "dominant_romance_arc": "",
+        "central_external_pressure": "",
+        "emotional_question": "",
+        "heat_level": "sweet",
+        "target_words": 30000,
+        "selected_trope": "Opposites Attract",
+        "lead_one": {
+            "name": "Eliza Finch",
+            "age": "27",
+            "occupation": "Highly sought-after wedding planner",
+            "personality_summary": "Meticulous, impeccably organized, a perfectionist who thrives on control and order. She presents a poised, professional exterior, even when internally panicking.",
+            "core_desire": "To achieve flawless professional recognition and maintain her pristine reputation, proving she can perfectly orchestrate every aspect of her life.",
+            "core_fear": "Public failure, chaos, unpredictability, losing control, and being seen as anything less than perfect.",
+            "public_competence": "Flawless event execution, calm under pressure, incredible attention to detail, impeccable style, and an ability to anticipate and solve problems before they arise.",
+            "private_mess": "Her personal life is largely neglected; her apartment is more a functional space than a home, occasionally succumbing to 'organized chaos' after a particularly demanding event. She overthinks everything and struggles to relax.",
+            "everyday_strength": "Exceptional planning skills, reliability, punctuality, incredible foresight, and an ability to create beautiful, memorable experiences.",
+            "comedic_weakness": "Inflexibility, inability to improvise, a tendency to micromanage, easily flustered by spontaneity, and an almost pathological need for things to go 'by the book'.",
+            "romantic_blind_spot": "Views potential partners as either another project to perfect or a disruptive force to her carefully curated life. Values external achievements and appearances over genuine connection.",
+            "secret_pressure": "Carries the weight of her highly successful parents' expectations, constantly striving for professional perfection to compensate for perceived personal shortcomings.",
+            "social_circle_role": "The reliable, organized friend who plans all gatherings, but rarely lets her guard down or truly lets loose.",
+            "dialogue_rhythm": "Precise, articulate, uses full sentences, sometimes a bit formal or instructional, prone to making lists or outlining steps.",
+            "sample_dialogue": [
+                "Absolutely not. The floral arrangements are precisely positioned for the processional, a rogue dog would disrupt the entire aesthetic.",
+                "My reputation isn't just a brand, Leo. It's a meticulously constructed fortress against all forms of mayhem.",
+                "There's a schedule, a timeline, and a contingency plan for the contingency plan. Spontaneity is not on it."
+            ],
+            "thinks_they_want": "A perfectly predictable life, a highly successful and prestigious career, and a partner who fits seamlessly into her structured world.",
+            "actually_needs": "To embrace spontaneity, find joy in imperfection, learn to let go of control, and discover that true fulfillment lies beyond her carefully constructed facade."
+        },
+        "lead_two": {
+            "name": "Leo Maxwell",
+            "age": "32",
+            "occupation": "Freelance rescue-dog photographer and adoption advocate",
+            "personality_summary": "Warm-hearted, free-spirited, charmingly chaotic, and deeply passionate about animals. He's an eternal optimist with a disarming smile and a perpetual five o'clock shadow.",
+            "core_desire": "To find forever homes for every rescue animal, live a life full of purpose and authentic connection, and spread joy through his work.",
+            "core_fear": "Rules, being constrained, failing to help an animal in need, superficiality, and disappointing those he truly cares about.",
+            "public_competence": "Incredible rapport with animals (and most people), captures the unique personality of every dog, disarms strangers with his genuine enthusiasm, and is highly adaptable.",
+            "private_mess": "His studio apartment is a delightful (and slightly overwhelming) jumble of camera equipment, dog toys, half-eaten snacks, and stray leashes. He's perpetually late and prone to forgetting practical details.",
+            "everyday_strength": "Adaptability, resourcefulness, deep empathy (especially for the underdog), a knack for seeing the best in everyone, and an unwavering commitment to his passion.",
+            "comedic_weakness": "Easily distracted by animals, terrible with schedules and deadlines, prone to grand, spontaneous gestures that sometimes backfire, and forgets practicalities in favour of passion.",
+            "romantic_blind_spot": "Attracted to other free spirits or those who appreciate his 'wild side', struggles with commitment due to a fear of being 'tied down', and often overlooks the appeal of stability or routine.",
+            "secret_pressure": "Carries a deep, often unspoken, responsibility for the welfare of vulnerable animals, leading to moments of self-doubt and burnout, despite his outwardly sunny disposition.",
+            "social_circle_role": "The fun, eccentric friend everyone loves for his big heart and good vibes, but no one relies on for punctuality or clean-up.",
+            "dialogue_rhythm": "Casual, enthusiastic, uses Australian slang, often interjects with animal sounds or anecdotes, prone to tangents, and ends sentences with an upward lilt.",
+            "sample_dialogue": [
+                "Whoa, chill out, Eliza! It's just a few puppies, they're practically living, breathing confetti, yeah?",
+                "My schedule? Mate, it's more of a 'strong suggestion' than a rule. Like, 'today, probably find some magic, maybe involving a kelpie'.",
+                "You can't plan for pure joy, you just gotta let it happen, like a puppy surprise attack!"
+            ],
+            "thinks_they_want": "A partner who shares his freewheeling spirit, an exciting, unconventional life, and complete freedom from routine and expectations.",
+            "actually_needs": "A grounding presence, someone who appreciates his boundless heart but can also gently guide him, and a sense of belonging and stability without feeling trapped."
+        },
+        "supporting_cast": [
+            {
+                "name": "Brenda Jenkins",
+                "role": "Eliza's Executive Assistant",
+                "summary": "Perpetually on the verge of a stress-induced meltdown, Brenda is Eliza's fiercely loyal but often exasperated assistant. She meticulously tries to uphold Eliza's standards while secretly harboring a crush on the idea of Leo's carefree life.",
+                "connection_to_leads": "Works directly for Eliza, often interacting with Leo during planning sessions and event coordination. She observes their dynamic closely.",
+                "story_function": "Provides comedic relief through her escalating panic and internal monologues. Acts as a sounding board for Eliza's frustrations and subtly encourages Eliza to loosen up or consider Leo's perspective. Highlights Eliza's overwhelming demands.",
+                "core_desire": "To successfully execute every event without a hitch, earn Eliza's approval, and perhaps find a bit of excitement and spontaneity in her own life.",
+                "core_fear": "Disappointing Eliza, making a mistake that causes chaos, being blamed for any imperfection, and remaining perpetually single and stressed.",
+                "secret_pressure": "Wants to prove herself capable of handling the high-pressure wedding planning industry, but often feels overwhelmed and overlooked, secretly yearning for a less structured life.",
+                "comedic_angle": "Her wide-eyed, deer-in-headlights reactions to chaos; her attempts to anticipate Eliza's every need; her awkward, admiring glances towards Leo; her internal struggle between order and the allure of mess.",
+                "include_in_story": true,
+                "is_main": false
+            },
+            {
+                "name": "Isabelle Vance",
+                "role": "The High-Profile Bride",
+                "summary": "A prominent socialite known for her family's animal advocacy, Isabelle is charmingly demanding with a clear, non-negotiable vision for her 'paw-sitively perfect' wedding. She's genuinely kind but accustomed to getting exactly what she wants.",
+                "connection_to_leads": "Eliza's most important client, whose specific demands (especially for rescue dogs and Leo's involvement) force Eliza and Leo into constant collaboration.",
+                "story_function": "Drives the main plot and provides the high stakes for Eliza. Her unwavering belief in Leo's methods (despite his chaos) acts as a catalyst, pushing Eliza to adapt. She is the ultimate arbiter of success.",
+                "core_desire": "To have a unique, memorable, and deeply meaningful wedding that honors her family's legacy and her love for animals, ensuring it's more than just a social event.",
+                "core_fear": "Her wedding being seen as generic, uninspired, or not truly reflecting her genuine passion for animal welfare.",
+                "secret_pressure": "Carries the weight of her family's esteemed public image, wanting to ensure her wedding is a public relations triumph that also feels authentic to her values.",
+                "comedic_angle": "Her blissfully unaware demands for increasingly complicated animal-centric details; her calm acceptance of chaos that sends Eliza into a tailspin; her endearing sincerity despite her demanding nature.",
+                "include_in_story": true,
+                "is_main": false
+            },
+            {
+                "name": "Reginald 'Reggie' Higgins",
+                "role": "Rival Wedding Planner",
+                "summary": "Slick, impeccably dressed, and subtly condescending, Reggie is Eliza's arch-rival in the local wedding planning scene. He revels in preening superiority and actively looks for opportunities to undermine Eliza's pristine reputation.",
+                "connection_to_leads": "A professional competitor to Eliza, he is aware of the Peterson-Vance wedding and attempts to sow discord or capitalize on any mishaps. He views Leo's involvement as a weakness for Eliza.",
+                "story_function": "Provides external conflict and comedic pressure, acting as a direct antagonist to Eliza. His presence amplifies Eliza's core fear of public failure and can inadvertently push Eliza and Leo closer as they unite against him.",
+                "core_desire": "To be recognized as the undisputed top wedding planner in the city, to consistently outshine Eliza, and to maintain his flawless, high-end brand.",
+                "core_fear": "Being upstaged, losing a high-profile client, any kind of public embarrassment, or being associated with anything less than absolute perfection and luxury.",
+                "secret_pressure": "Constantly feels the need to prove his worth and status in a highly competitive industry, often masking deep insecurities about his own capabilities and originality.",
+                "comedic_angle": "His exaggerated sneering and melodramatic reactions to anything deemed 'unrefined'; his attempts at subtle (and not-so-subtle) sabotage; his overly formal dialogue contrasted with his petty actions.",
+                "include_in_story": true,
+                "is_main": false
+            },
+            {
+                "name": "Aunt Mildred Vance",
+                "role": "Bride's Eccentric, Animal-Loving Aunt",
+                "summary": "A free-spirited, bohemian type who communicates better with animals than most people. Aunt Mildred is the family's resident 'quirky' relative, a staunch advocate for rescue animals, and an immediate admirer of Leo's spirit.",
+                "connection_to_leads": "Isabelle's aunt, a guest at the wedding, who frequently offers Eliza unsolicited, often New Age-y, advice and champions Leo, often to Eliza's exasperation.",
+                "story_function": "Provides a source of emotional honesty and wise, if unconventional, perspective. She acts as a benevolent force, often unknowingly encouraging the bond between Eliza and Leo and highlighting the beauty of imperfection.",
+                "core_desire": "For everyone to embrace joy, kindness, and their true selves; to live in harmony with nature and animals; and for love to triumph over superficiality.",
+                "core_fear": "Coldness, rigidness, people becoming too caught up in appearances, and cruelty to animals.",
+                "secret_pressure": "Often feels misunderstood or dismissed by more conventional family members, but has learned to fully embrace her unique identity and wisdom.",
+                "comedic_angle": "Her blunt, unvarnished advice delivered with a serene smile; her ability to instantly bond with any animal (and often ignore humans); her casual disregard for social norms that throws Eliza off-balance.",
+                "include_in_story": true,
+                "is_main": false
+            },
+            {
+                "name": "Jasper 'Jaz' Singh",
+                "role": "Leo's Best Mate and Studio Assistant",
+                "summary": "Jasper is Leo's perpetually laid-back best friend and occasional assistant, who helps with dog photography shoots and generally tolerates Leo's chaotic living situation. He's pragmatic, has a dry wit, and offers Leo no-nonsense advice.",
+                "connection_to_leads": "Leo's closest confidant, he observes Leo's infatuation with Eliza and occasionally offers a grounded perspective or a sarcastic comment about Leo's dating choices.",
+                "story_function": "Provides a sounding board for Leo, offering comedic observations on his antics and romantic dilemmas. He can also offer practical help when Leo inevitably forgets something, highlighting Leo's charming disorganization.",
+                "core_desire": "To live a simple, happy life, support his mates, and perhaps find a bit of romance without too much drama.",
+                "core_fear": "Being dragged into truly catastrophic events, excessive planning, or losing his chill attitude.",
+                "secret_pressure": "Sometimes feels like he's enabling Leo's chaos too much, occasionally wishing Leo would take life a *little* more seriously.",
+                "comedic_angle": "His dry, underplayed sarcasm in response to Leo's grand gestures; his exasperated but loving clean-up after Leo; his attempts to offer practical (but often ignored) advice.",
+                "include_in_story": true,
+                "is_main": false
+            },
+            {
+                "name": "Milo",
+                "role": "The Mischevious Puppy",
+                "summary": "A small, fluffy, and utterly adorable terrier mix puppy with an insatiable curiosity and a talent for getting into (and out of) trouble. He's one of the rescue dogs Leo is fostering and trying to rehome, and becomes Eliza's unexpected (and unwanted) shadow.",
+                "connection_to_leads": "A constant companion to Leo, Milo frequently disrupts Eliza's pristine environments and carefully laid plans, serving as a living embodiment of the chaos Leo brings into her life. He eventually becomes a focal point of Eliza's softening.",
+                "story_function": "Serves as a recurring comedic motif, a catalyst for escalating Eliza's internal panic, and a tangible representation of Leo's charmingly unpredictable world. His antics force Eliza to improvise and eventually soften her rigid exterior.",
+                "core_desire": "To play, explore, chew on everything, find cuddles, and generally be a happy, mischievous puppy.",
+                "core_fear": "Being left alone or missing out on any fun.",
+                "secret_pressure": "Just a puppy, but his 'secret pressure' is to find his forever home and spread joy.",
+                "comedic_angle": "His uncanny ability to appear at the most inconvenient moments, his innocent destruction of carefully placed items, his endearing expressions that slowly chip away at Eliza's resolve, and his role in the 'puppy surprise attack' motif.",
+                "include_in_story": true,
+                "is_main": false
+            }
+        ],
+        "pairing": {
+            "pairing_hook": "The meticulously organized wedding planner meets the charmingly chaotic rescue-dog photographer, proving that sometimes, the most beautiful chaos makes the most perfect match.",
+            "selected_trope": "Opposites Attract",
+            "why_they_clash": [
+                "Eliza's pathological need for control and order directly conflicts with Leo's free-spirited, spontaneous, and often chaotic nature.",
+                "Their professional worlds are diametrically opposed: Eliza orchestrates perfection, while Leo embraces the unpredictable joy of animals.",
+                "Eliza's rigid schedules and timelines are anathema to Leo, who sees them as 'strong suggestions' at best.",
+                "Eliza's fear of public failure and chaos is constantly triggered by Leo's grand, often messy, gestures and his entourage of rescue dogs.",
+                "Their dialogue rhythms and communication styles are wildly different, leading to comedic misunderstandings and exasperation.",
+                "Eliza views potential partners as projects or disruptions, while Leo struggles with commitment and fears being tied down by routine."
+            ],
+            "why_they_fit": [
+                "Eliza's exceptional planning skills and reliability could provide the grounding structure Leo needs to channel his boundless passion more effectively.",
+                "Leo's warmth, spontaneity, and ability to find joy in imperfection can help Eliza loosen up, embrace life's messy beauty, and mitigate her internal panic.",
+                "Both are deeply passionate about their work, albeit in vastly different ways, suggesting a shared drive and commitment beneath the surface.",
+                "Leo's deep empathy and ability to see the best in everyone could help Eliza confront her 'secret pressure' and perceived personal shortcomings.",
+                "Eliza's ability to create beautiful, memorable experiences could surprisingly elevate Leo's adoption advocacy, merging their unique talents.",
+                "Leo can teach Eliza the joy of authentic connection and vulnerability, while Eliza can offer Leo a sense of belonging and stability without feeling trapped."
+            ],
+            "scene_engines": [
+                "High-stakes wedding events being hilariously disrupted by Leo's presence or, inevitably, a pack of puppies.",
+                "Eliza attempting (and failing) to 'organize' Leo's delightfully chaotic studio apartment or his daily schedule.",
+                "Leo trying to coax Eliza out of her comfort zone with spontaneous adventures, animal encounters, or unexpected public displays of affection.",
+                "A forced collaboration on a major event (e.g., a charity gala for rescue dogs, an outdoor wedding with animals involved) where their methods clash spectacularly.",
+                "Dialogue scenes where their contrasting communication styles lead to comedic misinterpretations and escalating frustration.",
+                "Moments where Eliza's carefully constructed world crumbles, forcing her to improvise, with Leo as her surprising (and surprisingly effective) guide.",
+                "Eliza's internal monologues of panic contrasted with Leo's blissful obliviousness or easygoing charm."
+            ],
+            "emotional_lessons": {
+                "lead_one": "Eliza will learn that true perfection isn't about flawlessness, but about resilience, adaptability, and finding joy in the unplanned. She'll discover that letting go of control can lead to a richer, more authentic life and that genuine connection is more valuable than pristine reputation.",
+                "lead_two": "Leo will learn that structure and commitment don't equate to being 'tied down,' but can provide a stable foundation for his passions and relationships. He'll discover the value of a grounding presence and how a touch of planning can amplify his positive impact without stifling his free spirit."
+            },
+            "risk_notes": [
+                "Ensuring Eliza's rigidity doesn't become too frustrating or unlikable, balancing her comedic weaknesses with her underlying vulnerability and good intentions.",
+                "Making sure Leo's chaotic nature is charming and not merely irresponsible, emphasizing his deep empathy and passion over his lack of practicalities.",
+                "Pacing Eliza's transformation to ensure her embrace of spontaneity feels earned and organic, rather than an abrupt personality overhaul.",
+                "Balancing the humor derived from their clashing personalities with the genuine emotional depth of their individual journeys and their growing connection.",
+                "Avoiding the trope of one character 'fixing' the other; instead, focusing on mutual growth and finding a complementary balance where they both become better versions of themselves."
+            ]
+        },
+        "premise": {
+            "logline": "A meticulously organized wedding planner's perfectly structured life is thrown into delightful disarray when she's forced to collaborate with a charmingly chaotic rescue-dog photographer on a high-profile, animal-centric wedding, forcing them both to confront their deepest fears about control, spontaneity, and what it truly means to orchestrate a perfect life.",
+            "premise": "Eliza Finch, a 29-year-old perfectionist wedding planner, prides herself on flawless execution and a pristine reputation. Her meticulously organized life is thrown into absolute delightful disarray when her most high-stakes client, a prominent socialite whose family is known for their animal advocacy, demands a 'paw-sitively perfect' wedding involving dozens of rescue dogs. This forces Eliza to begrudgingly hire Leo Maxwell, a 32-year-old freelance rescue-dog photographer whose work she grudgingly admires, despite his reputation for charming chaos, perpetual lateness, and an entourage of furry, four-legged assistants. As Eliza's carefully constructed world of timelines and contingency plans clashes with Leo's freewheeling, improvisation-heavy approach, they must navigate a series of hilariously disastrous planning sessions, unexpected animal antics, and escalating romantic tension. Eliza fears public failure and losing control, while Leo fears being constrained by routine, but their forced proximity and shared passion for making the clients happy begins to chip away at their carefully guarded facades, making them wonder if the most beautiful love stories are the ones that refuse to stick to the script.",
+            "forced_proximity_device": "Eliza's most important client, a high-profile socialite, insists on a large, outdoor wedding featuring numerous rescue dogs as part of the ceremony and reception, and specifically requests Leo Maxwell to handle all animal logistics and photography, making him an unavoidable, integral part of Eliza's meticulously planned event.",
+            "primary_obstacle": "Their diametrically opposed approaches to life and work: Eliza's pathological need for control, rigid adherence to schedules, and fear of unpredictability directly clashes with Leo's spontaneous, chaotic nature, his inability to follow a timeline, and his tendency to prioritize animal welfare (and joy) over meticulous planning. This internal conflict, magnified by the high-stakes wedding, prevents them from trusting each other and recognizing their mutual attraction.",
+            "midpoint_shift": "During a catastrophic dress rehearsal, a sudden downpour threatens to ruin the entire outdoor setup, sending Eliza into a full-blown internal panic. As her carefully constructed contingency plans fail, Leo, in a moment of unexpected resourcefulness, rallies the animals and guests, improvising a charming, albeit messy, solution that saves the day and brings genuine joy. Eliza witnesses his public competence and deep empathy in a new light, realizing that sometimes, chaos holds its own kind of magic, and Leo begins to see past her rigid exterior to the vulnerable, deeply caring woman beneath.",
+            "finale_payoff": "At the actual wedding, a last-minute crisis (e.g., a crucial prop goes missing, a key vendor is delayed) forces Eliza to completely abandon her meticulous plan and trust her instincts, relying on Leo's quick thinking and their combined strengths to pull off a joyfully imperfect ceremony. She publicly embraces the unexpected, allowing the natural, heartwarming chaos of the dogs (and Leo) to shine, leading to a truly memorable and authentic event. In the aftermath, Eliza makes a grand, spontaneous gesture for Leo (perhaps involving a surprise adoption event or a planned but fun trip), demonstrating her growth, and they both commit to a future that blends their worlds, finding a perfect balance between structure and spontaneity.",
+            "chapter_beats": [
+                "The Flawless Fortress: Introduce Eliza, her impeccable office, her demanding routine, and the pressure of her parents' expectations. She lands the prestigious 'Peterson-Vance' wedding, her biggest challenge yet.",
+                "The Chaotic Charm: Introduce Leo, his jumbled apartment/studio, his heartwarming work with rescue dogs, and his utter disregard for schedules. He's trying to find a home for a particularly 'spirited' litter of puppies.",
+                "Collision Course: The Peterson-Vance wedding clients insist on incorporating rescue dogs, and specifically request Leo. Eliza is horrified but professionally bound. Their first meeting is a clash of order vs. chaos (e.g., Leo arrives late with a puppy in tow, disrupting Eliza's precisely arranged office).",
+                "Planning Pandemonium: Early planning meetings are a comedic disaster. Eliza tries to impose schedules; Leo interjects with dog anecdotes. They grudgingly acknowledge each other's passion, but their methods clash spectacularly.",
+                "Unforeseen Vulnerabilities: A minor crisis (e.g., a critical prop for the wedding gets damaged, or a specific dog is ill). Eliza is forced to improvise slightly, and Leo sees her panic beneath the poised exterior. Leo reveals a moment of his 'secret pressure' about the animals, and Eliza sees his depth.",
+                "The Storm and the Spark (Midpoint): The catastrophic dress rehearsal where a sudden storm hits, threatening to ruin everything. Eliza's plans fail, and Leo steps up with his improvisation, saving the day. They share a moment of genuine connection amidst the joyful chaos.",
+                "A Shared Vision: Following the midpoint, they start working together more synergistically. Eliza finds ways to incorporate Leo's 'wild' ideas into her structure; Leo makes an effort to be *slightly* more punctual. They discover surprising strengths in each other.",
+                "The Pre-Wedding Jitters (and the Pressure): Eliza faces mounting pressure from clients and a rival planner who tries to sabotage her. Leo offers unconventional support, and Eliza finds herself relying on his calm, positive presence. They almost share a kiss, but Eliza pulls back, fearing the loss of control.",
+                "The Grand Finale & The Great Improv: The wedding day. A major, unexpected setback forces Eliza to completely abandon her script. She embraces the chaos, trusting Leo and her instincts. It's perfectly imperfect, and a huge success.",
+                "New Beginnings: Post-wedding, Eliza makes a spontaneous gesture to Leo, acknowledging her growth. They confess their feelings and decide to build a future that blends their worlds, with Eliza learning to find joy in the unplanned and Leo finding stability without feeling trapped."
+            ],
+            "recurring_comedic_motif": "Leo's various attempts to introduce Eliza to the 'unbridled joy' of specific rescue animals, often resulting in minor (or major) disruptions to her pristine environments or meticulously timed schedules, forcing her into escalating internal monologues of panic. This culminates in Eliza developing an unexpected fondness for a particularly mischievous puppy."
+        },
+        "chapter_details": [],
+        "flavor_seeds": [],
+        "notes": ""
+    }
+}
