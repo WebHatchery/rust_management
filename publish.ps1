@@ -4,6 +4,8 @@ param(
     [switch]$RustGamePublish,
     [switch]$RustGameFtpUpload,
     [switch]$RustGameRecordDeployment,
+    [switch]$RustGameArchive,
+    [switch]$Unarchive,
     [string]$ProjectName,
     [string]$ProjectSlug,
     [string]$ProjectDir,
@@ -332,8 +334,10 @@ function Sync-RustGamesSharedAssetsSource {
         -DisplayName "sapp_jsutils.js"
 
     # storage.js is ours, not an upstream download: ship the canonical copy from
-    # web/ so every game shares one localStorage bridge.
-    foreach ($bridge in @("storage.js", "clipboard.js")) {
+    # web/ so every game shares one localStorage bridge. quad-net.js is the same
+    # kind of shared, inert bridge — the JS half of the `quad-net` HTTP client,
+    # needed by any game that talks to a server (mytherra), no-op for the rest.
+    foreach ($bridge in @("storage.js", "clipboard.js", "quad-net.js")) {
         $bridgeSource = Join-Path (Get-RustGameWebSourceDir) $bridge
         if (Test-Path $bridgeSource -PathType Leaf) {
             Copy-Item $bridgeSource (Join-Path $runtimeDir $bridge) -Force
@@ -759,6 +763,7 @@ function New-RustGameIndexHtml {
         "{{ASSET_CACHE_BUST}}" = $assetBust
         "{{STORAGE_JS_SRC}}"   = $storageSrc
         "{{CLIPBOARD_JS_SRC}}" = "../$SharedAssetsDirectoryName/$SharedRuntimeDirectoryName/clipboard.js"
+        "{{QUAD_NET_JS_SRC}}"  = "../$SharedAssetsDirectoryName/$SharedRuntimeDirectoryName/quad-net.js"
         "{{ROOST_SLUG}}"       = $roostSlug
         "{{POINTER_LOCK}}"     = $pointerLock
         "{{CUSTOM_CSS}}"       = ""
@@ -2129,6 +2134,84 @@ function Record-ProjectRoostDeployment {
     }
 }
 
+function Set-ProjectRoostArchived {
+    param(
+        [string]$ProjectName,
+        [string]$ProjectSlug,
+        [string]$ProjectDir,
+        [bool]$Archived = $true,
+        [string]$Environment,
+        [switch]$DryRun
+    )
+
+    if ([string]::IsNullOrWhiteSpace($ProjectName)) {
+        Write-Error "ProjectName is required for Project Roost archive tracking."
+        exit 1
+    }
+
+    $trackingProject = Get-RustGameRoostSlug -ProjectSlug $ProjectSlug -ProjectName $ProjectName -ProjectDir $ProjectDir
+    $verb = if ($Archived) { "archive" } else { "unarchive" }
+
+    if ($DryRun) {
+        Write-DryRun "Would $verb Project Roost profile for $trackingProject"
+        return
+    }
+
+    $dotEnvConfig = Import-DotEnvFile $EnvFile
+    $token = Get-ConfigValue $dotEnvConfig "PROJECT_ROOST_PUBLISH_TOKEN"
+    if ([string]::IsNullOrWhiteSpace($token)) {
+        Write-Host "Project Roost archive tracking skipped: PROJECT_ROOST_PUBLISH_TOKEN is not configured" -ForegroundColor Gray
+        return
+    }
+
+    if ([string]::IsNullOrWhiteSpace($Environment)) { $Environment = "preview" }
+
+    $apiUrls = Get-ProjectRoostTrackingUrls -Environment $Environment
+    if ($apiUrls.Count -eq 0) {
+        Write-Host "Project Roost archive tracking skipped: no API URLs are configured" -ForegroundColor Gray
+        return
+    }
+
+    $actor = $env:USERNAME
+    if ([string]::IsNullOrWhiteSpace($actor)) { $actor = $env:USER }
+
+    $body = @{
+        project = $trackingProject
+        environment = $Environment
+        target_type = "none"
+        status = $(if ($Archived) { "archived" } else { "success" })
+        frontend_deployed = $false
+        backend_deployed = $false
+        source_path = $ProjectDir
+        publish_mode = "archive-toggle"
+        actor = $actor
+        archived = $Archived
+        notes = $(if ($Archived) { "Archived via publish script" } else { "Unarchived via publish script" })
+        deployed_at = (Get-Date).ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss")
+    } | ConvertTo-Json -Depth 4
+
+    $headers = @{
+        "X-Project-Roost-Publish-Token" = $token
+    }
+
+    $recorded = 0
+    foreach ($apiUrl in $apiUrls) {
+        try {
+            $result = Invoke-RestMethod -Uri "$apiUrl/deployments/publish" -Method Post -Body $body -ContentType "application/json" -Headers $headers -TimeoutSec 10 -ErrorAction Stop
+            if ($result.success) {
+                $recorded++
+            }
+        } catch {
+            Write-Warning "Project Roost archive tracking failed at ${apiUrl}: $($_.Exception.Message)"
+        }
+    }
+
+    if ($recorded -gt 0) {
+        $state = if ($Archived) { "archived" } else { "active" }
+        Write-Host "Project Roost marked $trackingProject as $state in $recorded tracker(s)" -ForegroundColor Cyan
+    }
+}
+
 function Publish-RustGameToFtp {
     param([string]$ProjectName, [string]$ProjectSlug, [string]$ProjectDir, [string]$SourceDir, [switch]$DryRun)
 
@@ -2573,13 +2656,14 @@ function Publish-RustGameProject {
     Write-Host "Options: -SkipBuild, -WebGLOnly, -WindowsOnly, -DeployOnly, -Production (-p), -FTP, -DryRun" -ForegroundColor Yellow
 }
 
-if ($Help -or (-not $RustGamePublish -and -not $RustGameFtpUpload -and -not $RustGameRecordDeployment -and -not $RustGamesSharedAssetsFtpUpload -and -not $RustGamesCatalogFtpUpload)) {
+if ($Help -or (-not $RustGamePublish -and -not $RustGameFtpUpload -and -not $RustGameRecordDeployment -and -not $RustGameArchive -and -not $RustGamesSharedAssetsFtpUpload -and -not $RustGamesCatalogFtpUpload)) {
     Write-Host "Usage:"
     Write-Host "  .\publish.ps1 -RustGamePublish -ProjectDir <path> [-SkipBuild] [-WebGLOnly] [-WindowsOnly] [-DeployOnly] [-Production|-p] [-FTP] [-SkipFtpSharedAssets] [-SkipFtpCatalog] [-DryRun]"
     Write-Host "  .\publish.ps1 -RustGameFtpUpload -ProjectName <name> -SourceDir <path> [-ProjectDir <path>] [-DryRun]"
     Write-Host "  .\publish.ps1 -RustGamesSharedAssetsFtpUpload [-DryRun]"
     Write-Host "  .\publish.ps1 -RustGamesCatalogFtpUpload [-DryRun]"
     Write-Host "  .\publish.ps1 -RustGameRecordDeployment -ProjectName <name> [-ProjectSlug <slug>] -ProjectDir <path> -SourceDir <path> -DeployDir <path> -Environment <preview|local_production|production> [-DryRun]"
+    Write-Host "  .\publish.ps1 -RustGameArchive -ProjectDir <path> [-Unarchive] [-Production|-p] [-DryRun]  # marks/unmarks the project archived in Project Roost, no build or deploy"
     exit 0
 }
 
@@ -2627,4 +2711,16 @@ if ($RustGameRecordDeployment) {
 
 if ($RustGameFtpUpload) {
     Publish-RustGameToFtp -ProjectName $ProjectName -ProjectSlug $ProjectSlug -ProjectDir $ProjectDir -SourceDir $SourceDir -DryRun:$DryRun
+}
+
+if ($RustGameArchive) {
+    $info = Get-RustGameProjectInfo -ProjectRoot $ProjectDir
+    Set-ProjectRoostArchived `
+        -ProjectName $info.GameSlug `
+        -ProjectSlug $info.RoostSlug `
+        -ProjectDir $info.ProjectRoot `
+        -Archived:(-not $Unarchive) `
+        -Environment $(if ($Production) { "local_production" } else { "preview" }) `
+        -DryRun:$DryRun
+    exit 0
 }
