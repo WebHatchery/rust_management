@@ -9,6 +9,15 @@ This folder is the canonical source for the shared RustGames project documents:
 
 Project-local copies are kept next to each game project's `Cargo.toml` so a downloaded project still includes the standards an agent should follow. These managed files should remain identical to the canonical copies in this folder.
 
+## Reference Documents
+
+These live here for the whole catalog but are **not** synced into each game — read them as needed:
+
+- `COMMIT_STYLE.md` — git commit message conventions for the Rust games (Mytherra as the exemplar).
+- `GDD_TEMPLATE.md` — starting structure for a new game's design document.
+- `screenshot_capture_harness_guide.md` — wiring headless UI screenshot capture into a game.
+- `ftp-upload-asset-pack-audit.md` — notes on the FTP asset-pack upload path.
+
 ## Check For Drift
 
 ```powershell
