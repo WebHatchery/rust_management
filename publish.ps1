@@ -308,6 +308,40 @@ function Save-SharedRuntimeFile {
     }
 }
 
+function Get-MiniquadBundlePath {
+    <#
+        .SYNOPSIS
+        miniquad's own js/gl.js, from the version this workspace resolves to.
+
+        .DESCRIPTION
+        Read out of the cargo registry rather than fetched, so the runtime and
+        the wasm can never be different versions of each other. Returns $null if
+        the crate is not vendored yet, and the caller falls back to the download.
+    #>
+    $lock = Join-Path $WorkspaceRoot 'Cargo.lock'
+    if (-not (Test-Path $lock)) { return $null }
+
+    $version = $null
+    $lines = Get-Content $lock
+    for ($i = 0; $i -lt $lines.Count; $i++) {
+        if ($lines[$i] -match '^name = "miniquad"$') {
+            if ($lines[$i + 1] -match '^version = "(.+)"$') { $version = $Matches[1] }
+            break
+        }
+    }
+    if (-not $version) { return $null }
+
+    $registry = Join-Path $env:USERPROFILE '.cargo/registry/src'
+    $candidate = Get-ChildItem -Path $registry -Directory -ErrorAction SilentlyContinue |
+        ForEach-Object { Join-Path $_.FullName "miniquad-$version\js\gl.js" } |
+        Where-Object { Test-Path $_ } |
+        Select-Object -First 1
+    if (-not $candidate) {
+        Write-Warning "miniquad $version is not vendored; falling back to the samples download for mq_js_bundle.js"
+    }
+    return $candidate
+}
+
 function Sync-RustGamesSharedAssetsSource {
     param([switch]$DryRun)
 
@@ -323,10 +357,27 @@ function Sync-RustGamesSharedAssetsSource {
     New-Item -ItemType Directory -Path $runtimeDir -Force | Out-Null
     New-Item -ItemType Directory -Path $fontsDir -Force | Out-Null
 
-    Save-SharedRuntimeFile `
-        -Uri "https://not-fl3.github.io/miniquad-samples/mq_js_bundle.js" `
-        -DestinationPath (Join-Path $runtimeDir "mq_js_bundle.js") `
-        -DisplayName "mq_js_bundle.js"
+    # The JS half of miniquad, taken from the crate the games are *compiled
+    # against* rather than downloaded from the samples site.
+    #
+    # It used to come from https://not-fl3.github.io/miniquad-samples/, which
+    # hosts whatever version those demos happen to use — and it had drifted
+    # behind. Six GL entry points the wasm imports were missing from it
+    # (glBlitFramebuffer, glReadBuffer, glCheckFramebufferStatus,
+    # glDeleteRenderbuffers, glFramebufferRenderbuffer and
+    # glRenderbufferStorageMultisample), and miniquad stubs anything absent
+    # before instantiating, so every game on the site was running with six
+    # silent no-ops instead of failing loudly. The crate ships the matching
+    # file; a version that cannot disagree is worth more than a fresh download.
+    $miniquadJs = Get-MiniquadBundlePath
+    if ($miniquadJs) {
+        Copy-Item -Path $miniquadJs -Destination (Join-Path $runtimeDir "mq_js_bundle.js") -Force
+    } else {
+        Save-SharedRuntimeFile `
+            -Uri "https://not-fl3.github.io/miniquad-samples/mq_js_bundle.js" `
+            -DestinationPath (Join-Path $runtimeDir "mq_js_bundle.js") `
+            -DisplayName "mq_js_bundle.js"
+    }
 
     Save-SharedRuntimeFile `
         -Uri "https://raw.githubusercontent.com/not-fl3/sapp-jsutils/master/js/sapp_jsutils.js" `
