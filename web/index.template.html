@@ -3,7 +3,15 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- viewport-fit=cover puts the page under the notch and home indicator so a
+         full-screen canvas really is full screen; the safe-area insets below put
+         the chrome back where a finger can reach it. maximum-scale/user-scalable
+         stop iOS zooming the page when a player taps a button twice quickly,
+         which on a game is every few seconds. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="description" content="{{DESCRIPTION}}">
     <title>{{TITLE}} | Web Hatchery Games</title>
     <link rel="stylesheet" href="../shared.css">
@@ -30,11 +38,20 @@
                 <p>Loading game...</p>
             </div>
             <canvas id="glcanvas" tabindex="1"{{CANVAS_SIZE}}></canvas>
+            <!-- Only visible while the container is pinned over the viewport.
+                 A browser in real fullscreen offers its own way out; the CSS
+                 fallback does not, and a game you cannot leave is worse than
+                 one you cannot enlarge. -->
+            <button type="button" class="play-exit" onclick="exitPlayMode()" aria-label="Leave full screen">Done</button>
+            <div class="rotate-note">
+                <p>Turn your device sideways to play.<br>
+                <small>The controls need a wider screen than this to stay big enough to aim at.</small></p>
+            </div>
         </div>
 
         <!-- Controls Bar -->
         <div class="game-controls">
-            <button class="btn btn-secondary btn-icon" onclick="toggleFullscreen()" title="Fullscreen">FS</button>
+            <button class="btn btn-secondary" onclick="toggleFullscreen()" title="Fill the screen">Play full screen</button>
             <button class="btn btn-secondary" onclick="focusGame()">Focus Game</button>
             <span style="flex: 1;"></span>
             <span style="color: var(--text-muted); font-size: 0.85rem;">{{CONTROLS_HINT}}</span>
@@ -138,6 +155,21 @@
             glcanvas.focus();
             window.addEventListener('click', function () { glcanvas.focus(); });
             glcanvas.addEventListener('contextmenu', function (event) { event.preventDefault(); });
+
+            // iOS fires these regardless of `touch-action`, and each one is a
+            // way to end up looking at a zoomed corner of a game with no way
+            // back. `gesture*` is pinch; the dblclick guard is the double-tap
+            // zoom, which on a game is about every third press.
+            ['gesturestart', 'gesturechange', 'gestureend'].forEach(function (name) {
+                document.addEventListener(name, function (event) { event.preventDefault(); });
+            });
+            glcanvas.addEventListener('dblclick', function (event) { event.preventDefault(); });
+            // And the rubber-band: dragging the reels must not drag the page
+            // out from under them. Non-passive on purpose — a passive listener
+            // cannot preventDefault, which is the whole job.
+            glcanvas.addEventListener('touchmove', function (event) {
+                event.preventDefault();
+            }, { passive: false });
             window.addEventListener('keydown', function (event) {
                 // Only while the game has focus, so the bug-report form still works.
                 if (document.activeElement === glcanvas && scrollKeys.indexOf(event.key) !== -1) {
@@ -171,14 +203,65 @@
         load("{{WASM}}{{WASM_CACHE_BUST}}");
 {{POST_LOAD_JS}}
 
+        // Filling the screen, on browsers that will and browsers that will not.
+        //
+        // The Fullscreen API is the good path and iPadOS has had it since 15.
+        // Older iPads and every iPhone refuse it on a div, and the old version
+        // of this function simply did nothing there — which is most of the
+        // reason the game was unplayable on a tablet. The canvas sat in a
+        // container locked to 16/9 inside a 1200px page, so in portrait it came
+        // out about 770 CSS pixels wide and every control landed near 26 CSS
+        // pixels against a 44 standard.
+        //
+        // So: ask for real fullscreen, and if it is not there or is refused,
+        // pin the container over the viewport with CSS instead. That needs no
+        // permission and works everywhere. `playing` is the class that does it.
         function toggleFullscreen() {
             const container = document.getElementById('game-container');
-            if (!document.fullscreenElement) {
-                container.requestFullscreen();
-            } else {
-                document.exitFullscreen();
+            const on = document.fullscreenElement || document.webkitFullscreenElement
+                || document.body.classList.contains('game-playing');
+            if (on) { exitPlayMode(); return; }
+
+            const request = container.requestFullscreen || container.webkitRequestFullscreen;
+            const done = function () {
+                document.body.classList.add('game-playing');
+                setTimeout(focusGame, 0);
+            };
+            if (request) {
+                // `.call` because the prefixed one is not bound, and `catch`
+                // because Safari rejects rather than throwing.
+                try {
+                    const result = request.call(container);
+                    if (result && result.then) { result.then(done, done); } else { done(); }
+                    return;
+                } catch (error) { /* fall through to the CSS path */ }
             }
+            done();
         }
+
+        function exitPlayMode() {
+            document.body.classList.remove('game-playing');
+            const exit = document.exitFullscreen || document.webkitExitFullscreen;
+            if (exit && (document.fullscreenElement || document.webkitFullscreenElement)) {
+                try { exit.call(document); } catch (error) { /* already out */ }
+            }
+            if (window.wasm_exports) window.dispatchEvent(new Event('resize'));
+        }
+
+        // Leaving fullscreen by the browser's own gesture has to take the class
+        // with it, or the page stays pinned with nothing pinning it.
+        ['fullscreenchange', 'webkitfullscreenchange'].forEach(function (name) {
+            document.addEventListener(name, function () {
+                if (!document.fullscreenElement && !document.webkitFullscreenElement
+                    && document.body.classList.contains('game-playing')) {
+                    document.body.classList.remove('game-playing');
+                    if (window.wasm_exports) window.dispatchEvent(new Event('resize'));
+                }
+            });
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') exitPlayMode();
+        });
 
         function focusGame() {
             document.getElementById('glcanvas').focus();

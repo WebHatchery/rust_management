@@ -70,6 +70,102 @@ canvas {
     width: 100%;
     height: 100%;
     outline: none;
+    /* A game canvas is not a document. Without `touch-action: none` iOS treats
+       a drag on it as a page scroll and a second tap as a zoom, and holds every
+       tap back ~300ms deciding which. The callout and selection rules stop a
+       long press raising the copy/share sheet over the reels. */
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* The game filling the screen, on browsers with no Fullscreen API to ask.
+   iPadOS got it in 15 and iPhone still has none for a div, so a tablet player
+   was stuck with a canvas locked to 16/9 inside a 1200px page — about 770 CSS
+   pixels across in portrait, which puts a 44px control at 26. */
+body.game-playing {
+    overflow: hidden;
+    overscroll-behavior: none;
+}
+
+body.game-playing .game-container {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    /* dvh follows the URL bar as it hides; vh above is the fallback for the
+       browsers that predate it. */
+    height: 100dvh;
+    /* The whole point: the canvas takes the shape of the screen instead of the
+       shape the page wanted. */
+    aspect-ratio: auto;
+    max-width: none;
+    border-radius: 0;
+    z-index: 9999;
+}
+
+.play-exit {
+    display: none;
+}
+
+/* Turn the tablet sideways.
+ *
+ * Not a preference. The game lays out at 4:3 and its smallest control is 28
+ * logical pixels; for that to reach the 44 CSS pixels every touch guideline
+ * asks for, the canvas has to be about 980 CSS pixels across. An iPad in
+ * landscape gives 1080 or more and clears it. The same iPad in portrait gives
+ * 810, which puts that control at 29 — reachable only because its hit area is
+ * grown, and too small to aim at. Saying so is better than letting someone
+ * play a game that quietly does not fit their hands. */
+.rotate-note {
+    display: none;
+}
+
+@media (orientation: portrait) and (pointer: coarse) {
+    body.game-playing .rotate-note {
+        display: flex;
+        position: fixed;
+        inset: 0;
+        z-index: 10001;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        background: rgba(6, 6, 8, 0.94);
+        color: #fff;
+        text-align: center;
+        font-size: 1.1rem;
+        line-height: 1.5;
+    }
+}
+
+body.game-playing .play-exit {
+    display: block;
+    position: fixed;
+    /* Inside the notch and the home indicator, not under them. */
+    top: calc(env(safe-area-inset-top, 0px) + 8px);
+    right: calc(env(safe-area-inset-right, 0px) + 8px);
+    z-index: 10000;
+    /* 44 square, because it is a touch target like any other and this one is
+       the way out. */
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 22px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font: inherit;
+    font-size: 0.9rem;
+    /* Faint until touched: it sits over the game's own corner, and a control
+       that shouts is a control in the way. */
+    opacity: 0.45;
+}
+
+body.game-playing .play-exit:hover,
+body.game-playing .play-exit:active,
+body.game-playing .play-exit:focus {
+    opacity: 1;
 }
 
 .loading-overlay {
