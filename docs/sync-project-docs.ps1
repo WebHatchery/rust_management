@@ -7,7 +7,13 @@ param(
 $ErrorActionPreference = "Stop"
 
 $DocsDir = Split-Path -Parent $PSCommandPath
-$WorkspaceRoot = Split-Path -Parent $DocsDir
+# Two roots, per CLAUDE.md: $ManagementRoot holds the canonical docs and the
+# tooling; $WorkspaceRoot (its parent) holds the game repos. The scan must start
+# at the workspace root — starting at $ManagementRoot only ever reached
+# `template/` and `archive/*`, so the ~31 game copies were never checked or
+# synced by the default (no -ProjectRoot) invocation.
+$ManagementRoot = Split-Path -Parent $DocsDir
+$WorkspaceRoot = Split-Path -Parent $ManagementRoot
 
 $DocumentNames = @(
     "AGENTS.md",
