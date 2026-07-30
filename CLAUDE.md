@@ -48,7 +48,7 @@ For tight iteration, prefer `cargo clippy` + `cargo test` over a full publish �
 - `.\publish-all.ps1` / `.\publish-all-ftp.ps1` — runs `publish.ps1` in every game subdirectory (excludes `template`, `target`, `assets`, `macroquad-toolkit`).
 - `.\docs\check-project-docs.ps1` [-ProjectRoot <names>] — verifies each game's local copy of the four shared docs matches the canonical one in `docs/`; non-zero exit on drift.
 - `.\docs\sync-project-docs.ps1` [-ProjectRoot <names>] [-IncludeWorkspaceRoot] — overwrites project-local copies from `docs/`.
-- `.\sync-rust-ci-workflows.ps1` — syncs the shared `rust-ci.yml` GitHub Actions workflow across top-level projects.
+- `.\sync-rust-ci-workflows.ps1` [-Project <names>] [-WhatIf] — syncs the shared `rust-ci.yml` GitHub Actions workflow across top-level projects. The workflow is a here-string inside the script, so **edit it there, never in a game's `.github/`** — a re-sync overwrites every project-local copy. A game needing a sibling repo beyond `macroquad-toolkit` (CI builds each game from a standalone checkout, so a path dependency outside its own repo cannot otherwise resolve) declares it in the script's `$ExtraCheckouts` map, which injects the checkout into both jobs plus a `test -d` assertion; `tb_realms` uses this for `mytherra`. The sync is idempotent.
 - `python find_large_rs_files.py [root_dir] [--min-lines 500]` — audits `.rs` files approaching/over the size limit.
 - `.\capture-title-screenshots.ps1 -Publish` — refreshes each game's title-screen capture into `catalog_thumbnail.png`.
 - `..\macroquad-toolkit\scripts\capture_ui.ps1 -Scenes <scene1,scene2>` (run from inside a game dir) — builds the game and captures headless UI screenshots per scene for visual verification; derives package/exe/env-prefix from `cargo metadata`, so no arguments needed beyond `-Scenes` (pass `-Prefix` if the game's env-var prefix differs from its package name, e.g. `carriage_run` → `CARRIAGE`).
@@ -83,6 +83,10 @@ Games wire an env-var-driven headless capture mode so UI can be verified without
 ### Cargo workspace specifics
 
 Root `Cargo.toml` workspace `members = ["*", "kaiju_sim/kaiju_server"]` with `exclude` for the build outputs and `rust_management` (which contains `template/` and `archive/`, so those no longer need their own exclude entries). Release profile defaults to `opt-level = "z"` + `lto = true` for small WASM output, with per-package overrides (e.g. `dungeon_manager` uses `opt-level = 3`, `finallanding` uses `opt-level = "s"`). Adding a new top-level game directory with a `Cargo.toml` automatically joins the workspace via the `"*"` glob.
+
+**Never set `RUSTFLAGS` in a build script or shell.** All wasm link flags live in the workspace `.cargo/config.toml`. A `RUSTFLAGS` env var *replaces* that list rather than merging with it, and cargo fingerprints the flag set — so two different flag sets mean two parallel copies of the entire wasm dependency graph (`macroquad`, `macroquad-toolkit`, `image`, …), each stale whenever the other was built last. `publish.ps1` exported `-C link-arg=--allow-undefined` for years while the config supplied `-C link-arg=--import-undefined`, so alternating a publish with a hand-run `cargo build --target wasm32-unknown-unknown` recompiled the toolkit every single time. Both flags are now in the config and nothing sets the env var. If a build needs a different flag, add it to `.cargo/config.toml`. (The per-repo CI workflows are the one exception — a game repo checked out standalone has no workspace config, so `rust-ci.yml` still sets `RUSTFLAGS` itself.)
+
+Games in the root `Cargo.toml`'s `exclude` list (`dragons_den`, `mytherra`, `nft_adventurers`, `dungeon_manager_2d`) are each their own workspace, so they get their own profile resolution and share none of the cached dependency builds — expect a from-scratch toolkit compile on those.
 
 ### Web shell (`web/`)
 

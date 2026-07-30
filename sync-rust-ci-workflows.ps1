@@ -7,8 +7,66 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+# Games that need a sibling repository checked out beyond macroquad-toolkit.
+#
+# CI builds each game from a standalone checkout, so a path dependency on
+# anything outside the game's own repo cannot resolve unless that repo is
+# fetched alongside it. Declaring it here rather than hand-editing the game's
+# workflow is what stops a re-sync from silently breaking that game's CI.
+#
+# Keyed by project directory name; each entry is the sibling path, the GitHub
+# repository to fetch into it, and why the game needs it.
+$ExtraCheckouts = @{
+    "tb_realms" = @(
+        @{
+            Path       = "mytherra"
+            Repository = "Kalaith/mytherra_rust"
+            Reason     = "world source: path deps on mytherra-core and mytherra-protocol (GDD 5.1)"
+        }
+    )
+}
+
+# Render the extra `actions/checkout` steps for a project, indented to sit
+# beside the macroquad-toolkit checkout. Empty string when a project needs none.
+function Get-ExtraCheckoutSteps {
+    param([string]$ProjectName)
+
+    $extras = $ExtraCheckouts[$ProjectName]
+    if (-not $extras) { return "" }
+
+    $blocks = foreach ($extra in $extras) {
+        @"
+
+      # $($extra.Reason)
+      - name: Checkout $($extra.Path)
+        uses: actions/checkout@v4
+        with:
+          repository: $($extra.Repository)
+          path: $($extra.Path)
+"@
+    }
+    ($blocks -join "")
+}
+
+# Render the matching `test -d` assertions, so a checkout that silently produced
+# no directory is caught by the verify step rather than surfacing later as a
+# confusing unresolved-dependency error.
+function Get-ExtraVerifyLines {
+    param([string]$ProjectName)
+
+    $extras = $ExtraCheckouts[$ProjectName]
+    if (-not $extras) { return "" }
+
+    $lines = foreach ($extra in $extras) {
+        "`n          test -d ../$($extra.Path)"
+    }
+    ($lines -join "")
+}
+
 function Get-RustCiWorkflow {
-    @'
+    param([string]$ProjectName)
+
+    $template = @'
 name: Rust Game CI
 
 on:
@@ -46,6 +104,7 @@ jobs:
         with:
           repository: Kalaith/macroquad-toolkit
           path: macroquad-toolkit
+{{EXTRA_CHECKOUTS}}
 
       - name: Install Linux build dependencies
         run: |
@@ -84,9 +143,8 @@ jobs:
       - name: Verify project files
         run: |
           test -f Cargo.toml
-          test -f index.html
           test -d assets
-          test -d ../macroquad-toolkit
+          test -d ../macroquad-toolkit{{EXTRA_VERIFY}}
           if [ ! -s catalog_thumbnail.png ]; then
             echo "::warning::catalog_thumbnail.png is missing or empty"
           fi
@@ -128,6 +186,7 @@ jobs:
         with:
           repository: Kalaith/macroquad-toolkit
           path: macroquad-toolkit
+{{EXTRA_CHECKOUTS}}
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -168,6 +227,28 @@ jobs:
             throw "Missing $exePath"
           }
 '@
+
+    # Substitute after the literal here-string, so nothing in the YAML above is
+    # expanded by PowerShell. A project with no extras gets the placeholder
+    # lines removed entirely rather than left as blanks.
+    $checkouts = Get-ExtraCheckoutSteps -ProjectName $ProjectName
+    $verify = Get-ExtraVerifyLines -ProjectName $ProjectName
+
+    if ($checkouts) {
+        $template = $template.Replace("{{EXTRA_CHECKOUTS}}", $checkouts)
+    }
+    else {
+        $template = $template -replace "(\r?\n)\{\{EXTRA_CHECKOUTS\}\}", ""
+    }
+    $template = $template.Replace("{{EXTRA_VERIFY}}", $verify)
+
+    # Match only our own placeholders — GitHub's `${{ ... }}` expressions are
+    # legitimately full of double braces.
+    if ($template -match "\{\{EXTRA_") {
+        throw "Unsubstituted placeholder left in the workflow for $ProjectName"
+    }
+
+    $template
 }
 
 function Get-RustGameProjects {
@@ -194,7 +275,6 @@ function Get-RustGameProjects {
         Sort-Object Name
 }
 
-$workflow = Get-RustCiWorkflow
 $projects = Get-RustGameProjects
 
 if ($Project.Count -gt 0) {
@@ -213,13 +293,20 @@ if (-not $projects) {
 foreach ($projectDir in $projects) {
     $workflowDir = Join-Path $projectDir.FullName ".github\workflows"
     $workflowPath = Join-Path $workflowDir "rust-ci.yml"
+    $workflow = Get-RustCiWorkflow -ProjectName $projectDir.Name
+
+    $extras = $ExtraCheckouts[$projectDir.Name]
+    $note = if ($extras) {
+        " (+ $(($extras | ForEach-Object { $_.Path }) -join ', '))"
+    }
+    else { "" }
 
     if ($WhatIf) {
-        Write-Host "Would write $workflowPath"
+        Write-Host "Would write $workflowPath$note"
         continue
     }
 
     New-Item -ItemType Directory -Path $workflowDir -Force | Out-Null
     Set-Content -LiteralPath $workflowPath -Value $workflow -Encoding utf8
-    Write-Host "Wrote $workflowPath"
+    Write-Host "Wrote $workflowPath$note"
 }
