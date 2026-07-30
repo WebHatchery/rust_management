@@ -26,6 +26,34 @@ $ExtraCheckouts = @{
     )
 }
 
+# Games that are multi-crate Cargo workspaces rather than a single package.
+#
+# The default fmt/clippy/test steps check only the root package, which silently
+# skips every sibling crate — a server, a protocol crate, a persistence layer —
+# so a workspace game needs its own scope. Build steps are deliberately NOT
+# scoped: a native-only crate (a tokio server, say) cannot be built for wasm,
+# so only the checks widen.
+#
+# Keyed by project directory name. `FmtArgs` are package flags for `cargo fmt`,
+# which has no `--workspace`; `CheckArgs` widen clippy and test.
+$WorkspaceScopes = @{
+    "mytherra" = @{
+        FmtArgs   = "-p mytherra -p mytherra-core -p mytherra-protocol -p mytherra-server"
+        CheckArgs = "--workspace"
+        Reason    = "the authority server, protocol and persistence crates must be checked too"
+    }
+}
+
+# The scope flags for a project, as a leading-space-prefixed string to splice
+# into a cargo invocation, or empty for a plain single-package game.
+function Get-ScopeArg {
+    param([string]$ProjectName, [string]$Key)
+
+    $scope = $WorkspaceScopes[$ProjectName]
+    if (-not $scope -or -not $scope[$Key]) { return "" }
+    " $($scope[$Key])"
+}
+
 # Render the extra `actions/checkout` steps for a project, indented to sit
 # beside the macroquad-toolkit checkout. Empty string when a project needs none.
 function Get-ExtraCheckoutSteps {
@@ -150,13 +178,13 @@ jobs:
           fi
 
       - name: Check formatting
-        run: cargo fmt --manifest-path Cargo.toml -- --check
+        run: cargo fmt --manifest-path Cargo.toml{{FMT_ARGS}} -- --check
 
       - name: Run Clippy
-        run: cargo clippy --manifest-path Cargo.toml --all-targets --all-features -- -D warnings
+        run: cargo clippy --manifest-path Cargo.toml{{CHECK_ARGS}} --all-targets --all-features -- -D warnings
 
       - name: Run tests
-        run: cargo test --manifest-path Cargo.toml --all-features
+        run: cargo test --manifest-path Cargo.toml{{CHECK_ARGS}} --all-features
 
       - name: Build WebGL release
         run: cargo build --manifest-path Cargo.toml --release --target wasm32-unknown-unknown
@@ -241,10 +269,12 @@ jobs:
         $template = $template -replace "(\r?\n)\{\{EXTRA_CHECKOUTS\}\}", ""
     }
     $template = $template.Replace("{{EXTRA_VERIFY}}", $verify)
+    $template = $template.Replace("{{FMT_ARGS}}", (Get-ScopeArg -ProjectName $ProjectName -Key "FmtArgs"))
+    $template = $template.Replace("{{CHECK_ARGS}}", (Get-ScopeArg -ProjectName $ProjectName -Key "CheckArgs"))
 
     # Match only our own placeholders — GitHub's `${{ ... }}` expressions are
     # legitimately full of double braces.
-    if ($template -match "\{\{EXTRA_") {
+    if ($template -match "\{\{(EXTRA_|FMT_ARGS|CHECK_ARGS)") {
         throw "Unsubstituted placeholder left in the workflow for $ProjectName"
     }
 
@@ -295,11 +325,14 @@ foreach ($projectDir in $projects) {
     $workflowPath = Join-Path $workflowDir "rust-ci.yml"
     $workflow = Get-RustCiWorkflow -ProjectName $projectDir.Name
 
-    $extras = $ExtraCheckouts[$projectDir.Name]
-    $note = if ($extras) {
-        " (+ $(($extras | ForEach-Object { $_.Path }) -join ', '))"
+    $notes = @()
+    if ($ExtraCheckouts[$projectDir.Name]) {
+        $notes += "+ $((($ExtraCheckouts[$projectDir.Name] | ForEach-Object { $_.Path }) -join ', '))"
     }
-    else { "" }
+    if ($WorkspaceScopes[$projectDir.Name]) {
+        $notes += "workspace-scoped checks"
+    }
+    $note = if ($notes) { " ($($notes -join '; '))" } else { "" }
 
     if ($WhatIf) {
         Write-Host "Would write $workflowPath$note"
