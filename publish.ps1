@@ -498,7 +498,7 @@ function Get-RustGameAssetPackConfig {
     if (-not (Test-Path $configPath)) { return @() }
 
     try {
-        $config = Get-Content $configPath -Raw | ConvertFrom-Json
+        $config = Get-Content $configPath -Raw -Encoding UTF8 | ConvertFrom-Json
         if ($null -ne $config.packs) { return @($config.packs) }
         return @($config)
     } catch {
@@ -627,7 +627,7 @@ function Get-FirstCargoPackageName {
     param([string]$CargoToml)
 
     if (-not (Test-Path $CargoToml)) { return $null }
-    $content = Get-Content $CargoToml -Raw
+    $content = Get-Content $CargoToml -Raw -Encoding UTF8
     if ($content -match '(?m)^\s*name\s*=\s*"([^"]+)"') {
         return $matches[1]
     }
@@ -667,7 +667,7 @@ function Get-IndexWasmFileName {
     $indexPath = Join-Path $ProjectRoot "index.html"
     if (-not (Test-Path $indexPath)) { return "$DefaultName.wasm" }
 
-    $indexContent = Get-Content $indexPath -Raw
+    $indexContent = Get-Content $indexPath -Raw -Encoding UTF8
     if ($indexContent -match 'load\s*\(\s*["''`]([^"''`?]+\.wasm)') {
         return [System.IO.Path]::GetFileName($matches[1])
     }
@@ -829,7 +829,7 @@ function New-RustGameIndexHtml {
     # Collapse the blank lines left behind by unused optional blocks.
     $html = $html -replace "(\r?\n){3,}", "$nl$nl"
 
-    $html | Out-File $DestinationPath -Encoding UTF8 -NoNewline
+    Write-Utf8File -Path $DestinationPath -Content $html
     return $true
 }
 
@@ -844,17 +844,26 @@ function Get-WindowsZipFileName {
     return "$($baseName)_windows.zip"
 }
 
+# Writes UTF-8 without a BOM on every PowerShell edition. Out-File -Encoding UTF8
+# emits a BOM under Windows PowerShell 5.1 but not under pwsh 7, which makes the
+# generated HTML differ depending on which host ran the publish.
+function Write-Utf8File {
+    param([string]$Path, [string]$Content)
+
+    [System.IO.File]::WriteAllText($Path, $Content, [System.Text.UTF8Encoding]::new($false))
+}
+
 function Update-PackagedIndexPaths {
     param([string]$IndexPath)
 
     if (-not (Test-Path $IndexPath)) { return }
 
-    $content = Get-Content $IndexPath -Raw
+    $content = Get-Content $IndexPath -Raw -Encoding UTF8
     $content = $content -replace 'href="(?:\.\./)?shared\.css"', 'href="../shared.css"'
     $content = $content -replace 'src="(?:\./)?mq_js_bundle\.js([^"]*)"', 'src="../shared-assets/runtime/mq_js_bundle.js$1"'
     $content = $content -replace 'src="(?:\./)?sapp_jsutils\.js([^"]*)"', 'src="../shared-assets/runtime/sapp_jsutils.js$1"'
     $content = $content -replace 'href="dist/([^"]+_windows\.zip)"', 'href="$1"'
-    $content | Out-File $IndexPath -Encoding UTF8
+    Write-Utf8File -Path $IndexPath -Content $content
 }
 
 function Get-PublishTimestamp {
@@ -869,8 +878,24 @@ function Get-DefaultGameTitle {
     return ([cultureinfo]::CurrentCulture.TextInfo).ToTitleCase(($GameSlug -replace "_", " "))
 }
 
-function Get-DefaultGameDescription {
-    param([pscustomobject]$Info, [string]$FallbackTitle)
+# The game's own title, as authored in game_page.json. $null when the game has
+# not been migrated to the shared shell, so callers can fall back to the slug.
+function Get-RustGamePageTitle {
+    param([pscustomobject]$Info)
+
+    $pageData = Get-RustGamePageData $Info.ProjectRoot
+    if ($null -ne $pageData -and -not [string]::IsNullOrWhiteSpace($pageData.title)) {
+        return $pageData.title.Trim()
+    }
+
+    return $null
+}
+
+# The authored description for a game, or $null when there isn't one. Callers
+# that need a value regardless use Get-DefaultGameDescription; callers that
+# refresh an existing catalog entry must not overwrite it with a placeholder.
+function Get-RustGamePageDescription {
+    param([pscustomobject]$Info)
 
     $pageData = Get-RustGamePageData $Info.ProjectRoot
     if ($null -ne $pageData -and $null -ne $pageData.about -and $pageData.about.Count -gt 0) {
@@ -879,7 +904,7 @@ function Get-DefaultGameDescription {
 
     $projectIndexPath = Join-Path $Info.ProjectRoot "index.html"
     if (Test-Path $projectIndexPath) {
-        $indexContent = Get-Content $projectIndexPath -Raw
+        $indexContent = Get-Content $projectIndexPath -Raw -Encoding UTF8
         if ($indexContent -match '(?is)<meta\s+name\s*=\s*"description"[^>]*content\s*=\s*"([^"]*)"') {
             return $matches[1].Trim()
         }
@@ -887,11 +912,20 @@ function Get-DefaultGameDescription {
 
     $cargoIndexPath = Join-Path $Info.PackageRoot "Cargo.toml"
     if (Test-Path $cargoIndexPath) {
-        $cargoContent = Get-Content $cargoIndexPath -Raw
+        $cargoContent = Get-Content $cargoIndexPath -Raw -Encoding UTF8
         if ($cargoContent -match '(?ms)^\s*description\s*=\s*"([^"]*)"') {
             return $matches[1].Trim()
         }
     }
+
+    return $null
+}
+
+function Get-DefaultGameDescription {
+    param([pscustomobject]$Info, [string]$FallbackTitle)
+
+    $description = Get-RustGamePageDescription -Info $Info
+    if (-not [string]::IsNullOrWhiteSpace($description)) { return $description }
 
     return "$FallbackTitle release"
 }
@@ -1049,7 +1083,11 @@ function Get-RustGameCatalogEntries {
         return $null
     }
 
-    $catalogContent = Get-Content $CatalogIndexPath -Raw
+    # -Encoding UTF8 is required: Windows PowerShell 5.1 defaults Get-Content to
+    # the ANSI code page, so reading the catalog and writing it back as UTF-8
+    # re-encodes every non-ASCII character once per publish. That is what turned
+    # the em dashes in these descriptions into runs of mojibake.
+    $catalogContent = Get-Content $CatalogIndexPath -Raw -Encoding UTF8
     $pattern = '(?ms)^[ \t]*const games\s*=\s*\[(.*?)\]\s*;'
     $match = [regex]::Match($catalogContent, $pattern)
 
@@ -1150,7 +1188,13 @@ function Update-RustGamesCatalogIndex {
         Write-Host "Catalog not updated: $targetSlug is in archive directory." -ForegroundColor Yellow
     }
 
-    $title = Get-DefaultGameTitle $targetSlug
+    # game_page.json is the source of truth for the card's title and blurb; the
+    # slug-derived title is only a fallback for games still on the legacy shell.
+    $title = Get-RustGamePageTitle -Info $Info
+    if ([string]::IsNullOrWhiteSpace($title)) {
+        $title = Get-DefaultGameTitle $targetSlug
+    }
+    $pageDescription = Get-RustGamePageDescription -Info $Info
     $playUrl = "$targetSlug/index.html"
     $downloadFile = Get-WindowsZipFileName -Info $Info
     $downloadUrl = "$targetSlug/$downloadFile"
@@ -1175,7 +1219,7 @@ function Update-RustGamesCatalogIndex {
             return $true
         }
 
-        $updatedContent | Out-File $CatalogIndexPath -Encoding UTF8
+        Write-Utf8File -Path $CatalogIndexPath -Content $updatedContent
         return $true
     }
 
@@ -1221,8 +1265,19 @@ function Update-RustGamesCatalogIndex {
         if ($null -ne $game.addedAt -and $null -eq $game.createdAt) {
             Set-CatalogField -Target $game -FieldName "createdAt" -FieldValue $game.addedAt
         }
+        # Re-apply the authored title and blurb every publish so the catalog
+        # self-heals from stale placeholders and from any past mis-encoding.
         if ($null -eq $game.title -or [string]::IsNullOrWhiteSpace([string]$game.title)) {
             Set-CatalogField -Target $game -FieldName "title" -FieldValue $title
+        } elseif (([string]$game.title) -cne $title -and $null -ne (Get-RustGamePageTitle -Info $Info)) {
+            Set-CatalogField -Target $game -FieldName "title" -FieldValue $title
+            Write-Host "Catalog updated: refreshed title for $targetSlug." -ForegroundColor Green
+        }
+        if (-not [string]::IsNullOrWhiteSpace($pageDescription) -and ([string]$game.description) -cne $pageDescription) {
+            Set-CatalogField -Target $game -FieldName "description" -FieldValue $pageDescription
+            Write-Host "Catalog updated: refreshed description for $targetSlug." -ForegroundColor Green
+        } elseif ([string]::IsNullOrWhiteSpace([string]$game.description)) {
+            Set-CatalogField -Target $game -FieldName "description" -FieldValue (Get-DefaultGameDescription -Info $Info -FallbackTitle $title)
         }
         if ($null -eq $game.playUrl -or [string]::IsNullOrWhiteSpace([string]$game.playUrl)) {
             Set-CatalogField -Target $game -FieldName "playUrl" -FieldValue $playUrl
@@ -1246,7 +1301,7 @@ function Update-RustGamesCatalogIndex {
         return $true
     }
 
-    $updatedContent | Out-File $CatalogIndexPath -Encoding UTF8
+    Write-Utf8File -Path $CatalogIndexPath -Content $updatedContent
     return $true
 }
 
@@ -1325,32 +1380,20 @@ function Get-RustGameProjectInfo {
 function Invoke-CargoBuild {
     param(
         [pscustomobject]$Info,
-        [string[]]$Arguments,
-        [string]$RustFlags
+        [string[]]$Arguments
     )
 
+    # Deliberately does not touch RUSTFLAGS — see the WebGL build step and
+    # .cargo/config.toml. Every build here must share one flag set with the
+    # hand-run cargo commands so the shared target dir stays warm.
     Push-Location $Info.ProjectRoot
-    $previousRustFlags = [Environment]::GetEnvironmentVariable("RUSTFLAGS", "Process")
     try {
-        if (-not [string]::IsNullOrWhiteSpace($RustFlags)) {
-            if ([string]::IsNullOrWhiteSpace($previousRustFlags)) {
-                $env:RUSTFLAGS = $RustFlags
-            } else {
-                $env:RUSTFLAGS = "$previousRustFlags $RustFlags"
-            }
-        }
-
         & cargo @Arguments
         if ($LASTEXITCODE -ne 0) {
             Write-Error "Cargo build failed."
             exit 1
         }
     } finally {
-        if ($null -eq $previousRustFlags) {
-            Remove-Item Env:RUSTFLAGS -ErrorAction SilentlyContinue
-        } else {
-            $env:RUSTFLAGS = $previousRustFlags
-        }
         Pop-Location
     }
 }
@@ -2512,7 +2555,11 @@ function Publish-RustGameProject {
                 if ($LASTEXITCODE -ne 0) { Write-Error "Could not install wasm32-unknown-unknown target."; exit 1 }
             }
 
-            Invoke-CargoBuild $info @("build", "--release", "--target", "wasm32-unknown-unknown", "-p", $info.PackageName, "--bin", $info.BinaryName) "-C link-arg=--allow-undefined"
+            # Wasm link flags come from the workspace .cargo/config.toml. Do not set
+            # RUSTFLAGS here: it replaces (never merges with) the config value, so a
+            # publish and a hand-run `cargo build --target wasm32-unknown-unknown`
+            # would each invalidate the other's copy of every wasm dependency.
+            Invoke-CargoBuild $info @("build", "--release", "--target", "wasm32-unknown-unknown", "-p", $info.PackageName, "--bin", $info.BinaryName)
 
             if ($info.GameSlug -eq "nanite_swarm") {
                 $wasmOpt = Get-Command wasm-opt -ErrorAction SilentlyContinue

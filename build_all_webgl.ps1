@@ -137,7 +137,7 @@ foreach ($proj in $projects) {
 
         $gameIndex = Join-Path $projDest "index.html"
         if (Test-Path $gameIndex) {
-            $indexHtml = Get-Content $gameIndex -Raw
+            $indexHtml = Get-Content $gameIndex -Raw -Encoding UTF8
             if ($indexHtml -match '<title>([^<|]+)') {
                 $displayName = $matches[1].Trim()
             }
