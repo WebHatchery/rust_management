@@ -38,6 +38,22 @@ Env vars (replace `PREFIX` with a per-game prefix, e.g. `CARRIAGE`, `TFL`):
 - `PREFIX_CAPTURE_SCENE` — scene name passed to your seeding code (default `gameplay`)
 - `PREFIX_CAPTURE_FRAMES` — frames to simulate before capture (default 150)
 - `PREFIX_WINDOW_WIDTH` / `PREFIX_WINDOW_HEIGHT` — window size override
+- `PREFIX_HEADLESS` — hide the game window (default: on while capturing)
+
+### Why there is a window at all
+
+macroquad has no offscreen mode: miniquad must create a real OS window to own
+the GL context, and it calls `ShowWindow(SW_SHOW)` as soon as that context
+exists. So the window is unavoidable — but it does not have to be *on the
+desktop*. `capture::headless` hides it again (Windows only; a no-op elsewhere),
+and rendering carries on: the frame still lands in the back buffer, which the
+driver owns whether or not the window is mapped, and `get_screen_data()` reads
+the back buffer before the swap. Only presentation to the desktop is skipped.
+
+`capture_window_conf` arms this automatically, so a game wired the standard way
+gets it for free. `PREFIX_HEADLESS=0` shows the window when you want to watch a
+scene play out (`capture_ui.ps1 -Visible`); `PREFIX_HEADLESS=1` hides it outside
+capture mode, which is what a playtest bot wants.
 
 ---
 
@@ -168,15 +184,21 @@ These are handled by the toolkit, but explain symptoms if you deviate from it:
    spawns reproduce. `run_capture` passes `config.timestep` to your frame
    closure — use it. Vary the *scene* and *frame count*, not the timestep.
 
+4. **A hand-built `Conf` skips the headless wiring.** `capture_window_conf` is
+   what calls `headless::arm(prefix)`; a game that builds its own `Conf` must
+   call it there itself, or the window shows up for the whole run. Arming from
+   `main` instead still works but leaves the window on screen while the game
+   loads.
+
 Still your responsibility:
 
-4. **Runtime display overrides.** If the game applies saved display settings at
+5. **Runtime display overrides.** If the game applies saved display settings at
    startup (`set_fullscreen`, `request_new_screen_size`), skip that while
    `capture::capture_requested("PREFIX")` is true, or the capture size won't be
    deterministic (see `monsterhall/src/game.rs`).
-5. **Startup notifications / toasts** may still be on screen in early frames.
+6. **Startup notifications / toasts** may still be on screen in early frames.
    Either raise the frame count so they fade, or suppress them in capture mode.
-6. **Stronger blank-frame checks.** The shared script's byte-size floor catches
+7. **Stronger blank-frame checks.** The shared script's byte-size floor catches
    black/blank captures early. For stronger checks, read pixel regions back
    with `System.Drawing` and assert non-black ratios (see
    `finallanding/scripts/capture_ui_smoke.ps1` for a full region-assert
@@ -196,7 +218,8 @@ interactive window automation.
 ## Checklist to replicate
 
 - [ ] Use `capture::capture_window_conf("PREFIX", title, w, h)` as `window_conf`
-      (or build a custom `Conf` with the `capture::env_*` helpers).
+      (or build a custom `Conf` with the `capture::env_*` helpers — then also
+      call `capture::headless::arm("PREFIX")` there).
 - [ ] In `main`, branch on `capture::CaptureConfig::from_env("PREFIX")`, seed the
       scene, and call `capture::run_capture(&config, |dt| { update; draw; })`.
 - [ ] Add `Game::begin_capture_scene(&str)` with arms for your screens (optional).

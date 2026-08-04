@@ -15,6 +15,7 @@ These live here for the whole catalog but are **not** synced into each game — 
 
 - `COMMIT_STYLE.md` — git commit message conventions for the Rust games (Mytherra as the exemplar).
 - `GDD_TEMPLATE.md` — starting structure for a new game's design document.
+- `itch-publishing-lessons.md` — reusable lessons and checklist for publishing Rust games to itch.io.
 - `screenshot_capture_harness_guide.md` — wiring headless UI screenshot capture into a game.
 
 ## Check For Drift
