@@ -308,15 +308,15 @@ function Save-SharedRuntimeFile {
     }
 }
 
-function Get-MiniquadBundlePath {
+function Get-MacroquadBundlePath {
     <#
         .SYNOPSIS
-        miniquad's own js/gl.js, from the version this workspace resolves to.
+        Macroquad's complete browser bundle, from the version this workspace resolves to.
 
         .DESCRIPTION
         Read out of the cargo registry rather than fetched, so the runtime and
         the wasm can never be different versions of each other. Returns $null if
-        the crate is not vendored yet, and the caller falls back to the download.
+        the crate is not vendored yet.
     #>
     $lock = Join-Path $WorkspaceRoot 'Cargo.lock'
     if (-not (Test-Path $lock)) { return $null }
@@ -324,7 +324,7 @@ function Get-MiniquadBundlePath {
     $version = $null
     $lines = Get-Content $lock
     for ($i = 0; $i -lt $lines.Count; $i++) {
-        if ($lines[$i] -match '^name = "miniquad"$') {
+        if ($lines[$i] -match '^name = "macroquad"$') {
             if ($lines[$i + 1] -match '^version = "(.+)"$') { $version = $Matches[1] }
             break
         }
@@ -333,13 +333,67 @@ function Get-MiniquadBundlePath {
 
     $registry = Join-Path $env:USERPROFILE '.cargo/registry/src'
     $candidate = Get-ChildItem -Path $registry -Directory -ErrorAction SilentlyContinue |
-        ForEach-Object { Join-Path $_.FullName "miniquad-$version\js\gl.js" } |
+        ForEach-Object { Join-Path $_.FullName "macroquad-$version\js\mq_js_bundle.js" } |
         Where-Object { Test-Path $_ } |
         Select-Object -First 1
     if (-not $candidate) {
-        Write-Warning "miniquad $version is not vendored; falling back to the samples download for mq_js_bundle.js"
+        Write-Warning "macroquad $version is not vendored; the complete browser runtime is unavailable"
     }
     return $candidate
+}
+
+function Assert-MacroquadBundleComplete {
+    param([Parameter(Mandatory = $true)][string]$Path)
+
+    # The full Macroquad bundle is Miniquad's GL bridge plus its JavaScript
+    # plugins. Copying only miniquad/js/gl.js appears to work because Miniquad
+    # stubs absent imports, but an audio-enabled game then waits forever on the
+    # missing loader callback. Pin both halves of the runtime contract here.
+    $requiredSymbols = @(
+        "glBlitFramebuffer",
+        "miniquad_add_plugin",
+        "audio_source_is_loaded"
+    )
+    $content = Get-Content -Path $Path -Raw
+    foreach ($symbol in $requiredSymbols) {
+        if (-not $content.Contains($symbol)) {
+            throw "Macroquad browser bundle is incomplete: missing '$symbol' in $Path"
+        }
+    }
+    if ($content.Contains("function(){function i(){}register_plugin=function(")) {
+        throw "Macroquad browser bundle still contains the strict-mode quad-net registration fault: $Path"
+    }
+}
+
+function Get-PatchedMacroquadBundleContent {
+    param([Parameter(Mandatory = $true)][string]$Path)
+
+    $content = Get-Content -Path $Path -Raw
+    # Macroquad 0.4.15's minified quad-net IIFE assigns `register_plugin`
+    # without declaring it under "use strict", which raises a ReferenceError
+    # before the external compatibility bridge loads. Keep the upstream bundle
+    # otherwise byte-for-byte and make that local function explicit. The match
+    # is deliberately exact; a future upstream shape will simply need no patch.
+    return $content.Replace(
+        "function(){function i(){}register_plugin=function(",
+        "function(){var register_plugin;function i(){}register_plugin=function("
+    )
+}
+
+function Get-MacroquadBundleCacheKey {
+    $bundle = Get-MacroquadBundlePath
+    if (-not $bundle) {
+        throw "Could not locate the resolved Macroquad browser bundle for cache versioning."
+    }
+    $content = Get-PatchedMacroquadBundleContent -Path $bundle
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes($content)
+    $sha = [System.Security.Cryptography.SHA256]::Create()
+    try {
+        $hash = [System.BitConverter]::ToString($sha.ComputeHash($bytes)).Replace("-", "")
+        return $hash.Substring(0, 12).ToLowerInvariant()
+    } finally {
+        $sha.Dispose()
+    }
 }
 
 function Sync-RustGamesSharedAssetsSource {
@@ -357,8 +411,10 @@ function Sync-RustGamesSharedAssetsSource {
     New-Item -ItemType Directory -Path $runtimeDir -Force | Out-Null
     New-Item -ItemType Directory -Path $fontsDir -Force | Out-Null
 
-    # The JS half of miniquad, taken from the crate the games are *compiled
-    # against* rather than downloaded from the samples site.
+    # Macroquad's complete JS bundle, taken from the crate the games are
+    # *compiled against* rather than downloaded from the samples site. This is
+    # not interchangeable with miniquad/js/gl.js: Macroquad appends the audio,
+    # sapp-jsutils and quad-net plugins used by wasm imports.
     #
     # It used to come from https://not-fl3.github.io/miniquad-samples/, which
     # hosts whatever version those demos happen to use — and it had drifted
@@ -369,15 +425,18 @@ function Sync-RustGamesSharedAssetsSource {
     # before instantiating, so every game on the site was running with six
     # silent no-ops instead of failing loudly. The crate ships the matching
     # file; a version that cannot disagree is worth more than a fresh download.
-    $miniquadJs = Get-MiniquadBundlePath
-    if ($miniquadJs) {
-        Copy-Item -Path $miniquadJs -Destination (Join-Path $runtimeDir "mq_js_bundle.js") -Force
-    } else {
-        Save-SharedRuntimeFile `
-            -Uri "https://not-fl3.github.io/miniquad-samples/mq_js_bundle.js" `
-            -DestinationPath (Join-Path $runtimeDir "mq_js_bundle.js") `
-            -DisplayName "mq_js_bundle.js"
+    $macroquadJs = Get-MacroquadBundlePath
+    if (-not $macroquadJs) {
+        throw "Could not locate the resolved Macroquad browser bundle. Build the game once so Cargo vendors the locked crate."
     }
+    $runtimeBundle = Join-Path $runtimeDir "mq_js_bundle.js"
+    $macroquadContent = Get-PatchedMacroquadBundleContent -Path $macroquadJs
+    [System.IO.File]::WriteAllText(
+        $runtimeBundle,
+        $macroquadContent,
+        [System.Text.UTF8Encoding]::new($false)
+    )
+    Assert-MacroquadBundleComplete -Path $runtimeBundle
 
     Save-SharedRuntimeFile `
         -Uri "https://raw.githubusercontent.com/not-fl3/sapp-jsutils/master/js/sapp_jsutils.js" `
@@ -771,10 +830,16 @@ function New-RustGameIndexHtml {
         # with string concatenation rather than a literal query string.
         $wasmBust = if ($pageData.wasm_cache_bust -eq "date-now") { '?v=" + Date.now() + "' } else { "?v=$($pageData.wasm_cache_bust)" }
     }
-    $assetBust = ""
-    if (-not [string]::IsNullOrWhiteSpace($pageData.asset_cache_bust)) {
-        $assetBust = "?v=$($pageData.asset_cache_bust)"
+    # Runtime scripts are shared across every game and browsers cache them
+    # independently of each game's page. Version the default URL from the exact
+    # Macroquad bundle content so repairing or upgrading it reaches returning
+    # players. A per-game override remains available for exceptional bundles.
+    $assetCacheKey = if ([string]::IsNullOrWhiteSpace($pageData.asset_cache_bust)) {
+        Get-MacroquadBundleCacheKey
+    } else {
+        $pageData.asset_cache_bust
     }
+    $assetBust = "?v=$assetCacheKey"
 
     # The shared bridge is referenced at its deployed path directly, so it needs
     # no rewrite pass; a game opting out keeps its own root-level copy.

@@ -15,9 +15,12 @@ they never loaded `storage.js` at all).
 | `storage.js` | Canonical localStorage bridge for `macroquad-toolkit` persistence. Deployed to `shared-assets/runtime/storage.js` and shared by every game. |
 | `clipboard.js` | Canonical `clipboard_write_text_extern` bridge (copy-to-clipboard, with a fallback panel when the browser blocks it). Inert for games that never call it. |
 
-`mq_js_bundle.js` and `sapp_jsutils.js` are downloaded into
-`shared-assets/runtime/` by `publish.ps1`; `storage.js` now sits alongside them
-and is referenced the same way.
+`mq_js_bundle.js` is copied from the exact Macroquad version resolved in the
+workspace lockfile, including Macroquad's audio and utility plugins.
+`sapp_jsutils.js` is downloaded into `shared-assets/runtime/` by `publish.ps1`;
+`storage.js` sits alongside them and is referenced the same way. Generated pages
+use the Macroquad bundle's content hash as their default runtime cache key, so a
+shared runtime repair reaches browsers that have visited a game before.
 
 ## Per-game data file: `game_page.json`
 
@@ -55,7 +58,7 @@ else has a default derived from the directory name.
   "repository": "https://github.com/Kalaith/dragons_den_rust",
 
   "wasm_cache_bust": null,          // null | "date-now" | literal string
-  "asset_cache_bust": null,         // ?v= appended to the three runtime script tags
+  "asset_cache_bust": null,         // null = runtime hash; literal overrides ?v=
   "storage_js": "shared"            // "shared" | "custom" (use the game's own storage.js)
 }
 ```
