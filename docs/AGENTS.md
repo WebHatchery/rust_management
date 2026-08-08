@@ -19,6 +19,9 @@ These instructions apply to all Rust game projects in this workspace.
 ## Macroquad Conventions
 
 - Use `macroquad` for the runtime loop, input, drawing, textures, audio, and timing.
+- Ship browser games touch-first. A player must be able to start a new game and complete every required tutorial, core interaction, and recovery action using visible tap/click targets alone; a physical keyboard is never required.
+- Keyboard shortcuts may supplement touch controls, but they must not be the only path to an action. Do not show keyboard-command strings in player-facing HUDs, prompts, menus, notices, or tutorials unless the same text also names the visible touch control that performs the action.
+- Tutorial prompts must state the exact visible control or direct touch gesture needed next (for example, “Tap CONTINUE” or “Drag the map”). Never ask players to “dismiss,” “confirm,” or perform another action without a tappable target or an explicit touch instruction.
 - Keep drawing code separate from state mutation where possible.
 - Treat screen size, scaling, and camera transforms as first-class concerns. Games should remain playable at common desktop browser sizes.
 - Avoid hard-coded absolute positions unless they are intentionally tied to a fixed virtual resolution.
