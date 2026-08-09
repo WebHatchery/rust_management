@@ -27,12 +27,14 @@ async fn main() {
     // deterministic frames, write a PNG, and exit. This is a minimal starter
     // template with a single boot state, so the capture just photographs
     // whatever the boot flow lands on.
-    if let Some(config) = capture::CaptureConfig::from_env("GAME_TEMPLATE") {
-        capture::run_capture(&config, |dt| {
-            game.update(dt);
-            game.draw();
-        })
-        .await;
+    if let Some(configs) = capture::CaptureConfig::all_from_env("GAME_TEMPLATE") {
+        for config in configs {
+            capture::run_capture_once(&config, |dt| {
+                game.update(dt);
+                game.draw();
+            })
+            .await;
+        }
         return;
     }
 
