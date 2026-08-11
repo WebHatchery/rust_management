@@ -88,13 +88,15 @@
     <script src="mq_js_bundle.js{{ASSET_CACHE_BUST}}"></script>
     <!-- sapp_jsutils provides consume_js_object/js_object used by storage.js. -->
     <script src="sapp_jsutils.js{{ASSET_CACHE_BUST}}"></script>
+    <!-- Browser Gamepad API bridge; inert until a game imports the plugin. -->
+    <script src="../shared-assets/runtime/macroquad-gamepads-0.1.js{{GAMEPADS_CACHE_BUST}}"></script>
     <!-- quad-net HTTP/WS bridge; registers its miniquad plugin before the wasm
          loads. Inert for games that never make a request. -->
-    <script src="{{QUAD_NET_JS_SRC}}{{ASSET_CACHE_BUST}}"></script>
+    <script src="{{QUAD_NET_JS_SRC}}{{QUAD_NET_CACHE_BUST}}"></script>
     <!-- localStorage bridge for save/load persistence (must load before the wasm). -->
-    <script src="{{STORAGE_JS_SRC}}{{ASSET_CACHE_BUST}}"></script>
+    <script src="{{STORAGE_JS_SRC}}{{STORAGE_CACHE_BUST}}"></script>
     <!-- Clipboard bridge; inert for games that never call it. -->
-    <script src="{{CLIPBOARD_JS_SRC}}{{ASSET_CACHE_BUST}}"></script>
+    <script src="{{CLIPBOARD_JS_SRC}}{{CLIPBOARD_CACHE_BUST}}"></script>
     <script>
         (function () {
             var overlay = document.getElementById('loading');

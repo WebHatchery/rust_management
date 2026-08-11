@@ -447,7 +447,7 @@ function Sync-RustGamesSharedAssetsSource {
     # web/ so every game shares one localStorage bridge. quad-net.js is the same
     # kind of shared, inert bridge — the JS half of the `quad-net` HTTP client,
     # needed by any game that talks to a server (mytherra), no-op for the rest.
-    foreach ($bridge in @("storage.js", "clipboard.js", "quad-net.js")) {
+    foreach ($bridge in @("storage.js", "clipboard.js", "quad-net.js", "macroquad-gamepads-0.1.js")) {
         $bridgeSource = Join-Path (Get-RustGameWebSourceDir) $bridge
         if (Test-Path $bridgeSource -PathType Leaf) {
             Copy-Item $bridgeSource (Join-Path $runtimeDir $bridge) -Force
@@ -840,6 +840,22 @@ function New-RustGameIndexHtml {
         $pageData.asset_cache_bust
     }
     $assetBust = "?v=$assetCacheKey"
+    $gamepadsBridge = Join-Path (Get-RustGameWebSourceDir) "macroquad-gamepads-0.1.js"
+    if (-not (Test-Path -LiteralPath $gamepadsBridge -PathType Leaf)) {
+        throw "Shared gamepad bridge not found: $gamepadsBridge"
+    }
+    $gamepadsBust = "?v=$((Get-FileSha256Hex -Path $gamepadsBridge).Substring(0, 12))"
+    $quadNetBridge = Join-Path (Get-RustGameWebSourceDir) "quad-net.js"
+    $storageBridge = Join-Path (Get-RustGameWebSourceDir) "storage.js"
+    $clipboardBridge = Join-Path (Get-RustGameWebSourceDir) "clipboard.js"
+    foreach ($bridge in @($quadNetBridge, $storageBridge, $clipboardBridge)) {
+        if (-not (Test-Path -LiteralPath $bridge -PathType Leaf)) {
+            throw "Shared browser bridge not found: $bridge"
+        }
+    }
+    $quadNetBust = "?v=$((Get-FileSha256Hex -Path $quadNetBridge).Substring(0, 12))"
+    $storageBust = "?v=$((Get-FileSha256Hex -Path $storageBridge).Substring(0, 12))"
+    $clipboardBust = "?v=$((Get-FileSha256Hex -Path $clipboardBridge).Substring(0, 12))"
 
     # The shared bridge is referenced at its deployed path directly, so it needs
     # no rewrite pass; a game opting out keeps its own root-level copy.
@@ -877,6 +893,10 @@ function New-RustGameIndexHtml {
         "{{WASM}}"             = "$wasm.wasm"
         "{{WASM_CACHE_BUST}}"  = $wasmBust
         "{{ASSET_CACHE_BUST}}" = $assetBust
+        "{{GAMEPADS_CACHE_BUST}}" = $gamepadsBust
+        "{{QUAD_NET_CACHE_BUST}}" = $quadNetBust
+        "{{STORAGE_CACHE_BUST}}" = $storageBust
+        "{{CLIPBOARD_CACHE_BUST}}" = $clipboardBust
         "{{STORAGE_JS_SRC}}"   = $storageSrc
         "{{CLIPBOARD_JS_SRC}}" = "../$SharedAssetsDirectoryName/$SharedRuntimeDirectoryName/clipboard.js"
         "{{QUAD_NET_JS_SRC}}"  = "../$SharedAssetsDirectoryName/$SharedRuntimeDirectoryName/quad-net.js"

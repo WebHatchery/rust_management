@@ -6,9 +6,9 @@ use macroquad_toolkit::data_loader::{
 };
 use serde::{Deserialize, Serialize};
 
-const GAME_CONFIG_JSON: &str = include_str!("../assets/data/game_config.json");
-const ACTIONS_JSON: &str = include_str!("../assets/data/actions.json");
-const TEXTURE_MANIFEST_JSON: &str = include_str!("../assets/data/texture_manifest.json");
+const GAME_CONFIG_JSON: &str = macroquad_toolkit::include_json_str!("../assets/data/game_config.json");
+const ACTIONS_JSON: &str = macroquad_toolkit::include_json_str!("../assets/data/actions.json");
+const TEXTURE_MANIFEST_JSON: &str = macroquad_toolkit::include_json_str!("../assets/data/texture_manifest.json");
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GameConfig {
@@ -55,16 +55,4 @@ impl GameData {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn embedded_data_loads() {
-        let data = GameData::load().unwrap();
-
-        assert!(!data.config.game_name.is_empty());
-        assert!(data.actions.contains("gather"));
-        assert!(data.config.world_width > 0);
-        assert!(data.config.world_height > 0);
-    }
-}
+mod tests;

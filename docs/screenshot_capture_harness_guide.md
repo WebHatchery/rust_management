@@ -1,8 +1,8 @@
-# Adding a Headless Screenshot Harness to a macroquad Game
+# Adding a Single-Window Screenshot Harness to a macroquad Game
 
 **Goal:** let a macroquad game screenshot *itself* — boot into a chosen scene,
-render a fixed number of frames, write a PNG, and exit — with no interactive
-window and no clicking. This makes UI/rendering changes visually verifiable
+render fixed frames, and write PNGs — with one background OS window and no
+clicking. This makes UI/rendering changes visually verifiable
 from a script (or by an AI agent that reads the PNG back), the same way
 `finallanding`, `monsterhall`, and `carriage_run` do it.
 
@@ -18,15 +18,16 @@ capture forces windowed). Verified on macroquad 0.4.15, Windows 11.
 ## How it works (the key idea)
 
 You do **not** screenshot the OS window from outside. Instead the game binary
-is instrumented: when a `PREFIX_CAPTURE_PATH` environment variable is set, the
-normal interactive loop is replaced by a capture loop that
+is instrumented: when a `PREFIX_CAPTURE_MANIFEST` environment variable is set,
+the normal interactive loop is replaced by a batch capture loop that
 
 1. seeds a specific scene,
 2. steps the simulation a fixed number of frames at a fixed timestep (so motion
    is deterministic),
 3. calls macroquad's `get_screen_data().export_png(path)` — after drawing but
    **before** presenting the frame,
-4. exits the process.
+4. presents one boundary frame to reset Macroquad's renderer, then seeds the
+   next scene in the same process/window.
 
 The wrapper script sets the env vars, runs the exe, and sanity-checks the PNG.
 Because it is driven entirely by env vars, it needs no input and runs the same
@@ -34,8 +35,7 @@ way locally or in CI.
 
 Env vars (replace `PREFIX` with a per-game prefix, e.g. `CARRIAGE`, `TFL`):
 
-- `PREFIX_CAPTURE_PATH` — output PNG path; presence enables capture mode
-- `PREFIX_CAPTURE_SCENE` — scene name passed to your seeding code (default `gameplay`)
+- `PREFIX_CAPTURE_MANIFEST` — tab-separated scene/output-path rows; presence enables capture mode
 - `PREFIX_CAPTURE_FRAMES` — frames to simulate before capture (default 150)
 - `PREFIX_WINDOW_WIDTH` / `PREFIX_WINDOW_HEIGHT` — window size override
 - `PREFIX_HEADLESS` — hide the game window (default: on while capturing)
@@ -72,13 +72,15 @@ fn window_conf() -> Conf {
 async fn main() {
     let mut game = Game::new().await;
 
-    if let Some(config) = capture::CaptureConfig::from_env("PREFIX") {
-        game.begin_capture_scene(&config.scene);
-        capture::run_capture(&config, |dt| {
-            game.update(dt);
-            game.draw();
-        })
-        .await;
+    if let Some(configs) = capture::CaptureConfig::all_from_env("PREFIX") {
+        for config in configs {
+            game.begin_capture_scene(&config.scene);
+            capture::run_capture_once(&config, |dt| {
+                game.update(dt);
+                game.draw();
+            })
+            .await;
+        }
         return;
     }
 
@@ -86,8 +88,8 @@ async fn main() {
 }
 ```
 
-`run_capture` handles the fixed timestep, the capture-before-present ordering,
-and process exit. All env access is stubbed out on `wasm32`, so web builds are
+`run_capture_once` handles the fixed timestep, capture-before-present ordering,
+and the renderer boundary between scenes. All env access is stubbed out on `wasm32`, so web builds are
 unaffected.
 
 If your game needs a custom `Conf` (extra fields, config-file-driven size),
@@ -95,7 +97,17 @@ build it by hand with `capture::env_i32` / `capture::env_bool` and
 `capture::capture_requested("PREFIX")` — see `finallanding` (keeps a
 `TFL_FULLSCREEN` var) and `monsterhall` (forces windowed while capturing).
 `CaptureConfig`'s fields are public, so defaults can be overridden after
-`from_env` (e.g. `finallanding` uses 8 frames instead of 150).
+`all_from_env` (e.g. `finallanding` uses 8 frames instead of 150).
+
+### Why the boundary frame is mandatory
+
+The first single-process implementation returned immediately after
+`get_screen_data()`. After several scenes, Macroquad retained text-batch texture
+state and later glyphs rendered as black silhouettes. Calling `next_frame()`
+once after exporting closes the photographed frame without changing the PNG and
+gives the next scene a clean renderer. Do not remove that boundary, and make
+`begin_capture_scene` rebuild mutable gameplay state rather than accumulating
+fixture changes from the preceding scene.
 
 ---
 
@@ -220,8 +232,9 @@ interactive window automation.
 - [ ] Use `capture::capture_window_conf("PREFIX", title, w, h)` as `window_conf`
       (or build a custom `Conf` with the `capture::env_*` helpers — then also
       call `capture::headless::arm("PREFIX")` there).
-- [ ] In `main`, branch on `capture::CaptureConfig::from_env("PREFIX")`, seed the
-      scene, and call `capture::run_capture(&config, |dt| { update; draw; })`.
+- [ ] In `main`, branch on `capture::CaptureConfig::all_from_env("PREFIX")`, loop
+      the configs, seed each fresh scene, and call
+      `capture::run_capture_once(&config, |dt| { update; draw; })`.
 - [ ] Add `Game::begin_capture_scene(&str)` with arms for your screens (optional).
 - [ ] Capture with `& ..\macroquad-toolkit\scripts\capture_ui.ps1 -Scenes ...`,
       optionally behind a thin per-game `scripts/capture_ui.ps1` wrapper.

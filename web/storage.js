@@ -2,6 +2,8 @@
 // Loaded after sapp_jsutils.js and before the game wasm.
 
 var storage_plugin = {
+    name: "storage",
+    version: 1,
     register_plugin: function(importObject) {
         importObject.env.storage_set_extern = function(key_obj, value_obj) {
             var key = consume_js_object(key_obj);
