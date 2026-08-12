@@ -2625,8 +2625,15 @@ function Publish-RustGameProject {
         Remove-RustGameSharedFontDuplicate $windowsPackageDir
 
         $windowsZipPath = Join-Path $info.DistDir (Get-WindowsZipFileName $info)
-        if (Test-Path $windowsZipPath) { Remove-Item $windowsZipPath -Force }
+        # dist/ is a generated output directory and a game has one current
+        # Windows package. Remove renamed/stale archives as well as the current
+        # one so they cannot be deployed alongside the live build.
+        Get-ChildItem -Path $info.DistDir -Filter "*_windows.zip" -File -ErrorAction SilentlyContinue |
+            ForEach-Object { Remove-Item -LiteralPath $_.FullName -Force }
         Compress-Archive -Path "$windowsPackageDir\*" -DestinationPath $windowsZipPath -CompressionLevel Optimal
+        # The expanded tree is only staging for Compress-Archive. Keeping it
+        # made every asset occupy both raw and archived space in every project.
+        Remove-ChildDirectory $info.DistDir $windowsPackageDir
         Write-Host "Windows package created!" -ForegroundColor Green
     }
 
@@ -2701,10 +2708,6 @@ function Publish-RustGameProject {
             Copy-Item $storagePath $webGLPackageDir -Force
         }
 
-        Get-ChildItem -Path $info.DistDir -Filter "*_windows.zip" -File -ErrorAction SilentlyContinue | ForEach-Object {
-            Copy-Item $_.FullName $webGLPackageDir -Force
-        }
-
         Sync-RustGameCatalogThumbnail -Info $info -DestinationDir $webGLPackageDir -DryRun:$DryRun | Out-Null
 
         Update-PackagedIndexPaths (Join-Path $webGLPackageDir "index.html")
@@ -2738,10 +2741,21 @@ function Publish-RustGameProject {
 
         if (Test-Path $webGLSourceDir) {
             Get-ChildItem $webGLSourceDir -File | ForEach-Object {
-                if ($_.Name -notin @("shared.css", "mq_js_bundle.js", "sapp_jsutils.js")) {
+                if ($_.Name -notin @("shared.css", "mq_js_bundle.js", "sapp_jsutils.js") -and
+                    $_.Name -notlike "*_windows.zip") {
                     Copy-Item $_.FullName $deployDir -Force
                     Write-Host "  Copied: $($_.Name)" -ForegroundColor Gray
                 }
+            }
+
+            # Keep the downloadable Windows build beside index.html in the
+            # deployed game, but not inside dist/webgl or its WebGL-only ZIP.
+            # Older publishers nested this archive in the WebGL package,
+            # doubling large asset libraries in both dist/webgl and the ZIP.
+            $windowsZipPath = Join-Path $info.DistDir (Get-WindowsZipFileName $info)
+            if (Test-Path $windowsZipPath -PathType Leaf) {
+                Copy-Item $windowsZipPath $deployDir -Force
+                Write-Host "  Copied: $([System.IO.Path]::GetFileName($windowsZipPath))" -ForegroundColor Gray
             }
 
             $assetsDir = Join-Path $webGLSourceDir "assets"
