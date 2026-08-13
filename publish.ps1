@@ -571,6 +571,10 @@ function Get-RustGameAssetRegistry {
         Write-Error "Asset registry must contain an 'assets' array: $registryPath"
         exit 1
     }
+    if ($registry.assets -isnot [System.Array]) {
+        Write-Error "Asset registry 'assets' must be an array: $registryPath"
+        exit 1
+    }
 
     return $registry
 }
