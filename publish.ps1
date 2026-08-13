@@ -550,6 +550,90 @@ function Get-OptionalPropertyValue {
     return $Default
 }
 
+function Get-RustGameAssetRegistry {
+    param([string]$ProjectRoot)
+
+    $registryPath = Join-Path $ProjectRoot "asset_registry.json"
+    if (-not (Test-Path $registryPath -PathType Leaf)) { return $null }
+
+    try {
+        $registry = Get-Content $registryPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    } catch {
+        Write-Error "Could not read asset registry: $registryPath ($($_.Exception.Message))"
+        exit 1
+    }
+
+    if ($registry.version -ne 1) {
+        Write-Error "Unsupported asset registry version in $registryPath. Expected version 1."
+        exit 1
+    }
+    if ($null -eq $registry.assets) {
+        Write-Error "Asset registry must contain an 'assets' array: $registryPath"
+        exit 1
+    }
+
+    return $registry
+}
+
+function Copy-RustGameRegisteredAssets {
+    param(
+        [string]$ProjectRoot,
+        [string]$DestinationDir,
+        $Registry
+    )
+
+    $destinationAssets = Join-Path $DestinationDir "assets"
+    Remove-ChildDirectory $DestinationDir $destinationAssets
+
+    $projectFull = [System.IO.Path]::GetFullPath($ProjectRoot).TrimEnd('\', '/')
+    $projectPrefix = $projectFull + [System.IO.Path]::DirectorySeparatorChar
+    $seen = [System.Collections.Generic.HashSet[string]]::new(
+        [System.StringComparer]::OrdinalIgnoreCase
+    )
+    $copied = 0
+
+    foreach ($entry in @($Registry.assets)) {
+        if ($entry -isnot [string] -or [string]::IsNullOrWhiteSpace($entry)) {
+            Write-Error "Asset registry entries must be non-empty strings."
+            exit 1
+        }
+
+        $relative = $entry.Replace('\', '/').Trim()
+        $segments = @($relative.Split('/'))
+        if ([System.IO.Path]::IsPathRooted($relative) -or
+            -not $relative.StartsWith("assets/", [System.StringComparison]::OrdinalIgnoreCase) -or
+            $segments -contains "" -or $segments -contains "." -or $segments -contains "..") {
+            Write-Error "Unsafe asset registry path '$entry'. Paths must be project-relative files below assets/."
+            exit 1
+        }
+        if (-not $seen.Add($relative)) {
+            Write-Error "Duplicate asset registry path: $relative"
+            exit 1
+        }
+
+        $nativeRelative = $relative.Replace('/', [System.IO.Path]::DirectorySeparatorChar)
+        $sourcePath = [System.IO.Path]::GetFullPath((Join-Path $ProjectRoot $nativeRelative))
+        if (-not $sourcePath.StartsWith($projectPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+            Write-Error "Asset registry path escapes the project: $relative"
+            exit 1
+        }
+        if (-not (Test-Path $sourcePath -PathType Leaf)) {
+            Write-Error "Registered asset not found: $relative"
+            exit 1
+        }
+
+        $destinationPath = Join-Path $DestinationDir $nativeRelative
+        $destinationParent = Split-Path $destinationPath -Parent
+        if (-not (Test-Path $destinationParent)) {
+            New-Item -ItemType Directory -Path $destinationParent -Force | Out-Null
+        }
+        Copy-Item -LiteralPath $sourcePath -Destination $destinationPath -Force
+        $copied++
+    }
+
+    Write-Host "  Registered assets: $copied file(s)" -ForegroundColor Gray
+}
+
 function Get-RustGameAssetPackConfig {
     param([string]$ProjectRoot)
 
@@ -1487,7 +1571,12 @@ function Copy-RustGameAssets {
     param([pscustomobject]$Info, [string]$DestinationDir)
 
     $assetsPath = Join-Path $Info.ProjectRoot "assets"
-    if (Test-Path $assetsPath) {
+    $registry = Get-RustGameAssetRegistry $Info.ProjectRoot
+    if ($null -ne $registry) {
+        Copy-RustGameRegisteredAssets $Info.ProjectRoot $DestinationDir $registry
+        Apply-RustGameAssetPacks $Info $DestinationDir
+    } elseif (Test-Path $assetsPath) {
+        Write-Warning "No asset_registry.json found for $($Info.GameSlug); packaging the complete assets directory."
         Copy-DirectoryClean $assetsPath $DestinationDir "assets"
         Apply-RustGameAssetPacks $Info $DestinationDir
     }
