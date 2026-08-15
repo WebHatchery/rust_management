@@ -7,6 +7,7 @@ same shared patterns as the existing games.
 ## Toolkit Features Already Wired
 
 - `AssetManager` with a texture manifest at `assets/data/texture_manifest.json`
+  and an exact runtime asset list in `asset_registry.json`
 - `DataRegistry` and embedded JSON loading for data-driven actions
 - `save_to_slot_with_version`, `load_from_slot_with_migration`, `delete_slot`, and `get_save_slots`
 - `NotificationManager` with toolkit toast rendering
@@ -39,17 +40,23 @@ cargo test --manifest-path template/Cargo.toml
 
 1. Copy `template/` to your new game folder.
 2. Rename the package in `Cargo.toml`.
-3. Update `assets/data/game_config.json`.
-4. Replace `actions.json` with your game data.
-5. Add textures to `assets/data/texture_manifest.json`.
-6. Update `game_page.json` with the title, WASM/package name, page copy,
+3. Change the `macroquad-toolkit` dependency path in `Cargo.toml` from
+   `../../macroquad-toolkit` to `../macroquad-toolkit`. The former is correct
+   only while the template remains nested inside `rust_management/`.
+4. Update `assets/data/game_config.json`.
+5. Replace `actions.json` with your game data.
+6. Add externally loaded textures to both
+   `assets/data/texture_manifest.json` and `asset_registry.json`. Keep embedded
+   JSON data out of the registry. If the game adds other runtime-loaded assets,
+   list each exact `assets/...` path in the registry as well.
+7. Update `game_page.json` with the title, WASM/package name, page copy,
    controls, and `roost_slug` (`rust_<your_game_dir>`). The publisher generates
    `index.html` from this file and the shared web template; do not create a
    hand-maintained game `index.html`.
-7. Add a root-level 16:9 `catalog_thumbnail.png` showing the title/menu screen.
-8. Update the capture prefix/scenes in `scripts/capture_ui.ps1` if the package
+8. Add a root-level 16:9 `catalog_thumbnail.png` showing the title/menu screen.
+9. Update the capture prefix/scenes in `scripts/capture_ui.ps1` if the package
    name and environment-variable prefix differ.
-9. Run `cargo fmt`, `cargo test`, `cargo clippy --all-targets --all-features --
+10. Run `cargo fmt`, `cargo test`, `cargo clippy --all-targets --all-features --
    -D warnings`, then `./publish.ps1` from the new game folder.
 
 For the complete setup, Git, architecture, and publishing checklist, read the
