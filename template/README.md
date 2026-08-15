@@ -42,7 +42,15 @@ cargo test --manifest-path template/Cargo.toml
 3. Update `assets/data/game_config.json`.
 4. Replace `actions.json` with your game data.
 5. Add textures to `assets/data/texture_manifest.json`.
-6. Update `index.html` to load the new wasm filename.
-7. In `index.html`, set the bug-report widget's `data-roost-slug` to `rust_<your_game_dir>`
-   (matching the folder name) so player reports attach to the right project. The
-   shared `../bug-report.css` / `../bug-report.js` assets need no changes.
+6. Update `game_page.json` with the title, WASM/package name, page copy,
+   controls, and `roost_slug` (`rust_<your_game_dir>`). The publisher generates
+   `index.html` from this file and the shared web template; do not create a
+   hand-maintained game `index.html`.
+7. Add a root-level 16:9 `catalog_thumbnail.png` showing the title/menu screen.
+8. Update the capture prefix/scenes in `scripts/capture_ui.ps1` if the package
+   name and environment-variable prefix differ.
+9. Run `cargo fmt`, `cargo test`, `cargo clippy --all-targets --all-features --
+   -D warnings`, then `./publish.ps1` from the new game folder.
+
+For the complete setup, Git, architecture, and publishing checklist, read the
+management repository's `docs/onboarding/README.md`.

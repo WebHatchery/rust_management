@@ -1,5 +1,8 @@
 # Shared Project Documents
 
+New collaborators should start with the complete
+[WebHatchery Rust Games onboarding guide](onboarding/README.md).
+
 This folder is the canonical source for the shared RustGames project documents:
 
 - `AGENTS.md`

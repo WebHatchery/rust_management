@@ -283,7 +283,8 @@ if was_pressed(x, y, w, h) { /* Left click pressed on area */ }
 ### 8.1 Required Files
 Every game must have these files for deployment:
 - `publish.ps1` – Build and deploy script
-- `index.html` – WebGL host page
+- `game_page.json` – Per-game metadata used to generate the WebGL host page
+- `catalog_thumbnail.png` – Root-level catalog image
 
 ### 8.2 Build Targets
 The game must build for:
@@ -294,11 +295,11 @@ The game must build for:
 After meaningful changes, run `.\publish.ps1` with no parameters from the affected project directory.
 
 ### 8.4 WebGL Requirements
-The `index.html` must:
-- Load `mq_js_bundle.js` (Miniquad loader)
-- Call `load("game_name.wasm")`
-- Include canvas with `id="glcanvas"`
-- Use `image-rendering: pixelated` for pixel art
+The publisher generates `dist/webgl/index.html` from
+`rust_management/web/index.template.html` and the game's `game_page.json`.
+Do not maintain a project-root `index.html` for a migrated game. Configure the
+title, WASM name, controls, page copy, canvas behavior, and Project Roost slug
+in `game_page.json`; change the shared template only for catalog-wide behavior.
 
 ### 8.5 Catalog Thumbnail
 Each published game should keep `catalog_thumbnail.png` in the project root. Use a 16:9 title-screen or main-menu capture. The shared publisher deploys the file as `<game_slug>/catalog_thumbnail.png`, and the WebHatchery games catalog uses that stable path for card thumbnails.
