@@ -91,14 +91,15 @@ body.game-playing {
 
 body.game-playing .game-container {
     position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    /* dvh follows the URL bar as it hides; vh above is the fallback for the
-       browsers that predate it. */
-    height: 100dvh;
-    /* The whole point: the canvas takes the shape of the screen instead of the
-       shape the page wanted. */
+    /* The canvas itself stays inside the hardware safe rectangle. Keeping the
+       insets on the game surface, rather than only on the Done button, prevents
+       a notch or home indicator from covering a game's own controls. */
+    top: env(safe-area-inset-top, 0px);
+    right: env(safe-area-inset-right, 0px);
+    bottom: env(safe-area-inset-bottom, 0px);
+    left: env(safe-area-inset-left, 0px);
+    width: auto;
+    height: auto;
     aspect-ratio: auto;
     max-width: none;
     border-radius: 0;
@@ -107,36 +108,6 @@ body.game-playing .game-container {
 
 .play-exit {
     display: none;
-}
-
-/* Turn the tablet sideways.
- *
- * Not a preference. The game lays out at 4:3 and its smallest control is 28
- * logical pixels; for that to reach the 44 CSS pixels every touch guideline
- * asks for, the canvas has to be about 980 CSS pixels across. An iPad in
- * landscape gives 1080 or more and clears it. The same iPad in portrait gives
- * 810, which puts that control at 29 — reachable only because its hit area is
- * grown, and too small to aim at. Saying so is better than letting someone
- * play a game that quietly does not fit their hands. */
-.rotate-note {
-    display: none;
-}
-
-@media (orientation: portrait) and (pointer: coarse) {
-    body.game-playing .rotate-note {
-        display: flex;
-        position: fixed;
-        inset: 0;
-        z-index: 10001;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem;
-        background: rgba(6, 6, 8, 0.94);
-        color: #fff;
-        text-align: center;
-        font-size: 1.1rem;
-        line-height: 1.5;
-    }
 }
 
 body.game-playing .play-exit {
