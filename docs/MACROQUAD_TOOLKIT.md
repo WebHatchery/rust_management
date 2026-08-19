@@ -28,6 +28,7 @@ A collection of common utilities for Macroquad game development, extracted from 
 - **Hover tooltip**: delayed, fading tooltip state (`HoverTooltip`)
 - **Plaques**: ornamented title/menu buttons with corner marks and style hooks
 - **Menu cursor**: wrap-around keyboard selection for pause/settings menus
+- **Optional networking**: frame-polled JSON HTTP for native and WASM clients
 
 ## Usage
 
@@ -82,6 +83,23 @@ let runtime: GameConfig =
 ```
 
 Use `parse_json_labeled` when JSON already arrived as a string. Do not create project-local generic wrappers around `serde_json`; the toolkit provides consistent source names, line/column diagnostics, native/WASM loading, and embedded fallback support.
+
+### Client/server networking (`net` feature)
+
+Authoritative games can enable the optional transport without copying the
+cross-platform HTTP bridge:
+
+```toml
+macroquad-toolkit = { path = "../macroquad-toolkit", features = ["net"] }
+```
+
+The feature provides [`net::HttpClient`] and [`net::Pending<T>`]. The client
+owns its protocol structs, endpoint paths, session lifecycle, retry policy, and
+server; the toolkit owns only request construction, shared headers, JSON
+encoding/decoding, and frame-polled completion. Poll requests once per frame
+with a finite timeout, retain the last safe projection on failure, and retry
+through an application-owned cooldown. The shared RustGames publisher includes
+`quad-net.js` in WebGL packages when this feature is used.
 
 ### Input (`input` module)
 
