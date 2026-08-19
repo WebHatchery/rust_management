@@ -56,11 +56,7 @@ cargo test --manifest-path template/Cargo.toml
 8. Add a root-level 16:9 `catalog_thumbnail.png` showing the title/menu screen.
 9. Update the capture prefix/scenes in `scripts/capture_ui.ps1` if the package
    name and environment-variable prefix differ.
-10. If the game has an itch.io page, update `itch.json` with its owner/game
-   target and stable `html5`/`windows` channels. Run `publish-itch.ps1` from
-   the project directory after the ordinary `publish.ps1`; use `-DryRun` and
-   `-Preview` before the first upload.
-11. Run `cargo fmt`, `cargo test`, `cargo clippy --all-targets --all-features --
+10. Run `cargo fmt`, `cargo test`, `cargo clippy --all-targets --all-features --
    -D warnings`, then `./publish.ps1` from the new game folder.
 
 For the complete setup, Git, architecture, and publishing checklist, read the

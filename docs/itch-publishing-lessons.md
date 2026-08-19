@@ -1,16 +1,18 @@
-# itch.io Publishing Lessons for RustGames
+# itch.io Publishing for RustGames
 
-This note captures the practical lessons from publishing Apartment Manager as a
-Rust + Macroquad WebGL game to itch.io. The recommendations apply to any game
-using the shared RustGames web shell and asset-pack workflow.
+The itch.io workflow is deliberately separate from the WebHatchery catalog
+publisher. `publish.ps1` builds and deploys the catalog; `publish-itch.ps1`
+stages its generated artifacts and sends explicit Butler channel uploads. This
+keeps an itch release from changing preview/production files or the catalog
+index.
 
 ## What went wrong
 
 The normal RustGames catalog deployment and an itch.io HTML5 upload have
 different filesystem layouts. The catalog page can resolve shared files through
 parent paths such as `../shared.css` and `../shared-assets/runtime/...`; an itch
-channel is a standalone package root, so those paths produce an unstyled page or
-a blank canvas.
+channel is a standalone package root, so those paths produce an unstyled page
+or a blank canvas.
 
 The game itself loaded its textures from `assets.zip`, but its loader tried
 `.jpg` before `.png` for every texture. PNG-only files therefore generated 404s
@@ -21,6 +23,27 @@ Finally, browser console URLs are useful release evidence. When the URL still
 contains an older itch build ID, the browser is testing a stale upload or cached
 embed rather than the latest package.
 
+## Repository layout
+
+The shared implementation is `rust_management/publish-itch.ps1`. The workspace
+root `publish-itch.ps1` is a parameter-preserving redirect. Every project has a
+small `publish-itch.ps1` wrapper so the command can be run from that project's
+base directory. A project that has an itch page stores its target and channels
+in `itch.json`:
+
+```json
+{
+  "target": "kalaith/second-story",
+  "channels": {
+    "html5": "html5",
+    "windows": "windows"
+  }
+}
+```
+
+The `target` is the itch owner/game slug, not the local Rust package name.
+Channel names should stay stable across upgrades.
+
 ## Reusable rules
 
 1. **Build a self-contained itch package.** Copy the generated WebGL files plus
@@ -29,9 +52,9 @@ embed rather than the latest package.
    `shared-assets/runtime/mq_js_bundle.js`, never `../...`.
 
 2. **Keep itch packaging separate from catalog packaging.** The normal
-   `dist/webgl` package can remain optimized for the WebHatchery catalog. Use a
-   project or shared `publish-itch.ps1` step to create a separate staging
-   directory rather than weakening the catalog layout for itch.
+   `dist/webgl` package remains optimized for the WebHatchery catalog. The
+   shared `publish-itch.ps1` creates `dist/itch-webgl` and rewrites that copy;
+   it never weakens the catalog layout.
 
 3. **Make asset extension selection deterministic.** If the asset pack contains
    both JPEG and PNG files, choose the known extension first for each asset (or
@@ -71,8 +94,10 @@ From the game directory:
 .\publish.ps1
 cargo fmt -- --check
 cargo test --bin <game_binary>
-.\scripts\publish-itch.ps1 -DryRun
-.\scripts\publish-itch.ps1
+.\publish-itch.ps1 -DryRun
+.\publish-itch.ps1 -Preview
+.\publish-itch.ps1 -Status
+.\publish-itch.ps1
 ```
 
 Then check the channel explicitly:
@@ -82,23 +107,25 @@ butler status <owner>/<game>:html5
 butler status <owner>/<game>:windows
 ```
 
-For the upload script, the dry run should list `index.html`, the WASM file,
-`assets.zip`, the local shared runtime files, and any intended download files.
-It should not list sensitive files, project source, or catalog-only assets that
-are not meant for itch.
+The dry run validates that `index.html` is at the package root, all local
+runtime/WASM/asset references resolve, the Windows download is present when the
+page links to it, and the package stays within itch's HTML5 limits. It should
+not list sensitive files, project source, or catalog-only assets.
 
-## Suggested shared tooling improvement
+Use `-Channel html5` or `-Channel windows` when releasing only one platform.
+Use `-UserVersion <value>` when a human-readable version should be attached to
+the Butler build. The normal Butler build number remains automatic. `-Status`
+is status-only and never uploads.
 
-Every game that publishes to itch should eventually use one shared helper with
-these properties:
+## First release setup
 
-- takes the project directory and itch target as parameters;
-- stages a standalone HTML5 package;
-- rewrites catalog-relative paths;
-- supports `-DryRun`;
-- publishes with Butler and reports the channel/build ID;
-- optionally removes catalog-only widgets;
-- leaves the ordinary RustGames `publish.ps1` workflow unchanged.
+For a new itch page, create the page and configure its description, cover art,
+tags, and embed dimensions manually. After the first Butler upload, mark the
+HTML5 channel as “HTML5 / Playable in browser” and ensure the page kind is
+“HTML”. Verify the Windows channel is tagged as Windows. These page settings
+are not stored in the repository.
 
-That keeps each game’s release command short while preserving the important
-separation between a catalog deployment and an itch.io upload.
+For upgrades, always push to the same configured channel. Butler retains the
+channel history and uploads a patch; creating a new channel creates another
+download slot instead of upgrading the existing one. Keep old legacy web-upload
+files hidden or remove them after the channel build has been verified.

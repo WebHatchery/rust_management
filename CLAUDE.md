@@ -43,6 +43,27 @@ cargo build --release --target wasm32-unknown-unknown      # WebGL/WASM build
 ```
 For tight iteration, prefer `cargo clippy` + `cargo test` over a full publish — that's what each game's CI (`.github/workflows/rust-ci.yml`) actually runs. Only run `publish.ps1` in the specific project directory you changed; don't run workspace-wide publishing (below) without being asked, since it builds and can deploy every game.
 
+**itch.io publishing** is intentionally separate from `publish.ps1`. Each game
+has a `publish-itch.ps1` wrapper and an `itch.json` file when it has an itch
+page. The wrappers forward to `rust_management/publish-itch.ps1`, which stages
+the already-generated `dist/` artifacts as a standalone HTML5 package and
+publishes the configured HTML5 and Windows Butler channels. Run the ordinary
+publisher first, then from the game directory:
+
+```powershell
+.\publish.ps1
+.\publish-itch.ps1 -DryRun
+.\publish-itch.ps1 -Preview
+.\publish-itch.ps1 -Status
+.\publish-itch.ps1
+```
+
+`-Preview` uses Butler's per-file channel diff and never uploads. `-DryRun`
+stages and validates the package, then asks Butler to list what would be sent.
+Never add itch upload behavior to the ordinary publisher or to
+`publish-all.ps1`; external uploads must remain explicit. Keep Butler
+credentials in its local credential store, never in `itch.json` or a script.
+
 **Workspace-wide scripts** (in `rust_management/`, also runnable from the workspace root via the pointers):
 - `.\build_all_webgl.ps1` — runs every game's `publish.ps1`, collects WebGL + Windows artifacts into `Release/`, generates a catalog `index.html`.
 - `.\publish-all.ps1` / `.\publish-all-ftp.ps1` — runs `publish.ps1` in every game subdirectory (excludes `template`, `target`, `assets`, `macroquad-toolkit`).
