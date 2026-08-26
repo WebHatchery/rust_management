@@ -119,3 +119,17 @@ publishing the catalog:
 - public repository URL is included only when the repository is actually public;
 - capture/controls are touch-capable; and
 - a preview publish passes before production or FTP is attempted.
+
+## itch.io releases
+
+itch.io publishing is a separate, explicit workflow. Read the complete
+[itch.io publishing runbook](../itch-publishing-lessons.md) before creating a
+first release. It covers channel planning, self-contained HTML5 packaging,
+demo/full artifact separation, manual storefront and embed settings, Butler
+processing, exact-package browser tests, and the final unauthenticated public
+playcheck.
+
+The critical distinction is that a successful Butler push proves only the
+upload layer. It does not prove that the file is marked browser-playable, that
+the game launches inline, that pricing and visibility are correct, or that the
+newest processed build works on the public page.

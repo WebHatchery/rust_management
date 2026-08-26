@@ -1,131 +1,277 @@
-# itch.io Publishing for RustGames
+# Publishing RustGames on itch.io
 
-The itch.io workflow is deliberately separate from the WebHatchery catalog
-publisher. `publish.ps1` builds and deploys the catalog; `publish-itch.ps1`
-stages its generated artifacts and sends explicit Butler channel uploads. This
-keeps an itch release from changing preview/production files or the catalog
-index.
+This is the catalog-wide runbook for first releases and updates. It incorporates
+the lessons from publishing Idle Hands, where a successful Butler upload still
+required several rounds of page configuration, package changes, and live-browser
+diagnosis before the game was genuinely public and playable.
 
-## What went wrong
+The game-specific release record remains in that game's repository. For example,
+Idle Hands documents its demo split and exact verification evidence in
+`idle_hands/docs/ITCH_PUBLISHING_GUIDE.md`.
 
-The normal RustGames catalog deployment and an itch.io HTML5 upload have
-different filesystem layouts. The catalog page can resolve shared files through
-parent paths such as `../shared.css` and `../shared-assets/runtime/...`; an itch
-channel is a standalone package root, so those paths produce an unstyled page
-or a blank canvas.
+## The release has three separate layers
 
-The game itself loaded its textures from `assets.zip`, but its loader tried
-`.jpg` before `.png` for every texture. PNG-only files therefore generated 404s
-for the missing JPEG path before the PNG path succeeded. The archive was valid;
-the extension probing order was noisy and misleading.
+Treat these as independent gates. Passing one does not prove the next one.
 
-Finally, browser console URLs are useful release evidence. When the URL still
-contains an older itch build ID, the browser is testing a stale upload or cached
-embed rather than the latest package.
+| Layer | Controls | Proven by |
+| --- | --- | --- |
+| Game artifacts | Cargo features, assets, WASM/native builds | Project tests and `publish.ps1` |
+| itch upload | `itch.json`, staging, Butler channels | `publish-itch.ps1 -DryRun` and `-Status` |
+| Storefront | Project kind, upload flags, embed, pricing, visibility | Manual edit-page review and public-page playcheck |
 
-## Repository layout
+Butler uploads files and maintains channel history. It does not make an HTML
+upload browser-playable, choose the embed behavior, set the price, or change a
+Draft project to Public.
+
+## Decide the product split before building
+
+Write down what each channel contains. Do not let the build process decide this
+implicitly.
+
+| Product | Typical channel | Typical access |
+| --- | --- | --- |
+| Browser build or demo | `html5` or `html5-demo` | Played free in the page |
+| Full Windows build | `windows` | Download or pay what you want |
+
+If the browser edition is restricted while Windows is full:
+
+- use a named Cargo feature such as `demo`;
+- build it into a separate target directory such as `target-demo`;
+- stage it in a separate directory from the normal `dist/webgl` output;
+- verify the restriction in the staged browser package;
+- verify the Windows archive is still unrestricted; and
+- restore normal WebHatchery artifacts even when packaging fails. Use a
+  `finally` block when a wrapper temporarily swaps directories.
+
+This separation prevents a demo WASM artifact from contaminating the paid build
+or the normal WebHatchery deployment.
+
+## Repository contract
 
 The shared implementation is `rust_management/publish-itch.ps1`. The workspace
-root `publish-itch.ps1` is a parameter-preserving redirect. Every project has a
-small `publish-itch.ps1` wrapper so the command can be run from that project's
-base directory. A project that has an itch page stores its target and channels
-in `itch.json`:
+root script is a parameter-preserving redirect. Each participating game keeps:
+
+- `publish-itch.ps1`, a small project wrapper;
+- `itch.json`, containing only public target/channel/version configuration; and
+- optionally `itch-index.html`, when the normal WebHatchery page is not suitable
+  inside an itch iframe.
+
+A typical configuration is:
 
 ```json
 {
-  "target": "kalaith/second-story",
+  "target": "owner/game-slug",
   "channels": {
     "html5": "html5",
     "windows": "windows"
-  }
+  },
+  "user_version": "1.0.0"
 }
 ```
 
-The `target` is the itch owner/game slug, not the local Rust package name.
-Channel names should stay stable across upgrades.
+The target is the public itch owner and project slug, not necessarily the Rust
+package name. Keep channel names stable so later pushes update the same download
+slots. Butler credentials belong in Butler's local credential store, never in
+Git. A logged-in account may publish to another account's project when it has
+administrator rights to that project.
 
-## Reusable rules
+Never commit API keys, session credentials, cookies, or secret page URLs.
 
-1. **Build a self-contained itch package.** Copy the generated WebGL files plus
-   every shared stylesheet and runtime bridge into one upload directory. Rewrite
-   `index.html` so itch paths are local, for example `shared.css` and
-   `shared-assets/runtime/mq_js_bundle.js`, never `../...`.
+## First-release storefront setup
 
-2. **Keep itch packaging separate from catalog packaging.** The normal
-   `dist/webgl` package remains optimized for the WebHatchery catalog. The
-   shared `publish-itch.ps1` creates `dist/itch-webgl` and rewrites that copy;
-   it never weakens the catalog layout.
+Create the itch project before the final upload and record the intended values
+in the release issue or game-specific runbook. For the common inline browser
+game plus Windows download model, check the following on the itch edit page.
 
-3. **Make asset extension selection deterministic.** If the asset pack contains
-   both JPEG and PNG files, choose the known extension first for each asset (or
-   store the extension in data). Do not probe a missing extension through a
-   loose-file fallback, because WebGL turns that probe into a visible 404.
+### Project, files, pricing, and visibility
 
-4. **Treat the ZIP as part of the runtime contract.** Verify that the archive
-   contains the exact paths requested by the Rust code, such as
-   `assets/textures/icon_money.png`. Listing the archive is faster and more
-   reliable than inferring its contents from the source directory.
+- Kind of project: **HTML**.
+- Browser upload: **This file will be played in the browser**.
+- Windows upload: **Executable** and **Windows**, not browser-playable.
+- Pricing: the approved model, commonly **$0 or donate**.
+- Visibility: keep Draft during setup; choose **Public — Anyone can view the
+  page** only after the final live check.
 
-5. **Use explicit itch channels.** Publish the browser package to an `html5`
-   channel and the native package to a `windows` channel on the existing game
-   page. Keep the previous upload until the replacement has been tested.
+Keep browser and Windows uploads separate. An attached ZIP is not automatically
+a playable HTML game.
 
-6. **Strip platform-specific widgets when appropriate.** Ko-fi, bug-report, or
-   catalog-only controls can be removed from the itch-specific HTML package
-   without changing the WebHatchery-hosted version.
+### Recommended inline embed settings
 
-7. **Verify the live build, not only Butler's upload.** `butler status` confirms
-   that itch processed the build, but a fresh browser session should also:
+- Run mode: **Embed in page**.
+- Size mode: **Manually set size**.
+- Width and height: the game's tested logical aspect, commonly **1280 × 720**.
+- Mobile friendly: **Enabled**.
+- Automatically start on page load: **Disabled**.
+- Fullscreen button: **Enabled**.
+- Scrollbars: **Disabled**.
+- SharedArrayBuffer support: **Disabled**, unless the game has a tested need.
+- Orientation: **Default**, unless the game deliberately locks orientation.
 
-   - click `Run game`;
-   - confirm the page is styled and the canvas renders;
-   - inspect console errors for 404s and WASM/runtime failures;
-   - check that console URLs refer to the newest build ID.
+Do not select **Click to launch in fullscreen** when the desired experience is
+an inline game. That mode replaces the itch page after Run game is clicked.
 
-8. **Keep credentials outside the repository.** Authenticate Butler once with
-   `butler login`; let it use its local credential file. Never commit an itch API
-   key or place it in a project script.
+## Package the game embed, not another storefront
 
-## Recommended release checklist
+The normal `dist/webgl/index.html` is a complete WebHatchery product page. It
+may contain a title, controls, About copy, downloads, footer, donation widget,
+bug-report widget, and shared files referenced through `../` paths. Nesting that
+page inside itch duplicates the storefront and can break its relative paths.
 
-From the game directory:
+An itch-specific launcher should contain only what the embedded runtime needs:
+
+- a temporary loading state;
+- the canvas;
+- required JavaScript/runtime bridges;
+- focus, touch, context-menu, and resize behavior; and
+- the call that loads the game's WASM module.
+
+The shared publisher copies the package to `dist/itch-webgl`, localizes required
+runtime files, rejects missing or parent-relative references, and checks itch's
+HTML5 file/path/size limits. A game-specific wrapper may replace the generated
+page with `itch-index.html` before shared staging.
+
+For custom launchers:
+
+- make `[hidden]` states explicit in CSS when another display rule could win;
+- never have a `resize` listener dispatch the same event it listens to;
+- preserve the tested canvas aspect ratio in landscape so pointer coordinates
+  match the game's virtual UI; and
+- test portrait behavior independently if the game supports it.
+
+## Preflight and upload procedure
+
+Run from the game directory.
+
+### 1. Validate the normal release
 
 ```powershell
 .\publish.ps1
-cargo fmt -- --check
-cargo test --bin <game_binary>
-.\publish-itch.ps1 -DryRun
-.\publish-itch.ps1 -Preview
-.\publish-itch.ps1 -Status
-.\publish-itch.ps1
 ```
 
-Then check the channel explicitly:
+This must produce the intended full Windows archive and normal WebGL package.
+Also run any project-specific warnings-as-errors, test, and browser gates.
+
+### 2. Stage without uploading
 
 ```powershell
-butler status <owner>/<game>:html5
-butler status <owner>/<game>:windows
+.\publish-itch.ps1 -Channel all -DryRun
 ```
 
-The dry run validates that `index.html` is at the package root, all local
-runtime/WASM/asset references resolve, the Windows download is present when the
-page links to it, and the package stays within itch's HTML5 limits. It should
-not list sensitive files, project source, or catalog-only assets.
+Confirm the printed target and both channels. Inspect `dist/itch-webgl` and
+verify:
 
-Use `-Channel html5` or `-Channel windows` when releasing only one platform.
-Use `-UserVersion <value>` when a human-readable version should be attached to
-the Butler build. The normal Butler build number remains automatic. `-Status`
-is status-only and never uploads.
+- `index.html` is at the package root;
+- the WASM, assets, and runtime bridges exist at the paths the page requests;
+- no local reference begins with `/` or `../`;
+- no source, credentials, catalog-only assets, or unwanted widgets are present;
+- the browser build has the intended demo/full content; and
+- the Windows ZIP has the intended full/demo content.
 
-## First release setup
+`-Preview` asks Butler for a per-file channel diff without uploading. It is
+useful after the local package has passed inspection:
 
-For a new itch page, create the page and configure its description, cover art,
-tags, and embed dimensions manually. After the first Butler upload, mark the
-HTML5 channel as “HTML5 / Playable in browser” and ensure the page kind is
-“HTML”. Verify the Windows channel is tagged as Windows. These page settings
-are not stored in the repository.
+```powershell
+.\publish-itch.ps1 -Channel all -Preview
+```
 
-For upgrades, always push to the same configured channel. Butler retains the
-channel history and uploads a patch; creating a new channel creates another
-download slot instead of upgrading the existing one. Keep old legacy web-upload
-files hidden or remove them after the channel build has been verified.
+### 3. Test the exact staged browser package
+
+Do not substitute the normal WebHatchery preview. Serve `dist/itch-webgl` using
+the project's shipping-browser harness and exercise at least:
+
+- loading-state removal and first rendered frame;
+- touch/click navigation and a complete core interaction;
+- audio activation after user input;
+- save, reload, and recovery;
+- desktop resize, the configured embed size, and supported mobile layouts;
+- missing requests, page errors, console errors, WASM panics, and WebGL errors;
+- any demo lock or purchase path; and
+- a visible return/restart path.
+
+Custom fonts need special attention on WebGL. Unbounded glyph prewarming can
+overflow a font atlas; entirely lazy growth can replace a GPU texture while a
+frame still references it. If a game uses a custom font, warm a bounded,
+representative glyph set at the sizes the interface actually uses before the
+first visible UI frame, then keep the console clean while opening later screens.
+
+### 4. Upload explicitly
+
+```powershell
+.\publish-itch.ps1 -Channel all
+```
+
+Or isolate a platform:
+
+```powershell
+.\publish-itch.ps1 -Channel html5
+.\publish-itch.ps1 -Channel windows
+```
+
+Use `-UserVersion <value>` when attaching a human-readable version. Do not add
+itch upload behavior to the ordinary publisher or batch catalog publishers;
+external uploads must remain an explicit action.
+
+### 5. Wait for itch processing
+
+```powershell
+.\publish-itch.ps1 -Channel html5 -Status
+.\publish-itch.ps1 -Channel windows -Status
+```
+
+A successful push may still be processing. Wait for the newest build to show as
+ready and record its build number. Otherwise a public-page test can accidentally
+prove an older cached build.
+
+### 6. Verify the public product
+
+Use a fresh browser tab or session and check the page as a player:
+
+1. The page says **Published**, not Draft or Restricted.
+2. **Run game** appears before launch when autostart is disabled.
+3. Launch keeps the itch header, description, downloads, and comments visible.
+4. The iframe contains the game canvas and loading state, not a second storefront.
+5. The game reaches its first interactive screen and touch/click input lands on
+   the visible controls.
+6. The console and network panel have no panics, `RuntimeError: unreachable`,
+   deleted-texture errors, or failed local assets.
+7. Logged asset URLs contain the newest processed itch build number.
+8. The Windows download has the intended label, platform, and pricing/access.
+9. The browser and Windows editions contain the correct demo/full content.
+
+Only after these checks should a first release move from Draft to Public. After
+saving visibility, repeat the public URL check in a session that is not relying
+on administrator access.
+
+## Fast troubleshooting map
+
+| Symptom | First check |
+| --- | --- |
+| Upload downloads instead of playing | Project kind and browser-playable upload flag |
+| Launch replaces the itch page | Embed mode is fullscreen/maximized instead of inline |
+| Duplicate title/About/controls/footer | Packaged `index.html` is the WebHatchery page |
+| Blank or black canvas | Console for a WASM panic and the build number in asset URLs |
+| Missing style/runtime or 404s | Parent-relative paths or asset-extension probing |
+| Deleted WebGL texture errors | Custom font atlas growing during a visible frame |
+| Loading text covers the game | A CSS display rule overrides the `hidden` attribute |
+| Stack overflow during resize | A resize handler dispatches its own event |
+| Touch misses visible controls | Canvas aspect ratio and virtual-UI letterboxing |
+| Old behavior after upload | New build is processing or the iframe is cached |
+| Admin can view but public cannot | Visibility is Draft or Restricted |
+| Browser has full-only content | Demo feature/artifact was not used for HTML5 |
+| Windows is unexpectedly restricted | Demo artifact contaminated the normal build path |
+
+## Release record to keep in each game
+
+Record enough detail that the next release does not require rediscovery:
+
+- public itch target and stable channel names;
+- what each channel contains and how demo/full separation is enforced;
+- approved pricing, visibility, and embed settings;
+- exact local validation and shipping-browser commands;
+- privacy/analytics state;
+- newest verified Butler build numbers and release date;
+- public-page verification result; and
+- any game-specific launcher, font, resize, input, or asset constraints.
+
+Build numbers are evidence, not configuration. Always validate the newest
+processed build reported by Butler.
