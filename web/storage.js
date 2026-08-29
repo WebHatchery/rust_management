@@ -10,8 +10,10 @@ var storage_plugin = {
             var value = consume_js_object(value_obj);
             try {
                 localStorage.setItem(key, value);
+                return true;
             } catch (e) {
                 console.error("storage_set failed:", e);
+                return false;
             }
         };
 
