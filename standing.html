@@ -5,6 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Standing</title>
     <link rel="stylesheet" href="web/shared.css">
+    <style>
+        .table-scroll {
+            overflow-x: auto;
+        }
+
+        .table-scroll .data-table {
+            min-width: 1000px;
+        }
+
+        .data-table th {
+            white-space: normal;
+        }
+
+        .data-table .col-name {
+            white-space: normal;
+        }
+
+        .data-table .col-readiness {
+            color: var(--text-main);
+            font-weight: 600;
+            min-width: 150px;
+        }
+
+        .data-table .readiness-release { color: #66bb6a; }
+        .data-table .readiness-near { color: #9ccc65; }
+        .data-table .readiness-alpha { color: #ffca28; }
+        .data-table .readiness-slice { color: #ffb74d; }
+        .data-table .readiness-bound { color: #ff8a65; }
+        .data-table .readiness-foundation { color: #ef5350; }
+    </style>
 </head>
 <body>
     <div class="game-page">
@@ -20,12 +50,14 @@
             <div class="sidebar-section" id="criteria"></div>
             <div id="extra"></div>
 
-            <table class="data-table">
-                <thead>
-                    <tr id="tableHead"></tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
+            <div class="table-scroll">
+                <table class="data-table">
+                    <thead>
+                        <tr id="tableHead"></tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
 
             <div class="game-footer">
                 <p>This page renders <code>standing.md</code> live via JavaScript &mdash; edit the Markdown file and reload; nothing here is duplicated by hand.</p>
@@ -35,8 +67,8 @@
 
     <script>
         const SOURCE = 'standing.md';
-        // Columns map 1:1 to standing.md's table, in order: Rank | Game | Genre | Est. to finish | Brief read.
-        const COLUMN_CLASSES = ['', 'col-name', 'col-genre', 'col-estimate', 'col-brief'];
+        // Columns map 1:1 to standing.md: Rank | Game | Readiness | Ship window | Deep dive.
+        const COLUMN_CLASSES = ['', 'col-name', 'col-readiness', 'col-estimate', 'col-brief'];
 
         function escapeHtml(s) {
             return s
@@ -124,7 +156,7 @@
                 const html = `<p>${inlineMd(p)}</p>`;
                 if (/^Scope:|^Last updated:/.test(p)) {
                     metaEl.insertAdjacentHTML('beforeend', html);
-                } else if (/^Criteria:|^\*\*Finish estimates:\*\*/.test(p)) {
+                } else if (/^Method:|^Scoring:|^Ship windows:|^Evidence pass:/.test(p)) {
                     criteriaEl.insertAdjacentHTML('beforeend', html);
                 } else {
                     extraEl.insertAdjacentHTML('beforeend', `<div class="callout">${html}</div>`);
@@ -150,6 +182,16 @@
                         const td = document.createElement('td');
                         td.innerHTML = inlineMd(cell);
                         if (COLUMN_CLASSES[i]) td.className = COLUMN_CLASSES[i];
+                        if (i === 2) {
+                            const score = Number((cell.match(/\d+/) || [0])[0]);
+                            const band = score >= 90 ? 'release'
+                                : score >= 80 ? 'near'
+                                : score >= 70 ? 'alpha'
+                                : score >= 60 ? 'slice'
+                                : score >= 40 ? 'bound'
+                                : 'foundation';
+                            td.classList.add(`readiness-${band}`);
+                        }
                         tr.appendChild(td);
                     });
                     body.appendChild(tr);

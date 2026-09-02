@@ -9,6 +9,10 @@ param(
     [switch]$DryRun = $false
 )
 
+# Compress-Archive progress records are noisy inside the transcript's project
+# pipeline and can be recorded as false "pipeline stopped" errors.
+$ProgressPreference = "SilentlyContinue"
+
 # This script lives in rust_management/ (alongside publish.ps1); the games,
 # Release/ and publish-logs/ live in its parent, the Cargo workspace root.
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -41,7 +45,8 @@ Write-Host ""
 try {
     Write-Host "=== Publishing shared RustGames assets ===" -ForegroundColor Cyan
     & $rootPublisher -RustGamesSharedAssetsFtpUpload -DryRun:$DryRun
-    if (-not $? -or ($LASTEXITCODE -ne 0 -and $null -ne $LASTEXITCODE)) {
+    $sharedAssetsSucceeded = $?
+    if (-not $sharedAssetsSucceeded) {
         Write-Host "ERROR publishing shared RustGames assets" -ForegroundColor Red
         $exitCode = 1
         return
@@ -72,7 +77,6 @@ try {
         $started = Get-Date
         Push-Location $subDir
         try {
-            $global:LASTEXITCODE = 0
             & $rootPublisher `
                 -RustGamePublish `
                 -ProjectDir $subDir `
@@ -82,10 +86,10 @@ try {
                 -SkipFtpSharedAssets `
                 -SkipFtpCatalog `
                 -DryRun:$DryRun
-
-            if (-not $? -or ($LASTEXITCODE -ne 0 -and $null -ne $LASTEXITCODE)) {
+            $projectSucceeded = $?
+            if (-not $projectSucceeded) {
                 $failedProjects += $projectName
-                Write-Host "ERROR publishing $projectName (exit code $LASTEXITCODE)" -ForegroundColor Red
+                Write-Host "ERROR publishing $projectName" -ForegroundColor Red
             } else {
                 $publishedProjects += $projectName
                 Write-Host ("OK: $projectName ({0:n1}s)" -f ((Get-Date) - $started).TotalSeconds) -ForegroundColor Green
@@ -111,7 +115,8 @@ try {
     Write-Host ""
     Write-Host "=== Publishing RustGames catalog ===" -ForegroundColor Cyan
     & $rootPublisher -RustGamesCatalogFtpUpload -DryRun:$DryRun
-    if (-not $? -or ($LASTEXITCODE -ne 0 -and $null -ne $LASTEXITCODE)) {
+    $catalogSucceeded = $?
+    if (-not $catalogSucceeded) {
         Write-Host "ERROR publishing RustGames catalog" -ForegroundColor Red
         $exitCode = 1
         return

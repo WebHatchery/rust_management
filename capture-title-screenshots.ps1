@@ -5,7 +5,7 @@ param(
     [int]$Height = 720,
     [string]$OutputDir = "title_screeshots",
     [string]$ProjectThumbnailName = "catalog_thumbnail.png",
-    [string]$PreviewRoot = "D:\xampp\htdocs\games",
+    [string]$PreviewRoot = "\\wsl.localhost\Ubuntu\home\kalai\dev\games",
     [string]$BaseUrl = "http://127.0.0.1/games",
     [string]$ChromePath = "C:\Program Files\Google\Chrome\Application\chrome.exe"
 )

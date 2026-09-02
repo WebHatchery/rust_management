@@ -31,6 +31,10 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+# Compress-Archive progress records become misleading "pipeline stopped"
+# transcript entries when this publisher is invoked inside publish-all-ftp's
+# ForEach-Object pipeline. Package progress is not useful in the transcript.
+$ProgressPreference = "SilentlyContinue"
 
 # This script lives in rust_management/ alongside the shared web shell, docs and
 # tooling. The games, the Cargo workspace and the build outputs (Release/,
@@ -332,10 +336,13 @@ function Get-MacroquadBundlePath {
     if (-not $version) { return $null }
 
     $registry = Join-Path $env:USERPROFILE '.cargo/registry/src'
-    $candidate = Get-ChildItem -Path $registry -Directory -ErrorAction SilentlyContinue |
+    # Materialize all matching candidates before selecting one. Select-Object
+    # -First 1 stops the upstream pipeline early, which PowerShell records as a
+    # misleading PipelineStoppedError in a batch transcript.
+    $candidates = @(Get-ChildItem -Path $registry -Directory -ErrorAction SilentlyContinue |
         ForEach-Object { Join-Path $_.FullName "macroquad-$version\js\mq_js_bundle.js" } |
-        Where-Object { Test-Path $_ } |
-        Select-Object -First 1
+        Where-Object { Test-Path $_ })
+    $candidate = if ($candidates.Count -gt 0) { $candidates[0] } else { $null }
     if (-not $candidate) {
         Write-Warning "macroquad $version is not vendored; the complete browser runtime is unavailable"
     }
@@ -515,6 +522,70 @@ function Remove-RustGameObsoleteLocalSharedFiles {
         $path = Join-Path $GameDir $relativePath
         if (Test-Path $path -PathType Leaf) {
             Remove-Item -LiteralPath $path -Force
+        }
+    }
+}
+
+function Remove-RustGameObsoleteLocalReleaseFiles {
+    param(
+        [pscustomobject]$Info,
+        [string]$DeployDir,
+        [string]$PackageDir,
+        [string]$WindowsArchiveName
+    )
+
+    if ([string]::IsNullOrWhiteSpace($DeployDir) -or -not (Test-Path $DeployDir)) {
+        return
+    }
+
+    $expectedNames = [System.Collections.Generic.HashSet[string]]::new(
+        [System.StringComparer]::OrdinalIgnoreCase
+    )
+
+    if (-not [string]::IsNullOrWhiteSpace($PackageDir) -and (Test-Path $PackageDir)) {
+        Get-ChildItem -LiteralPath $PackageDir -File | ForEach-Object {
+            # The Windows archive is copied separately beside the deployed
+            # WebGL package, so it is not expected inside the staging tree.
+            if ($_.Name -notlike "*_windows.zip") {
+                [void]$expectedNames.Add($_.Name)
+            }
+        }
+    }
+
+    if (-not [string]::IsNullOrWhiteSpace($WindowsArchiveName)) {
+        # Preserve the current Windows archive during WebGL-only publishes;
+        # the archive may not exist in dist/ for that mode.
+        [void]$expectedNames.Add($WindowsArchiveName)
+    }
+
+    # Only remove file types the publisher can identify as its own output.
+    # A deployed game directory can also contain operational files such as
+    # .htaccess, server PID files, or one-off verification pages; absence from
+    # dist/webgl is not proof that those files are obsolete release artifacts.
+    $assetPackNames = [System.Collections.Generic.HashSet[string]]::new(
+        [System.StringComparer]::OrdinalIgnoreCase
+    )
+    if ($null -ne $Info -and -not [string]::IsNullOrWhiteSpace($Info.ProjectRoot)) {
+        foreach ($pack in (Get-RustGameAssetPackConfig $Info.ProjectRoot)) {
+            $sourceRel = Get-OptionalPropertyValue $pack @("source", "Source")
+            if ([string]::IsNullOrWhiteSpace($sourceRel)) { continue }
+
+            $sourceRel = $sourceRel.ToString().Replace('\', '/').Trim('/')
+            $outputRel = Get-OptionalPropertyValue $pack @("output", "Output") "$sourceRel.zip"
+            $outputRel = $outputRel.ToString().Replace('\', '/').Trim('/')
+            if (-not $outputRel.Contains('/')) {
+                [void]$assetPackNames.Add($outputRel)
+            }
+        }
+    }
+
+    Get-ChildItem -LiteralPath $DeployDir -File | ForEach-Object {
+        $isPublisherOwned = $_.Extension -ieq ".wasm" -or
+            $_.Name -like "*_windows.zip" -or
+            $assetPackNames.Contains($_.Name)
+        if ($isPublisherOwned -and -not $expectedNames.Contains($_.Name)) {
+            Remove-Item -LiteralPath $_.FullName -Force
+            Write-Host "  Removed obsolete local release file: $($_.Name)" -ForegroundColor Gray
         }
     }
 }
@@ -1740,22 +1811,44 @@ function Get-FtpFileSize {
 }
 
 function Test-StreamsEqual {
-    param([System.IO.Stream]$Left, [System.IO.Stream]$Right)
+    param(
+        [System.IO.Stream]$Left,
+        [System.IO.Stream]$Right,
+        [long]$ExpectedBytes
+    )
 
     $bufferSize = 1048576
-    $leftReader = [System.IO.BinaryReader]::new($Left)
-    $rightReader = [System.IO.BinaryReader]::new($Right)
+    $remaining = $ExpectedBytes
 
-    while ($true) {
-        $leftBytes = $leftReader.ReadBytes($bufferSize)
-        $rightBytes = $rightReader.ReadBytes($bufferSize)
+    # Read exactly the known local file length. Some FTP response streams
+    # dispose their NetworkStream as soon as the final byte is consumed; an
+    # extra EOF read would then produce a misleading disposed-object error.
+    while ($remaining -gt 0) {
+        $chunkSize = [int][Math]::Min([long]$bufferSize, $remaining)
+        $leftBytes = [byte[]]::new($chunkSize)
+        $rightBytes = [byte[]]::new($chunkSize)
+        $leftRead = 0
+        $rightRead = 0
 
-        if ($leftBytes.Length -ne $rightBytes.Length) { return $false }
-        if ($leftBytes.Length -eq 0) { return $true }
+        while ($leftRead -lt $chunkSize) {
+            $read = $Left.Read($leftBytes, $leftRead, $chunkSize - $leftRead)
+            if ($read -le 0) { return $false }
+            $leftRead += $read
+        }
+        while ($rightRead -lt $chunkSize) {
+            $read = $Right.Read($rightBytes, $rightRead, $chunkSize - $rightRead)
+            if ($read -le 0) { return $false }
+            $rightRead += $read
+        }
+
         if (-not [System.Linq.Enumerable]::SequenceEqual($leftBytes, $rightBytes)) {
             return $false
         }
+
+        $remaining -= $chunkSize
     }
+
+    return $true
 }
 
 function Test-FtpFileContentEqual {
@@ -1768,7 +1861,7 @@ function Test-FtpFileContentEqual {
             $responseStream = $response.GetResponseStream()
             $fileStream = [System.IO.File]::OpenRead($LocalPath)
             try {
-                return (Test-StreamsEqual $fileStream $responseStream)
+                return (Test-StreamsEqual $fileStream $responseStream ([long]$fileStream.Length))
             } finally {
                 $fileStream.Close()
                 if ($null -ne $responseStream) { $responseStream.Close() }
@@ -2369,8 +2462,22 @@ function Record-ProjectRoostDeployment {
     $actor = $env:USERNAME
     if ([string]::IsNullOrWhiteSpace($actor)) { $actor = $env:USER }
 
+    $pageData = if (-not [string]::IsNullOrWhiteSpace($ProjectDir)) {
+        Get-RustGamePageData $ProjectDir
+    } else {
+        $null
+    }
+    $gameTitle = if ($null -ne $pageData) { [string]$pageData.title } else { $null }
+    $gameDescription = if ($null -ne $pageData -and $null -ne $pageData.about -and $pageData.about.Count -gt 0) {
+        [string]$pageData.about[0]
+    } else {
+        $null
+    }
+
     $body = @{
         project = $trackingProject
+        game_title = $gameTitle
+        game_description = $gameDescription
         environment = $Environment
         target_type = $TargetType
         status = $Status
@@ -2668,7 +2775,7 @@ function Publish-RustGameProject {
     $buildWebGL = -not $WindowsOnly -and -not $DeployOnly
 
     $dotEnvConfig = Import-DotEnvFile $EnvFile
-    $previewRoot = Get-ConfigValue $dotEnvConfig "PREVIEW_ROOT" "D:\xampp\htdocs"
+    $previewRoot = Get-ConfigValue $dotEnvConfig "PREVIEW_ROOT" "\\wsl.localhost\Ubuntu\home\kalai\dev"
     $productionRoot = Get-ConfigValue $dotEnvConfig "PRODUCTION_ROOT" "D:\WebHatcheryProduction"
     $deployRoot = $(if ($Production) { $productionRoot } else { $previewRoot })
     $environmentLabel = $(if ($Production) { "Production" } else { "Preview" })
@@ -2858,6 +2965,11 @@ function Publish-RustGameProject {
             }
 
             Remove-RustGameObsoleteLocalAssetPackSources $info $deployDir $webGLSourceDir
+            Remove-RustGameObsoleteLocalReleaseFiles `
+                -Info $info `
+                -DeployDir $deployDir `
+                -PackageDir $webGLSourceDir `
+                -WindowsArchiveName (Get-WindowsZipFileName $info)
             Remove-RustGameSharedFontDuplicate $deployDir
             Update-PackagedIndexPaths (Join-Path $deployDir "index.html")
             Sync-RustGameCatalogThumbnail -Info $info -DestinationDir $deployDir -DryRun:$DryRun | Out-Null
@@ -2954,22 +3066,13 @@ if ($Help -or (-not $RustGamePublish -and -not $RustGameFtpUpload -and -not $Rus
     Write-Host "  .\publish.ps1 -RustGamesCatalogFtpUpload [-DryRun]"
     Write-Host "  .\publish.ps1 -RustGameRecordDeployment -ProjectName <name> [-ProjectSlug <slug>] -ProjectDir <path> -SourceDir <path> -DeployDir <path> -Environment <preview|local_production|production> [-DryRun]"
     Write-Host "  .\publish.ps1 -RustGameArchive -ProjectDir <path> [-Unarchive] [-Production|-p] [-DryRun]  # marks/unmarks the project archived in Project Roost, no build or deploy"
-    exit 0
-}
-
-if ($RustGamesSharedAssetsFtpUpload) {
+} elseif ($RustGamesSharedAssetsFtpUpload) {
     Publish-RustGamesSharedAssetsToFtp -DryRun:$DryRun
-    exit 0
-}
-
-if ($RustGamesCatalogFtpUpload) {
+} elseif ($RustGamesCatalogFtpUpload) {
     Publish-RustGamesCatalogToFtp `
         -SourceDir (Join-Path $WorkspaceRoot "Release") `
         -DryRun:$DryRun
-    exit 0
-}
-
-if ($RustGamePublish) {
+} elseif ($RustGamePublish) {
     Publish-RustGameProject `
         -ProjectDir $ProjectDir `
         -SkipBuild:$SkipBuild `
@@ -2981,10 +3084,7 @@ if ($RustGamePublish) {
         -SkipFtpCatalog:$SkipFtpCatalog `
         -SkipFtpSharedAssets:$SkipFtpSharedAssets `
         -DryRun:$DryRun
-    exit 0
-}
-
-if ($RustGameRecordDeployment) {
+} elseif ($RustGameRecordDeployment) {
     Record-ProjectRoostDeployment `
         -ProjectName $ProjectName `
         -ProjectSlug $ProjectSlug `
@@ -2997,13 +3097,9 @@ if ($RustGameRecordDeployment) {
         -PublishMode $PublishMode `
         -Status $Status `
         -DryRun:$DryRun
-}
-
-if ($RustGameFtpUpload) {
+} elseif ($RustGameFtpUpload) {
     Publish-RustGameToFtp -ProjectName $ProjectName -ProjectSlug $ProjectSlug -ProjectDir $ProjectDir -SourceDir $SourceDir -DryRun:$DryRun
-}
-
-if ($RustGameArchive) {
+} elseif ($RustGameArchive) {
     $info = Get-RustGameProjectInfo -ProjectRoot $ProjectDir
     Set-ProjectRoostArchived `
         -ProjectName $info.GameSlug `
@@ -3012,5 +3108,4 @@ if ($RustGameArchive) {
         -Archived:(-not $Unarchive) `
         -Environment $(if ($Production) { "local_production" } else { "preview" }) `
         -DryRun:$DryRun
-    exit 0
 }

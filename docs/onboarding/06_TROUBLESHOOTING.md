@@ -52,7 +52,7 @@ that the game is not nested inside `rust_management`.
 
 ## Preview deploy succeeds but the URL is unavailable
 
-The default output is `D:\xampp\htdocs\games\<game>`. Publishing copies files;
+The default output is `\\wsl.localhost\Ubuntu\home\kalai\dev\games\<game>`. Publishing copies files;
 it does not guarantee Apache/XAMPP is running. Start the configured web server,
 or set `PREVIEW_ROOT` to a directory served by your local server. Browser games
 should be served over HTTP rather than opened directly with `file://`.

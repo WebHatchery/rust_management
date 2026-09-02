@@ -31,7 +31,7 @@ Never commit the real `.env`. A redacted template is provided at
 
 | Name | Required | Default | Purpose |
 | --- | --- | --- | --- |
-| `PREVIEW_ROOT` | No | `D:\xampp\htdocs` | Local preview deployment root; games go under `games/<slug>` |
+| `PREVIEW_ROOT` | No | `\\wsl.localhost\Ubuntu\home\kalai\dev` | Local preview deployment root; games go under `games/<slug>` |
 | `PRODUCTION_ROOT` | No | `D:\WebHatcheryProduction` | Local production staging root |
 | `FTP_SERVER` | FTP only | none | FTP hostname, without `ftp://` |
 | `FTP_USERNAME` | FTP only | none | FTP account name |
