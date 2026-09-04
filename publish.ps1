@@ -1062,6 +1062,7 @@ function New-RustGameIndexHtml {
         "{{ROOST_SLUG}}"       = $roostSlug
         "{{POINTER_LOCK}}"     = $pointerLock
         "{{CUSTOM_CSS}}"       = ""
+        "{{PAGE_CLASS}}"       = $(if ($pageData.layout -eq "viewport") { "viewport-game" } else { "" })
         "{{CUSTOM_JS}}"        = ""
         "{{PRE_LOAD_JS}}"      = ""
         "{{POST_LOAD_JS}}"     = ""

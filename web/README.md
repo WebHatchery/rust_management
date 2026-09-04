@@ -35,6 +35,7 @@ else has a default derived from the directory name.
   "status": { "text": "Playable", "class": "playable" },  // class: playable | in-development
   "controls_hint": "Click the game canvas to start",
   "canvas_rendering": "pixelated",  // pixelated | auto
+  "layout": "viewport",            // optional: canvas fills viewport; hides page chrome
   "canvas": { "width": 1280, "height": 720 },   // omit to leave the canvas unsized
 
   "about": ["<p> inner HTML, one entry per paragraph"],

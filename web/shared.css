@@ -11,6 +11,34 @@
     --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Opt-in canvas-only pages; the game owns its title and navigation. */
+body.viewport-game {
+    overflow: hidden;
+    overscroll-behavior: none;
+}
+body.viewport-game .game-page {
+    width: 100%;
+    max-width: none;
+    padding: 0;
+}
+body.viewport-game .game-header,
+body.viewport-game .game-controls,
+body.viewport-game .game-info,
+body.viewport-game .game-footer,
+body.viewport-game #roost-bug-report {
+    display: none;
+}
+body.viewport-game .game-container {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+    aspect-ratio: auto;
+    border-radius: 0;
+    box-shadow: none;
+}
+
 body {
     margin: 0;
     padding: 0;
