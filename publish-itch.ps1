@@ -252,7 +252,7 @@ function Rewrite-ItchIndex {
     $Index = [regex]::Replace($Index, '(?s)\s*<!-- Ko-fi support widget.*?kofiWidgetOverlay\.draw.*?</script>', '')
     $Index = [regex]::Replace($Index, '<a href="\.\./"[^>]*>.*?</a>', '')
     $Index = $Index.Replace('<a href="/">Web Hatchery</a>', 'Web Hatchery')
-    $Index = $Index.Replace('href="../shared.css"', 'href="shared.css"')
+    $Index = $Index.Replace('href="../shared.css', 'href="shared.css')
     $Index = [regex]::Replace($Index, '(?<attribute>(?:src|href)=")\.\./shared-assets/', '${attribute}shared-assets/')
     $Index = [regex]::Replace($Index, 'href="dist/([^"?]+)"', 'href="$1"')
     return $Index

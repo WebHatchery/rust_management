@@ -28,6 +28,13 @@ body.viewport-game .game-footer,
 body.viewport-game #roost-bug-report {
     display: none;
 }
+/* Widgets are appended to body after load; keep their launchers off the
+   canvas so they cannot intercept the game's bottom-row touch controls. */
+body.viewport-game .roost-br-trigger,
+body.viewport-game .floatingchat-container-wrap,
+body.viewport-game .floatingchat-container-wrap-mobi {
+    display: none !important;
+}
 body.viewport-game .game-container {
     position: fixed;
     inset: 0;

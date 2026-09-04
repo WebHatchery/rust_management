@@ -1104,7 +1104,14 @@ function Update-PackagedIndexPaths {
     if (-not (Test-Path $IndexPath)) { return }
 
     $content = Get-Content $IndexPath -Raw -Encoding UTF8
-    $content = $content -replace 'href="(?:\.\./)?shared\.css"', 'href="../shared.css"'
+    # Catalog CSS is served with a long cache lifetime. A new game shell must
+    # request the matching stylesheet even when the browser cached an old one.
+    $stylesheetPath = Join-Path (Get-RustGameWebSourceDir) "shared.css"
+    if (-not (Test-Path $stylesheetPath -PathType Leaf)) {
+        throw "Required catalog stylesheet not found: $stylesheetPath"
+    }
+    $stylesheetVersion = (Get-FileHash -LiteralPath $stylesheetPath -Algorithm SHA256).Hash.Substring(0, 16).ToLowerInvariant()
+    $content = $content -replace 'href="(?:\.\./)?shared\.css(?:\?[^"]*)?"', "href=`"../shared.css?v=$stylesheetVersion`""
     $content = $content -replace 'src="(?:\./)?mq_js_bundle\.js([^"]*)"', 'src="../shared-assets/runtime/mq_js_bundle.js$1"'
     $content = $content -replace 'src="(?:\./)?sapp_jsutils\.js([^"]*)"', 'src="../shared-assets/runtime/sapp_jsutils.js$1"'
     $content = $content -replace 'href="dist/([^"]+_windows\.zip)"', 'href="$1"'

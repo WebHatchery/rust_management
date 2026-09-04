@@ -64,6 +64,22 @@ try {
     }
 
     $info = [pscustomobject]@{ ProjectRoot = $projectRoot }
+    $indexPath = Join-Path $packageDir "index.html"
+    Write-Utf8File $indexPath '<link href="../shared.css?old=1"><script src="mq_js_bundle.js"></script>'
+    Update-PackagedIndexPaths $indexPath
+    $versionedIndex = Get-Content -LiteralPath $indexPath -Raw
+    $expectedVersion = (Get-FileHash (Join-Path (Get-RustGameWebSourceDir) "shared.css") -Algorithm SHA256).Hash.Substring(0, 16).ToLowerInvariant()
+    Assert-Condition ($versionedIndex.Contains("../shared.css?v=$expectedVersion")) "Packaged stylesheet did not receive its content version."
+    Update-PackagedIndexPaths $indexPath
+    Assert-Condition ((Get-Content -LiteralPath $indexPath -Raw) -eq $versionedIndex) "Repeated packaging changed stable stylesheet references."
+
+    # Load only the pure itch rewrite function; never dispatch Butler in this test.
+    $itchAst = [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $managementRoot "publish-itch.ps1"), [ref]$null, [ref]$null)
+    $rewrite = $itchAst.Find({ param($node) $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -eq "Rewrite-ItchIndex" }, $true)
+    . ([scriptblock]::Create($rewrite.Extent.Text))
+    $itchIndex = Rewrite-ItchIndex $versionedIndex
+    Assert-Condition ($itchIndex.Contains("href=`"shared.css?v=$expectedVersion`"")) "Itch package did not localize the versioned stylesheet."
+
     Remove-RustGameObsoleteLocalReleaseFiles `
         -Info $info `
         -DeployDir $deployDir `
