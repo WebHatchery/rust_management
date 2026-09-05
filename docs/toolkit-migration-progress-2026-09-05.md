@@ -44,6 +44,8 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 | master_thief | Shared generated sound storage/decoding/playback preserves synthesis, mute and gain; removed generic registry wrapper; audited remaining toolkit use; included pre-existing game page. | 367 checks, fmt, strict Clippy, size limits, final default Windows/WebGL publish with 11 assets and Preview tracking pass. | `dd9a48c` |
 
+| occupational_hazard | Audited existing shared content, slots, assets, text and pointer input; no remaining generic infrastructure migration found; recorded evidence. | 28 checks, fmt, strict Clippy, size limits, default Windows/WebGL publish with five assets and Preview tracking pass. | `95ddde3` |
+
 ## Shared toolkit changes
 
 - `5cee233`: ParticleSystem explicit frame-drag compatibility update; exact legacy position/velocity/lifetime fixture including zero dt and expiry. 399 all-feature toolkit tests, strict Clippy and Last Assembly Windows/WASM publish pass.
@@ -64,10 +66,10 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 ## Remaining games
 
-carriage_run, dragons_den, finallanding, hatchspire, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planetfall_engineer, realmseed, sentience, tarrowyn, toybox, world_machine.
+carriage_run, dragons_den, finallanding, hatchspire, mirexis, monsterhall, mytherra, nanite_swarm, planetfall_engineer, realmseed, sentience, tarrowyn, toybox, world_machine.
 
-Completed: 23 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
+Completed: 24 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
 
-Next candidate: occupational_hazard audit. Toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa); inspect authoritative code before adding extensions.
+Next candidate: planetfall_engineer audit. Toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa); inspect authoritative code before adding extensions.
 
 Finish JSON migrations, then larger loaders/text/effects and shared persistence/camera/RNG extensions with compatibility fixtures. Validate games with no reported duplication too. Required validation is each game's default `publish.ps1`; run tests, fmt and warning-strict all-feature Clippy, resolve findings and enforce 800-line Rust source limit. Avoid publishing concurrently with lint before fixes stabilize, to prevent republishing after release-only findings.
