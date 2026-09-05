@@ -32,6 +32,8 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 | tb_realms | All UI truncation uses toolkit pixel widths and actual fonts, reserving ticket metadata; boxed oversized network request variant; included pre-existing game page. | 109 checks pass, three existing ignored; fmt, strict Clippy, default Windows/WebGL Preview publish and tracking pass. | `635f543` |
 
+| alchemy_tower | Shared formula-detail wrapping with capped lines and measured ellipsis; native toolkit save loading; browser-only decoder gating; included pre-existing loop notes. | 229 checks, publisher own 228-test rerun, fmt, strict Clippy, default Windows/WebGL publish with 472 assets and Preview tracking pass. | `f0b2072` |
+
 ## Shared toolkit changes
 
 - `5cee233`: ParticleSystem explicit frame-drag compatibility update; exact legacy position/velocity/lifetime fixture including zero dt and expiry. 399 all-feature toolkit tests, strict Clippy and Last Assembly Windows/WASM publish pass.
@@ -52,10 +54,10 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 ## Remaining games
 
-alchemy_tower, biofoundry, carriage_run, daemon_directorate, dragons_den, dungeon_core, finallanding, hatchspire, iron_fauna, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planetfall_engineer, realmseed, sentience, tarrowyn, toybox, world_machine.
+biofoundry, carriage_run, daemon_directorate, dragons_den, dungeon_core, finallanding, hatchspire, iron_fauna, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planetfall_engineer, realmseed, sentience, tarrowyn, toybox, world_machine.
 
-Completed: 17 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
+Completed: 18 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
 
-Next candidate: alchemy_tower audit. Canonical AGENTS.md matches; pre-existing loop.md must be included. Original review had no finding, but current ui/overlay_alchemy_formulae.rs wrap_lines and text_has_more duplicate measured wrapping and append an unmeasured ellipsis. Replace using toolkit wrapping and measured clipping while preserving max_lines and ellipsis. Native save loading uses a game-owned decode_save codec and toolkit atomic writes; assess storage adapter without changing save schema. No Alchemy Tower edits yet. Toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa); inspect authoritative code before adding extensions.
+Next candidate: biofoundry audit and validation. Canonical AGENTS.md matches, worktree initially clean. Initial source search finds only ui/hud/panels.rs using the last word of a machine name; inspect context, likely intentional display name. No original review finding. Inspect toolkit adoption, source sizes and run all checks/default publisher; record evidence in a game document if there is no source migration needed. No Biofoundry edits yet. Toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa); inspect authoritative code before adding extensions.
 
 Finish JSON migrations, then larger loaders/text/effects and shared persistence/camera/RNG extensions with compatibility fixtures. Validate games with no reported duplication too. Required validation is each game's default `publish.ps1`; run tests, fmt and warning-strict all-feature Clippy, resolve findings and enforce 800-line Rust source limit. Avoid publishing concurrently with lint before fixes stabilize, to prevent republishing after release-only findings.
