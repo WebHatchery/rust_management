@@ -70,6 +70,8 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 | mirexis | Shared camera transforms for both maps, bounded dialogue/field notes, measured event/outsider wrapping and font-style truncation; fixed seven unrelated Clippy findings. | 520 game tests, 403 toolkit tests, fmt, strict Clippy, default Windows/WebGL publish with 39 assets and Preview tracking; release captures pass. | `5cdd5a5` |
 
+| finallanding | Shared measured fitting across UI, bounded narrow tooltips, existing legacy RNG verified; fixed overflowing colonist rail and compact inspector portraits. | 159 tests, fmt, strict Clippy, default Windows/WebGL Preview publish/tracking, four release captures pass. | `f6cfd02` |
+
 ## Shared toolkit changes
 
 - `436bbef`: SlotSaveStore retains native slot paths and browser qualified/legacy reads; shared envelope encoder and migration decoder used by ordinary slot APIs and backup chains. 401 toolkit checks and strict Clippy; Carriage Run native/WebGL publish confirms platform integration.
@@ -92,11 +94,11 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 ## Remaining games
 
-finallanding, hatchspire.
+hatchspire.
 
-Completed: 36 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
+Completed: 37 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
 
-Next candidate: finallanding text migration and compatibility audit, then hatchspire. Both already use shared LegacyLcg64; retain seeded sequences and range policies.
+Last candidate: hatchspire. Shared LegacyLcg64 is already integrated; migrate remaining text loops, preserve literal path whitespace, validate seeded compatibility and all checks.
 
 Finish JSON migrations, then larger loaders/text/effects and shared persistence/camera/RNG extensions with compatibility fixtures. Validate games with no reported duplication too. Required validation is each game's default `publish.ps1`; run tests, fmt and warning-strict all-feature Clippy, resolve findings and enforce 800-line Rust source limit. Avoid publishing concurrently with lint before fixes stabilize, to prevent republishing after release-only findings.
 
@@ -105,4 +107,5 @@ Toolkit follow-up: 3827168 adds explicit-path FileSaveStore and raw validated br
 
 
 Toolkit follow-up: c8f496a adds styled measured truncation preserving explicit built-in fonts; 403 toolkit checks and Mirexis native/WebGL publisher pass.
+
 
