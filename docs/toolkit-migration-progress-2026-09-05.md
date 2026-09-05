@@ -12,14 +12,19 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 | dragons_hoard | Toolkit JSON for achievement and hint definitions, preserving game validation and persistence; included pre-existing game_page.json. | 594 tests pass; 12 existing calibration/report tests ignored; fmt; all-target/all-feature Clippy with warnings denied; default Windows/WebGL publish and tracker pass cleanly. | `664ab94` |
 | nightmare_shift | Toolkit JSON for all 14 content loaders; preserved fallback/required-data policies and glyph cleanup; fixed options div_ceil lint; included existing WSL deployment verification path change. | 248 tests; fmt; all-target/all-feature warning-strict Clippy; final default Windows/WebGL publish, tracker and deployment assembly verification pass. | `c38c224` |
 | kaiju_sim | Toolkit native/WASM loaders for traits, balance and tournaments with explicit read-error fallback, malformed runtime rejection and semantic validation preserved. | 98 client/server tests; fmt; strict all-target/all-feature Clippy; default Windows/WebGL publish and Preview tracking pass. | `5fa9aef` |
-
 | cultivation | Toolkit loads for all 18 native and 18 browser content sources; removed generic wrappers; preserved strict native versus lenient browser fallbacks; included pre-existing asset registry. | Five tests including shipped-catalogue regression; fmt; strict all-target/all-feature Clippy; default Windows/WebGL publish, 106 registered assets and Preview tracker pass. | `c3d4393` |
+| apartment | Toolkit native-runtime/browser-embedded loading for all 12 active content sources; deleted unused generic loader macros; preserved fallback/default rules. | 155 tests pass, one pre-existing test ignored; fmt; strict Clippy; WASM check; default Windows/WebGL publish and Preview tracking pass. | `7036d36` |
+| stellar_legacy | Toolkit wav_bytes and SoundManager for all generated cues/ambience; preserved PCM, envelopes and gains; added exact-byte WAV fixture. | 481 checks pass in each full/demo release run (one pre-existing ignored test each); fmt; strict all-feature Clippy; default Windows/WebGL publish, tracker, packaged Windows render and real-browser WebGL smoke pass. | `f6428ce` |
 
 ## Shared toolkit changes
+
+- `a59efb3`: Synchronous explicit-policy JSON fallback loader now has a WASM embedded-only counterpart. Async API still fetches browser overrides. Validation: 396 toolkit all-feature library tests, strict all-feature Clippy, Apartment WASM check and default publisher.
 
 - `4a14d46`: Added `load_json_file_with_fallback[_sync]` and `JsonFallbackPolicy::{ReadError, ReadOrParseError}` with labeled errors and explicit legacy fallback contracts. Added native frame-polled ureq transport so the optional net feature no longer pulls obsolete qws/net2 on Windows; WASM keeps quad-net. Completed requests retire after one result rather than later timing out or reporting disconnect. Validation: 396 all-feature library tests (including real local HTTP method/header/body/delivery checks), all-target/all-feature strict Clippy, net/analytics WASM compile, Kaiju Sim default publish. No standalone toolkit publish.ps1 exists. Do not revert to native quad-net: it produces a Rust future-incompatibility warning from net2's ambiguous Windows imports.
 
 ## Environment notes
+
+- Stellar Legacy debug binary was locked by a running user game (PID 8632 when inspected). Do not kill it; release-profile full/demo tests passed and default publishing worked. No blocker remains.
 
 - Default publisher cannot access shared `D:/WebHatchery/.cargo-target` from the restricted sandbox; approved elevated execution works. Use elevated Cargo/publish commands.
 - Resolved transient issue: Auction Game initially reported Project Roost tracking connection refused at `http://127.0.0.1/project_roost/api/v1`. WSL Apache was active; Scrapyard tracking and a repeat Auction Game default publish both succeeded with no tracking warning. No configuration changes needed.
@@ -27,10 +32,10 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 ## Remaining games
 
-alchemy_tower, apartment, biofoundry, carriage_run, daemon_directorate, dragons_den, dungeon_core, dungeon_manager, eclipse_heart, feast_frenzy, finallanding, frontier, hatchspire, idle_hands, iron_fauna, last_assembly, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planet_trader, planetfall_engineer, realmseed, sentience, stellar_legacy, tarrowyn, tb_realms, toybox, world_machine.
+alchemy_tower, biofoundry, carriage_run, daemon_directorate, dragons_den, dungeon_core, dungeon_manager, eclipse_heart, feast_frenzy, finallanding, frontier, hatchspire, idle_hands, iron_fauna, last_assembly, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planet_trader, planetfall_engineer, realmseed, sentience, tarrowyn, tb_realms, toybox, world_machine.
 
-Completed: 7 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
+Completed: 9 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
 
-Next candidate: apartment. AGENTS.md matches canonical instructions (compared). Local util/loader.rs exports generic load_json_config/load_json_or_default macros; many content modules also read/parse directly. Preserve native read-error fallback and browser embedding, remove local generic loaders. New shared fallback_sync API is currently native-only; adding a browser embedded-only counterpart may be appropriate. No apartment edits yet.
+Next candidate: dungeon_manager JSON. AGENTS.md matches canonical instructions (compared). Besides typed embedded loaders, inspect content_pack.rs (generic read_json_array plus manifest/order loading), content_source.rs (generic embedded-array merging and first-readable-directory runtime overlays), and state/map_loader.rs (candidate paths then embedded map fallback). Migrate content parsing in the balance_calculator binary too. Keep pack merge semantics and map schemas local; extend shared registry/loading APIs if needed. No dungeon_manager edits yet.
 
 Finish JSON migrations, then larger loaders/text/effects and shared persistence/camera/RNG extensions with compatibility fixtures. Validate games with no reported duplication too. Required validation is each game's default `publish.ps1`; run tests, fmt and warning-strict all-feature Clippy, resolve findings and enforce 800-line Rust source limit. Avoid publishing concurrently with lint before fixes stabilize, to prevent republishing after release-only findings.
