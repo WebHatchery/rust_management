@@ -24,7 +24,11 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 | frontier | Toolkit content and texture-discovery JSON loading; removed two local macros; shared measured wrapping for tooltip, base, combat, missions and event descriptions. | 23 tests, fmt, strict Clippy, final default Windows/WebGL publish with 49 assets and Preview tracking pass. | `48dd019` |
 
+| last_assembly | Toolkit UI-string fallback and particle storage/integration/expiry with legacy frame drag and unchanged emission/rendering; fixed unrelated documentation and build-panel Clippy findings. | 52 game tests, 399 shared tests, fmt, strict Clippy, default Windows/WebGL Preview publish and tracker pass. | `7387fc9` |
+
 ## Shared toolkit changes
+
+- `5cee233`: ParticleSystem explicit frame-drag compatibility update; exact legacy position/velocity/lifetime fixture including zero dt and expiry. 399 all-feature toolkit tests, strict Clippy and Last Assembly Windows/WASM publish pass.
 
 - `4844647`: DataRegistry embedded-array merging, first-readable-directory sorted overlays with diagnostics, consuming map conversion, and Path-compatible synchronous JSON loading. WASM loose sync reads return an explicit unsupported error. Validation: 398 all-feature toolkit tests, strict Clippy and Dungeon Manager WASM/default publish.
 
@@ -42,10 +46,10 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 ## Remaining games
 
-alchemy_tower, biofoundry, carriage_run, daemon_directorate, dragons_den, dungeon_core, finallanding, hatchspire, idle_hands, iron_fauna, last_assembly, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planet_trader, planetfall_engineer, realmseed, sentience, tarrowyn, tb_realms, toybox, world_machine.
+alchemy_tower, biofoundry, carriage_run, daemon_directorate, dragons_den, dungeon_core, finallanding, hatchspire, idle_hands, iron_fauna, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planet_trader, planetfall_engineer, realmseed, sentience, tarrowyn, tb_realms, toybox, world_machine.
 
-Completed: 13 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
+Completed: 14 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
 
-Next candidate: last_assembly UI strings and particles. Canonical AGENTS.md matches; worktree initially clean. src/data/strings.rs has a required embedded table with lenient native runtime fallback and parse diagnostic. Particle storage in state/gameplay/mod.rs, initialization lifecycle.rs, spawn/update helpers.rs, rendering render_map.rs; preserve frame-based drag, lifetime, emission and local rendering with toolkit ParticleSystem. No Last Assembly edits yet. Toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa); inspect authoritative code before adding extensions.
+Next candidate: idle_hands text. Canonical AGENTS.md matches; worktree initially clean. mobile_tutorial_ui.rs wraps by byte count in portrait/landscape; use actual scaled font and width budgets. Other loops also exist in freecell_ui.rs and game_result_ui.rs. Inspect custom UI font/virtual resolution before replacing; preserve prefixes, caps and readability. No Idle Hands edits yet. Toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa); inspect authoritative code before adding extensions.
 
 Finish JSON migrations, then larger loaders/text/effects and shared persistence/camera/RNG extensions with compatibility fixtures. Validate games with no reported duplication too. Required validation is each game's default `publish.ps1`; run tests, fmt and warning-strict all-feature Clippy, resolve findings and enforce 800-line Rust source limit. Avoid publishing concurrently with lint before fixes stabilize, to prevent republishing after release-only findings.
