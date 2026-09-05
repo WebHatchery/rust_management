@@ -20,6 +20,8 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 | eclipse_heart | Toolkit native/browser content loads; removed generic JSON wrappers and three local text-wrapping loops; measured panel widths and capped deck previews; included pre-existing game page and asset registry. | 50 tests, fmt, strict all-feature Clippy, default Windows/WebGL publish with 62 assets and Preview tracking pass. | `4e69cba` |
 
+| feast_frenzy | Toolkit content loads with corrected per-catalogue runtime paths; shared wrapping in three panels; existing toolkit C2 import validates and preserves legacy bytes, propagates copy failures and rejects future saves; included pre-existing game page. | 39 game tests, four shared import tests, fmt, strict Clippy and default Windows/WebGL publish/Preview tracking pass. | `26507ce` |
+
 ## Shared toolkit changes
 
 - `4844647`: DataRegistry embedded-array merging, first-readable-directory sorted overlays with diagnostics, consuming map conversion, and Path-compatible synchronous JSON loading. WASM loose sync reads return an explicit unsupported error. Validation: 398 all-feature toolkit tests, strict Clippy and Dungeon Manager WASM/default publish.
@@ -38,10 +40,10 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 ## Remaining games
 
-alchemy_tower, biofoundry, carriage_run, daemon_directorate, dragons_den, dungeon_core, feast_frenzy, finallanding, frontier, hatchspire, idle_hands, iron_fauna, last_assembly, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planet_trader, planetfall_engineer, realmseed, sentience, tarrowyn, tb_realms, toybox, world_machine.
+alchemy_tower, biofoundry, carriage_run, daemon_directorate, dragons_den, dungeon_core, finallanding, frontier, hatchspire, idle_hands, iron_fauna, last_assembly, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planet_trader, planetfall_engineer, realmseed, sentience, tarrowyn, tb_realms, toybox, world_machine.
 
-Completed: 11 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
+Completed: 12 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
 
-Next candidate: feast_frenzy JSON, text and C2 legacy browser-key import. Canonical AGENTS.md matches; pre-existing game_page.json must be included. data.rs generic parse_or_fallback incorrectly reads assets/data/game_data.json for every catalogue; use actual per-content filenames and explicit lenient toolkit fallback. persistence.rs WASM load_json tries qualified key then arbitrary raw SAVE_KEY on error, parses and copies raw data while ignoring copy failures. Extend toolkit with explicit allowlisted legacy import, validation, structured status and copy-failure handling, preserving primary precedence and legacy data. Monsterhall is the other C2 consumer to inspect when designing shared API. No Feast Frenzy edits yet.
+Next candidate: frontier JSON and tooltip text. Canonical AGENTS.md matches, worktree clean before edits. src/data/mod.rs contains a platform-loading macro and stale commentary; migrate callers directly to toolkit read-error fallback APIs. src/ui/mod.rs tooltip wraps by character count; use shared measured wrapping with width minus padding and preserve paragraph breaks. No Frontier edits yet. Note authoritative toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa), despite the original review describing them as absent; inspect existing code before adding duplicate extensions. Feast uses existing C2 and all four shared import tests pass.
 
 Finish JSON migrations, then larger loaders/text/effects and shared persistence/camera/RNG extensions with compatibility fixtures. Validate games with no reported duplication too. Required validation is each game's default `publish.ps1`; run tests, fmt and warning-strict all-feature Clippy, resolve findings and enforce 800-line Rust source limit. Avoid publishing concurrently with lint before fixes stabilize, to prevent republishing after release-only findings.
