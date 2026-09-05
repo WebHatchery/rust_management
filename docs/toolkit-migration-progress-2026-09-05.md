@@ -22,6 +22,8 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 | feast_frenzy | Toolkit content loads with corrected per-catalogue runtime paths; shared wrapping in three panels; existing toolkit C2 import validates and preserves legacy bytes, propagates copy failures and rejects future saves; included pre-existing game page. | 39 game tests, four shared import tests, fmt, strict Clippy and default Windows/WebGL publish/Preview tracking pass. | `26507ce` |
 
+| frontier | Toolkit content and texture-discovery JSON loading; removed two local macros; shared measured wrapping for tooltip, base, combat, missions and event descriptions. | 23 tests, fmt, strict Clippy, final default Windows/WebGL publish with 49 assets and Preview tracking pass. | `48dd019` |
+
 ## Shared toolkit changes
 
 - `4844647`: DataRegistry embedded-array merging, first-readable-directory sorted overlays with diagnostics, consuming map conversion, and Path-compatible synchronous JSON loading. WASM loose sync reads return an explicit unsupported error. Validation: 398 all-feature toolkit tests, strict Clippy and Dungeon Manager WASM/default publish.
@@ -40,10 +42,10 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 ## Remaining games
 
-alchemy_tower, biofoundry, carriage_run, daemon_directorate, dragons_den, dungeon_core, finallanding, frontier, hatchspire, idle_hands, iron_fauna, last_assembly, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planet_trader, planetfall_engineer, realmseed, sentience, tarrowyn, tb_realms, toybox, world_machine.
+alchemy_tower, biofoundry, carriage_run, daemon_directorate, dragons_den, dungeon_core, finallanding, hatchspire, idle_hands, iron_fauna, last_assembly, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planet_trader, planetfall_engineer, realmseed, sentience, tarrowyn, tb_realms, toybox, world_machine.
 
-Completed: 12 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
+Completed: 13 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
 
-Next candidate: frontier JSON and tooltip text. Canonical AGENTS.md matches, worktree clean before edits. src/data/mod.rs contains a platform-loading macro and stale commentary; migrate callers directly to toolkit read-error fallback APIs. src/ui/mod.rs tooltip wraps by character count; use shared measured wrapping with width minus padding and preserve paragraph breaks. No Frontier edits yet. Note authoritative toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa), despite the original review describing them as absent; inspect existing code before adding duplicate extensions. Feast uses existing C2 and all four shared import tests pass.
+Next candidate: last_assembly UI strings and particles. Canonical AGENTS.md matches; worktree initially clean. src/data/strings.rs has a required embedded table with lenient native runtime fallback and parse diagnostic. Particle storage in state/gameplay/mod.rs, initialization lifecycle.rs, spawn/update helpers.rs, rendering render_map.rs; preserve frame-based drag, lifetime, emission and local rendering with toolkit ParticleSystem. No Last Assembly edits yet. Toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa); inspect authoritative code before adding extensions.
 
 Finish JSON migrations, then larger loaders/text/effects and shared persistence/camera/RNG extensions with compatibility fixtures. Validate games with no reported duplication too. Required validation is each game's default `publish.ps1`; run tests, fmt and warning-strict all-feature Clippy, resolve findings and enforce 800-line Rust source limit. Avoid publishing concurrently with lint before fixes stabilize, to prevent republishing after release-only findings.
