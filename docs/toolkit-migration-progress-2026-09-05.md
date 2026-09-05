@@ -16,7 +16,11 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 | apartment | Toolkit native-runtime/browser-embedded loading for all 12 active content sources; deleted unused generic loader macros; preserved fallback/default rules. | 155 tests pass, one pre-existing test ignored; fmt; strict Clippy; WASM check; default Windows/WebGL publish and Preview tracking pass. | `7036d36` |
 | stellar_legacy | Toolkit wav_bytes and SoundManager for all generated cues/ambience; preserved PCM, envelopes and gains; added exact-byte WAV fixture. | 481 checks pass in each full/demo release run (one pre-existing ignored test each); fmt; strict all-feature Clippy; default Windows/WebGL publish, tracker, packaged Windows render and real-browser WebGL smoke pass. | `f6428ce` |
 
+| dungeon_manager | Toolkit catalogues, balance calculator, content packs and maps; shared campaign/scenario registry overlays preserve ordering and fallback; included pre-existing asset registry. | 295 tests pass, one existing ignored; fmt; strict all-feature Clippy; WASM check; default Windows/WebGL publish with 177 assets and Preview tracking pass. | `89bb0fd` |
+
 ## Shared toolkit changes
+
+- `4844647`: DataRegistry embedded-array merging, first-readable-directory sorted overlays with diagnostics, consuming map conversion, and Path-compatible synchronous JSON loading. WASM loose sync reads return an explicit unsupported error. Validation: 398 all-feature toolkit tests, strict Clippy and Dungeon Manager WASM/default publish.
 
 - `a59efb3`: Synchronous explicit-policy JSON fallback loader now has a WASM embedded-only counterpart. Async API still fetches browser overrides. Validation: 396 toolkit all-feature library tests, strict all-feature Clippy, Apartment WASM check and default publisher.
 
@@ -32,10 +36,10 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 ## Remaining games
 
-alchemy_tower, biofoundry, carriage_run, daemon_directorate, dragons_den, dungeon_core, dungeon_manager, eclipse_heart, feast_frenzy, finallanding, frontier, hatchspire, idle_hands, iron_fauna, last_assembly, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planet_trader, planetfall_engineer, realmseed, sentience, tarrowyn, tb_realms, toybox, world_machine.
+alchemy_tower, biofoundry, carriage_run, daemon_directorate, dragons_den, dungeon_core, eclipse_heart, feast_frenzy, finallanding, frontier, hatchspire, idle_hands, iron_fauna, last_assembly, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planet_trader, planetfall_engineer, realmseed, sentience, tarrowyn, tb_realms, toybox, world_machine.
 
-Completed: 9 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
+Completed: 10 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
 
-Next candidate: dungeon_manager JSON. AGENTS.md matches canonical instructions (compared). Besides typed embedded loaders, inspect content_pack.rs (generic read_json_array plus manifest/order loading), content_source.rs (generic embedded-array merging and first-readable-directory runtime overlays), and state/map_loader.rs (candidate paths then embedded map fallback). Migrate content parsing in the balance_calculator binary too. Keep pack merge semantics and map schemas local; extend shared registry/loading APIs if needed. No dungeon_manager edits yet.
+Next candidate: eclipse_heart JSON and text. AGENTS.md matches canonical instructions. Pre-existing game_page.json and asset_registry.json must be included. Inspected src/data/loader.rs: remove generic sync/async wrappers and route all 11 typed loads through toolkit, retaining native manifest-relative paths. Text loops exist in screens/campaign_hub.rs, screens/battle/helpers.rs and screens/deck_builder/utils.rs (not just the review-listed hub); use shared measured wrapping and preserve display caps. No Eclipse Heart edits yet.
 
 Finish JSON migrations, then larger loaders/text/effects and shared persistence/camera/RNG extensions with compatibility fixtures. Validate games with no reported duplication too. Required validation is each game's default `publish.ps1`; run tests, fmt and warning-strict all-feature Clippy, resolve findings and enforce 800-line Rust source limit. Avoid publishing concurrently with lint before fixes stabilize, to prevent republishing after release-only findings.
