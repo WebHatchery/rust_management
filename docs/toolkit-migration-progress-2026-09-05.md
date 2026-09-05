@@ -26,6 +26,8 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 | last_assembly | Toolkit UI-string fallback and particle storage/integration/expiry with legacy frame drag and unchanged emission/rendering; fixed unrelated documentation and build-panel Clippy findings. | 52 game tests, 399 shared tests, fmt, strict Clippy, default Windows/WebGL Preview publish and tracker pass. | `7387fc9` |
 
+| idle_hands | Toolkit measured wrapping in portrait/landscape tutorials, FreeCell help and results with readable font floor and actual panel widths; retained line limits and touch controls, removed obsolete byte-count assertion. | 897 tests, fmt, strict Clippy, default Windows/WebGL Preview publish and tracker pass. | `3babb4c` |
+
 ## Shared toolkit changes
 
 - `5cee233`: ParticleSystem explicit frame-drag compatibility update; exact legacy position/velocity/lifetime fixture including zero dt and expiry. 399 all-feature toolkit tests, strict Clippy and Last Assembly Windows/WASM publish pass.
@@ -46,10 +48,10 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 ## Remaining games
 
-alchemy_tower, biofoundry, carriage_run, daemon_directorate, dragons_den, dungeon_core, finallanding, hatchspire, idle_hands, iron_fauna, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planet_trader, planetfall_engineer, realmseed, sentience, tarrowyn, tb_realms, toybox, world_machine.
+alchemy_tower, biofoundry, carriage_run, daemon_directorate, dragons_den, dungeon_core, finallanding, hatchspire, iron_fauna, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planet_trader, planetfall_engineer, realmseed, sentience, tarrowyn, tb_realms, toybox, world_machine.
 
-Completed: 14 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
+Completed: 15 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
 
-Next candidate: idle_hands text. Canonical AGENTS.md matches; worktree initially clean. mobile_tutorial_ui.rs wraps by byte count in portrait/landscape; use actual scaled font and width budgets. Other loops also exist in freecell_ui.rs and game_result_ui.rs. Inspect custom UI font/virtual resolution before replacing; preserve prefixes, caps and readability. No Idle Hands edits yet. Toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa); inspect authoritative code before adding extensions.
+Next candidate: planet_trader VisualRng. Canonical AGENTS.md matches; worktree initially clean. src/ui/planet_graphics.rs uses xorshift64 with seed xor 0xA5A55A5AD3C19E37 and low-u32 float conversion. Toolkit SeededRng::from_state/next_u64 matches nonzero streams but guards zero; use explicit legacy-zero handling to preserve that special stream, retain mixing and float conversion, add fixed sequence compatibility fixture. No Planet Trader edits yet. Toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa); inspect authoritative code before adding extensions.
 
 Finish JSON migrations, then larger loaders/text/effects and shared persistence/camera/RNG extensions with compatibility fixtures. Validate games with no reported duplication too. Required validation is each game's default `publish.ps1`; run tests, fmt and warning-strict all-feature Clippy, resolve findings and enforce 800-line Rust source limit. Avoid publishing concurrently with lint before fixes stabilize, to prevent republishing after release-only findings.
