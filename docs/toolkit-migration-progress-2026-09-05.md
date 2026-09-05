@@ -56,6 +56,8 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 | world_machine | Shared water ambience storage/playback preserves flow/loop/volume behavior; labeled texture loading; recorded toolkit audit. | 29 checks, fmt, strict Clippy, size limits, default Windows/WebGL Preview publish and tracking pass. | `8dd5a10` |
 
+| dragons_den | Audited existing toolkit content/slots/RNG/achievements/effects/UI; refreshed standalone toolkit lockfile; included pre-existing game page. | 61 checks, fmt, strict Clippy, size limits, default Windows/WebGL Preview publish and tracking pass. | `a33cc76` |
+
 ## Shared toolkit changes
 
 - `5cee233`: ParticleSystem explicit frame-drag compatibility update; exact legacy position/velocity/lifetime fixture including zero dt and expiry. 399 all-feature toolkit tests, strict Clippy and Last Assembly Windows/WASM publish pass.
@@ -76,10 +78,10 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 ## Remaining games
 
-carriage_run, dragons_den, finallanding, hatchspire, mirexis, monsterhall, mytherra, nanite_swarm, tarrowyn.
+carriage_run, finallanding, hatchspire, mirexis, monsterhall, mytherra, nanite_swarm, tarrowyn.
 
-Completed: 29 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
+Completed: 30 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
 
-Next candidate: dragons_den audit. Toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa); inspect authoritative code before adding extensions.
+Next candidate: mytherra audit (standalone multi-crate game; inspect manifest before validation). Toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa); inspect authoritative code before adding extensions.
 
 Finish JSON migrations, then larger loaders/text/effects and shared persistence/camera/RNG extensions with compatibility fixtures. Validate games with no reported duplication too. Required validation is each game's default `publish.ps1`; run tests, fmt and warning-strict all-feature Clippy, resolve findings and enforce 800-line Rust source limit. Avoid publishing concurrently with lint before fixes stabilize, to prevent republishing after release-only findings.
