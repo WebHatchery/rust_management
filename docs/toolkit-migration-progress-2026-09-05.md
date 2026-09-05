@@ -18,6 +18,8 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 | dungeon_manager | Toolkit catalogues, balance calculator, content packs and maps; shared campaign/scenario registry overlays preserve ordering and fallback; included pre-existing asset registry. | 295 tests pass, one existing ignored; fmt; strict all-feature Clippy; WASM check; default Windows/WebGL publish with 177 assets and Preview tracking pass. | `89bb0fd` |
 
+| eclipse_heart | Toolkit native/browser content loads; removed generic JSON wrappers and three local text-wrapping loops; measured panel widths and capped deck previews; included pre-existing game page and asset registry. | 50 tests, fmt, strict all-feature Clippy, default Windows/WebGL publish with 62 assets and Preview tracking pass. | `4e69cba` |
+
 ## Shared toolkit changes
 
 - `4844647`: DataRegistry embedded-array merging, first-readable-directory sorted overlays with diagnostics, consuming map conversion, and Path-compatible synchronous JSON loading. WASM loose sync reads return an explicit unsupported error. Validation: 398 all-feature toolkit tests, strict Clippy and Dungeon Manager WASM/default publish.
@@ -36,10 +38,10 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 ## Remaining games
 
-alchemy_tower, biofoundry, carriage_run, daemon_directorate, dragons_den, dungeon_core, eclipse_heart, feast_frenzy, finallanding, frontier, hatchspire, idle_hands, iron_fauna, last_assembly, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planet_trader, planetfall_engineer, realmseed, sentience, tarrowyn, tb_realms, toybox, world_machine.
+alchemy_tower, biofoundry, carriage_run, daemon_directorate, dragons_den, dungeon_core, feast_frenzy, finallanding, frontier, hatchspire, idle_hands, iron_fauna, last_assembly, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planet_trader, planetfall_engineer, realmseed, sentience, tarrowyn, tb_realms, toybox, world_machine.
 
-Completed: 10 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
+Completed: 11 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
 
-Next candidate: eclipse_heart JSON and text. AGENTS.md matches canonical instructions. Pre-existing game_page.json and asset_registry.json must be included. Inspected src/data/loader.rs: remove generic sync/async wrappers and route all 11 typed loads through toolkit, retaining native manifest-relative paths. Text loops exist in screens/campaign_hub.rs, screens/battle/helpers.rs and screens/deck_builder/utils.rs (not just the review-listed hub); use shared measured wrapping and preserve display caps. No Eclipse Heart edits yet.
+Next candidate: feast_frenzy JSON, text and C2 legacy browser-key import. Canonical AGENTS.md matches; pre-existing game_page.json must be included. data.rs generic parse_or_fallback incorrectly reads assets/data/game_data.json for every catalogue; use actual per-content filenames and explicit lenient toolkit fallback. persistence.rs WASM load_json tries qualified key then arbitrary raw SAVE_KEY on error, parses and copies raw data while ignoring copy failures. Extend toolkit with explicit allowlisted legacy import, validation, structured status and copy-failure handling, preserving primary precedence and legacy data. Monsterhall is the other C2 consumer to inspect when designing shared API. No Feast Frenzy edits yet.
 
 Finish JSON migrations, then larger loaders/text/effects and shared persistence/camera/RNG extensions with compatibility fixtures. Validate games with no reported duplication too. Required validation is each game's default `publish.ps1`; run tests, fmt and warning-strict all-feature Clippy, resolve findings and enforce 800-line Rust source limit. Avoid publishing concurrently with lint before fixes stabilize, to prevent republishing after release-only findings.
