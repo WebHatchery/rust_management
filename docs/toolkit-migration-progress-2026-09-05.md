@@ -62,7 +62,11 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 | tarrowyn | Labeled client texture loading; audited client/protocol/server toolkit integration and established bounded authority persistence. | 882 workspace checks, fmt, strict workspace Clippy, project size limits, default Windows/WebGL publish with 14 assets and Preview tracking pass. | `4d48de9` |
 
+| carriage_run | C1 raw three-generation slot backups, failure propagation, corrupt/future primary protection and shared recovery; labeled texture loading. | 146 checks pass, one existing ignored; 401 toolkit checks, fmt, strict Clippy, clean-commit default Windows/WebGL Preview publish and tracking pass. | `12a2bd2` |
+
 ## Shared toolkit changes
+
+- `436bbef`: SlotSaveStore retains native slot paths and browser qualified/legacy reads; shared envelope encoder and migration decoder used by ordinary slot APIs and backup chains. 401 toolkit checks and strict Clippy; Carriage Run native/WebGL publish confirms platform integration.
 
 - `5cee233`: ParticleSystem explicit frame-drag compatibility update; exact legacy position/velocity/lifetime fixture including zero dt and expiry. 399 all-feature toolkit tests, strict Clippy and Last Assembly Windows/WASM publish pass.
 
@@ -82,10 +86,10 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 ## Remaining games
 
-carriage_run, finallanding, hatchspire, mirexis, monsterhall, nanite_swarm.
+finallanding, hatchspire, mirexis, monsterhall, nanite_swarm.
 
-Completed: 32 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
+Completed: 33 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
 
-Next candidate: carriage_run C1 persistence migration. Remaining six games contain the larger review recommendations; preserve backup recovery, legacy keys, camera input and seeded output contracts. Toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa); inspect authoritative code before adding extensions.
+Next candidate: monsterhall C1/C2 persistence migration. Five games remain: inspect actual shared APIs, preserve recovery/legacy-key contracts and seeded/camera compatibility.
 
 Finish JSON migrations, then larger loaders/text/effects and shared persistence/camera/RNG extensions with compatibility fixtures. Validate games with no reported duplication too. Required validation is each game's default `publish.ps1`; run tests, fmt and warning-strict all-feature Clippy, resolve findings and enforce 800-line Rust source limit. Avoid publishing concurrently with lint before fixes stabilize, to prevent republishing after release-only findings.
