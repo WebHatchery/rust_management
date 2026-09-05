@@ -1,5 +1,7 @@
 # Games and Macroquad toolkit review — 5 September 2026
 
+Implementation complete: all 38 current games have been updated and validated. See [the migration ledger](toolkit-migration-progress-2026-09-05.md) for per-game changes, validation and commits. The review below is retained as the original audit.
+
 ## Result and scope
 
 **No game is wholly missing toolkit adoption. All 38 current top-level games and all five archived games declare and reference it in source. Both starter projects also use it.** The actionable list is therefore games with particular features still implemented locally, not games that need their first toolkit dependency.

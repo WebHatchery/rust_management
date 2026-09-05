@@ -72,7 +72,11 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 | finallanding | Shared measured fitting across UI, bounded narrow tooltips, existing legacy RNG verified; fixed overflowing colonist rail and compact inspector portraits. | 159 tests, fmt, strict Clippy, default Windows/WebGL Preview publish/tracking, four release captures pass. | `f6cfd02` |
 
+| hatchspire | Shared measured wrapping/fitting throughout help, tower, field guide, journal, town logs, tutorial and finale; literal path whitespace preserved; existing toolkit map RNG compatibility retained. | 182 game tests, 405 toolkit tests, fmt, strict Clippy, size limits, default Windows/WebGL Preview publish/tracking and five inspected release captures pass. | `4232049` |
+
 ## Shared toolkit changes
+
+- `eac0ac7`: Measured literal wrapping preserves every character and repeated space in paths; variable-width, Unicode, exact-fit and narrow-width fixtures. 405 all-feature toolkit tests, strict Clippy and Hatchspire native/WebGL publisher pass.
 
 - `436bbef`: SlotSaveStore retains native slot paths and browser qualified/legacy reads; shared envelope encoder and migration decoder used by ordinary slot APIs and backup chains. 401 toolkit checks and strict Clippy; Carriage Run native/WebGL publish confirms platform integration.
 
@@ -92,20 +96,16 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 - Resolved transient issue: Auction Game initially reported Project Roost tracking connection refused at `http://127.0.0.1/project_roost/api/v1`. WSL Apache was active; Scrapyard tracking and a repeat Auction Game default publish both succeeded with no tracking warning. No configuration changes needed.
 - Workspace root is not a Git repository. Each game, toolkit, and rust_management has its own repository. Scoped `git -c safe.directory=D:/WebHatchery/RustGames/<project>` permits sandbox Git use without modifying global trust.
 
-## Remaining games
+## Completion
 
-hatchspire.
+Completed: 38 of 38 active games. No games remain. All recommended shared infrastructure migrations are implemented or verified already present; game-owned rules, save schemas and compatibility policies remain local as required by the review.
 
-Completed: 37 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
+Each game passed its recorded tests, formatting, warning-strict Clippy and default publish.ps1. Existing intentionally ignored tests are listed per game above. Findings encountered during validation were resolved. Every modified/untracked project file was staged and committed per game, including pre-existing changes.
 
-Last candidate: hatchspire. Shared LegacyLcg64 is already integrated; migrate remaining text loops, preserve literal path whitespace, validate seeded compatibility and all checks.
-
-Finish JSON migrations, then larger loaders/text/effects and shared persistence/camera/RNG extensions with compatibility fixtures. Validate games with no reported duplication too. Required validation is each game's default `publish.ps1`; run tests, fmt and warning-strict all-feature Clippy, resolve findings and enforce 800-line Rust source limit. Avoid publishing concurrently with lint before fixes stabilize, to prevent republishing after release-only findings.
+Final audit verified all 38 migration commits remain in each game history and all game working trees are clean. Nightmare Shift subsequently merged as 0a71eed with an identical tree to its recorded migration commit c38c224. The toolkit and management repositories are also committed and clean. Archived games and starter templates were outside this goal.
 
 Toolkit follow-up: 3827168 adds explicit-path FileSaveStore and raw validated browser imports; 403 toolkit tests and strict Clippy pass, Monsterhall native/WebGL publisher passes.
 
 
 
 Toolkit follow-up: c8f496a adds styled measured truncation preserving explicit built-in fonts; 403 toolkit checks and Mirexis native/WebGL publisher pass.
-
-
