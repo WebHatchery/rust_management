@@ -60,6 +60,8 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 | mytherra | Labeled remaining direct core content loads; audited all five crates and retained domain SQL storage; refreshed toolkit lockfile. | 360 workspace checks pass, three existing live-server tests ignored; fmt, strict workspace Clippy, size limits, default Windows/WebGL Preview publish and tracking pass. | `716df1d` |
 
+| tarrowyn | Labeled client texture loading; audited client/protocol/server toolkit integration and established bounded authority persistence. | 882 workspace checks, fmt, strict workspace Clippy, project size limits, default Windows/WebGL publish with 14 assets and Preview tracking pass. | `4d48de9` |
+
 ## Shared toolkit changes
 
 - `5cee233`: ParticleSystem explicit frame-drag compatibility update; exact legacy position/velocity/lifetime fixture including zero dt and expiry. 399 all-feature toolkit tests, strict Clippy and Last Assembly Windows/WASM publish pass.
@@ -80,10 +82,10 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 ## Remaining games
 
-carriage_run, finallanding, hatchspire, mirexis, monsterhall, nanite_swarm, tarrowyn.
+carriage_run, finallanding, hatchspire, mirexis, monsterhall, nanite_swarm.
 
-Completed: 31 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
+Completed: 32 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
 
-Next candidate: tarrowyn audit (standalone multi-crate game; inspect manifest before validation). Toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa); inspect authoritative code before adding extensions.
+Next candidate: carriage_run C1 persistence migration. Remaining six games contain the larger review recommendations; preserve backup recovery, legacy keys, camera input and seeded output contracts. Toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa); inspect authoritative code before adding extensions.
 
 Finish JSON migrations, then larger loaders/text/effects and shared persistence/camera/RNG extensions with compatibility fixtures. Validate games with no reported duplication too. Required validation is each game's default `publish.ps1`; run tests, fmt and warning-strict all-feature Clippy, resolve findings and enforce 800-line Rust source limit. Avoid publishing concurrently with lint before fixes stabilize, to prevent republishing after release-only findings.
