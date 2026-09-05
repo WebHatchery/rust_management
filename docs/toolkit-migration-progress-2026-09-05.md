@@ -40,6 +40,8 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 | dungeon_core | Shared SoundManager storage/playback preserves synthesis, layers and variant rotation; measured title wrapping; grouped drawer UI state to fix unrelated Clippy warning; recorded toolkit audit. | 151 checks, fmt, strict Clippy, size limits, default Windows/WebGL publish with seven assets and Preview tracking pass. | `fbff4db` |
 
+| iron_fauna | Audited shared content, audio, RNG, slots, assets and UI; labeled content failures preserving duplicate rejection; included pre-existing game page. | 48 checks, fmt, strict Clippy, size limits, final default Windows/WebGL publish with 30 assets and Preview tracking pass. | `252c600` |
+
 ## Shared toolkit changes
 
 - `5cee233`: ParticleSystem explicit frame-drag compatibility update; exact legacy position/velocity/lifetime fixture including zero dt and expiry. 399 all-feature toolkit tests, strict Clippy and Last Assembly Windows/WASM publish pass.
@@ -60,10 +62,10 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 ## Remaining games
 
-carriage_run, dragons_den, finallanding, hatchspire, iron_fauna, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planetfall_engineer, realmseed, sentience, tarrowyn, toybox, world_machine.
+carriage_run, dragons_den, finallanding, hatchspire, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planetfall_engineer, realmseed, sentience, tarrowyn, toybox, world_machine.
 
-Completed: 21 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
+Completed: 22 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
 
-Next candidate: iron_fauna audit. Toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa); inspect authoritative code before adding extensions.
+Next candidate: master_thief audit. Toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa); inspect authoritative code before adding extensions.
 
 Finish JSON migrations, then larger loaders/text/effects and shared persistence/camera/RNG extensions with compatibility fixtures. Validate games with no reported duplication too. Required validation is each game's default `publish.ps1`; run tests, fmt and warning-strict all-feature Clippy, resolve findings and enforce 800-line Rust source limit. Avoid publishing concurrently with lint before fixes stabilize, to prevent republishing after release-only findings.
