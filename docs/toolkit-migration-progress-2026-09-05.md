@@ -38,6 +38,8 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 | daemon_directorate | Audited shared content, slots, RNG, UI and synthesis; migrated cue storage/playback to SoundManager; included pre-existing game page. | 160 checks including synth audits, fmt, strict Clippy, size limits, final Windows/WebGL Preview publish and tracking pass. | `82900ee` |
 
+| dungeon_core | Shared SoundManager storage/playback preserves synthesis, layers and variant rotation; measured title wrapping; grouped drawer UI state to fix unrelated Clippy warning; recorded toolkit audit. | 151 checks, fmt, strict Clippy, size limits, default Windows/WebGL publish with seven assets and Preview tracking pass. | `fbff4db` |
+
 ## Shared toolkit changes
 
 - `5cee233`: ParticleSystem explicit frame-drag compatibility update; exact legacy position/velocity/lifetime fixture including zero dt and expiry. 399 all-feature toolkit tests, strict Clippy and Last Assembly Windows/WASM publish pass.
@@ -58,10 +60,10 @@ Scope: all 38 current games in `toolkit-review-2026-09-05.md`, processed one at 
 
 ## Remaining games
 
-carriage_run, dragons_den, dungeon_core, finallanding, hatchspire, iron_fauna, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planetfall_engineer, realmseed, sentience, tarrowyn, toybox, world_machine.
+carriage_run, dragons_den, finallanding, hatchspire, iron_fauna, master_thief, mirexis, monsterhall, mytherra, nanite_swarm, occupational_hazard, planetfall_engineer, realmseed, sentience, tarrowyn, toybox, world_machine.
 
-Completed: 20 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
+Completed: 21 of 38 active games. Each completed game repository was clean after staging every changed/untracked project file and committing. No outstanding compiler, test or publisher warnings in these games.
 
-Next candidate: dungeon_core audit. Canonical AGENTS.md matches; worktree initially clean. Original review had no finding, but src/ui/title_screen.rs draw_wrapped_blurb estimates character width and takes two lines. Use shared measured wrapping with matching draw_text_fit font and preserve line cap. readiness.rs direct JSON parse is a diagnostic save roundtrip, inspect context. No Dungeon Core edits yet. Toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa); inspect authoritative code before adding extensions.
+Next candidate: iron_fauna audit. Toolkit already includes C1 backups and C2 legacy APIs (legacy commit 37702aa); inspect authoritative code before adding extensions.
 
 Finish JSON migrations, then larger loaders/text/effects and shared persistence/camera/RNG extensions with compatibility fixtures. Validate games with no reported duplication too. Required validation is each game's default `publish.ps1`; run tests, fmt and warning-strict all-feature Clippy, resolve findings and enforce 800-line Rust source limit. Avoid publishing concurrently with lint before fixes stabilize, to prevent republishing after release-only findings.
