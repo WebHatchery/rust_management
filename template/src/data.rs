@@ -43,6 +43,13 @@ pub struct GameData {
 }
 
 impl GameData {
+    /// Registry storage is unordered; keep visible cards and the first-action shortcut stable.
+    pub fn ordered_actions(&self) -> Vec<&ActionDef> {
+        let mut actions: Vec<_> = self.actions.iter().map(|(_, action)| action).collect();
+        actions.sort_by(|left, right| left.id.cmp(&right.id));
+        actions
+    }
+
     pub fn load() -> Result<Self, String> {
         let config = load_embedded_json_labeled("game_config", GAME_CONFIG_JSON)?;
         let actions = DataRegistry::from_embedded_json(ACTIONS_JSON, "id")?;

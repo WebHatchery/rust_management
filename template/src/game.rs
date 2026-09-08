@@ -5,7 +5,8 @@ use crate::state::{migrate_save_value, GameSession, SaveData};
 use crate::ui::{self, UiAction, UiContext};
 use macroquad::prelude::*;
 use macroquad_toolkit::assets::AssetManager;
-use macroquad_toolkit::camera::{Camera2D, Camera2DConfig, CameraBounds};
+use macroquad_toolkit::camera::{CameraBounds, CameraBoundsPolicy, CameraTransform};
+use macroquad_toolkit::debug::DebugOverlay;
 use macroquad_toolkit::events::EventBus;
 use macroquad_toolkit::notifications::{
     NotificationAnchor, NotificationManager, NotificationRenderConfig,
@@ -15,14 +16,22 @@ use macroquad_toolkit::persistence::{
     slot_exists,
 };
 use macroquad_toolkit::prelude::{begin_virtual_ui_frame, dark, end_virtual_ui_frame, InputState};
+use macroquad_toolkit::settings::GameSettings;
+use macroquad_toolkit::ui::{ScrollArea, VirtualUi};
 
 pub struct Game {
     data: GameData,
     session: GameSession,
     assets: AssetManager,
     notifications: NotificationManager,
-    camera: Camera2D,
+    camera: CameraTransform,
+    camera_drag: Option<Vec2>,
     events: EventBus<UiAction>,
+    settings: GameSettings,
+    debug: DebugOverlay,
+    action_scroll: ScrollArea,
+    paused: bool,
+    frame_dt: f32,
     save_exists: bool,
     save_slots: Vec<String>,
 }
@@ -45,24 +54,23 @@ impl Game {
         ));
 
         let session = GameSession::new(&data.config);
-        let camera = Camera2D::with_config(
-            vec2(0.0, 0.0),
-            1.0,
-            Camera2DConfig {
-                drag_button: Some(MouseButton::Right),
-                min_zoom: 0.75,
-                max_zoom: 1.75,
-                bounds: Some(CameraBounds::new(vec2(-240.0, -160.0), vec2(240.0, 160.0))),
-                ..Default::default()
-            },
-        );
+        let camera = CameraTransform::new(Vec2::ZERO, 1.0).expect("valid initial camera");
 
+        let settings = GameSettings::load(&data.config.game_name);
+        let mut debug = DebugOverlay::new();
+        debug.visible = settings.show_fps;
         let mut game = Self {
+            settings,
+            debug,
+            action_scroll: ScrollArea::new(),
+            paused: false,
+            frame_dt: 0.0,
             data,
             session,
             assets,
             notifications,
             camera,
+            camera_drag: None,
             events: EventBus::new(),
             save_exists: false,
             save_slots: Vec::new(),
@@ -71,17 +79,40 @@ impl Game {
         game
     }
 
+    pub fn begin_capture_scene(&mut self, scene: &str) {
+        self.session = GameSession::new(&self.data.config);
+        self.notifications.clear();
+        self.events.drain().for_each(drop);
+        self.action_scroll = ScrollArea::new();
+        self.paused = false;
+        self.debug.visible = false;
+        self.save_exists = false;
+        self.save_slots.clear();
+        self.apply_action(UiAction::ResetCamera);
+        match scene {
+            "gameplay" => {}
+            "paused" => self.paused = true,
+            "scrolled" => self.action_scroll.set_offset(88.0),
+            "zoomed" => {
+                self.apply_action(UiAction::ZoomCamera(1));
+                self.apply_action(UiAction::PanCamera(1, 0));
+            }
+            _ => panic!("Unknown template capture scene: {scene}"),
+        }
+    }
+
     pub fn update(&mut self, dt: f32) {
+        self.frame_dt = dt;
+        self.debug.record_frame(dt);
         self.notifications.update(dt);
-        self.session.update_energy(&self.data.config, dt);
 
         let input = InputState::capture();
         if input.escape_pressed {
-            self.events.push(UiAction::NewGame);
+            self.events.push(UiAction::TogglePause);
         }
         if input.space_pressed {
-            if let Some((id, _)) = self.data.actions.iter().next() {
-                self.events.push(UiAction::RunAction(id.clone()));
+            if let Some(action) = self.data.ordered_actions().first() {
+                self.events.push(UiAction::RunAction(action.id.clone()));
             }
         }
         if is_key_pressed(KeyCode::S) {
@@ -94,11 +125,46 @@ impl Game {
             self.session.move_selection(dx, dy);
         }
 
-        self.camera.update(dt, false);
+        let viewport = VirtualUi::new(ui::LOGICAL_WIDTH, ui::LOGICAL_HEIGHT);
+        let mouse = viewport.mouse_position();
+        let rect = ui::world_grid_rect();
+        if rect.contains(mouse) {
+            if is_mouse_button_pressed(MouseButton::Right) {
+                self.camera_drag = Some(mouse);
+            }
+            if is_mouse_button_down(MouseButton::Right) {
+                if let Some(last) = self.camera_drag.replace(mouse) {
+                    self.camera.pan_screen(mouse - last);
+                }
+            } else {
+                self.camera_drag = None;
+            }
+            let wheel = mouse_wheel().1;
+            if wheel != 0.0 {
+                self.camera
+                    .zoom_at(rect, mouse, 1.1_f32.powf(wheel), (0.75, 1.75));
+            }
+        } else {
+            self.camera_drag = None;
+        }
+        if is_key_pressed(KeyCode::Equal) || is_key_pressed(KeyCode::KpAdd) {
+            self.events.push(UiAction::ZoomCamera(1));
+        }
+        if is_key_pressed(KeyCode::Minus) || is_key_pressed(KeyCode::KpSubtract) {
+            self.events.push(UiAction::ZoomCamera(-1));
+        }
 
         let actions: Vec<UiAction> = self.events.drain().collect();
         for action in actions {
             self.apply_action(action);
+        }
+        self.camera.constrain(
+            ui::world_grid_rect(),
+            CameraBounds::new(vec2(-240.0, -160.0), vec2(240.0, 160.0)),
+            CameraBoundsPolicy::TargetInside,
+        );
+        if !self.paused {
+            self.session.update_energy(&self.data.config, dt);
         }
     }
 
@@ -112,29 +178,60 @@ impl Game {
             save_exists: self.save_exists,
             save_slots: &self.save_slots,
             loaded_assets: self.assets.len(),
-            camera_target: self.camera.target,
-            camera_zoom: self.camera.zoom,
+            camera: self.camera,
+            paused: self.paused,
+            show_stats: self.debug.visible,
+            dt: self.frame_dt,
             ui: &virtual_ui,
         };
 
-        let actions = ui::draw_game_ui(ctx);
+        let actions = ui::draw_game_ui(ctx, &mut self.action_scroll);
         end_virtual_ui_frame();
 
         for action in actions {
             self.events.push(action);
         }
 
+        self.debug.draw(&[]);
         self.notifications
             .draw_with_config(&NotificationRenderConfig {
-                anchor: NotificationAnchor::BottomRight,
+                anchor: NotificationAnchor::TopRight,
                 ..Default::default()
             });
     }
 
     fn apply_action(&mut self, action: UiAction) {
         match action {
+            UiAction::TogglePause => self.paused = !self.paused,
+            UiAction::ToggleStats => {
+                self.debug.toggle();
+                self.settings.show_fps = self.debug.visible;
+                if let Err(err) = self.settings.save(&self.data.config.game_name) {
+                    self.notifications
+                        .warning(format!("Settings save failed: {err}"));
+                }
+            }
+            UiAction::PanCamera(x, y) => {
+                self.camera.pan_screen(vec2(x as f32, y as f32) * -48.0);
+            }
+            UiAction::ZoomCamera(direction) => {
+                let rect = ui::world_grid_rect();
+                self.camera.zoom_at(
+                    rect,
+                    rect.center(),
+                    if direction > 0 { 1.2 } else { 1.0 / 1.2 },
+                    (0.75, 1.75),
+                );
+            }
+            UiAction::ResetCamera => {
+                self.camera = CameraTransform::new(Vec2::ZERO, 1.0).expect("valid initial camera");
+                self.camera_drag = None;
+            }
             UiAction::NewGame => {
                 self.session = GameSession::new(&self.data.config);
+                self.paused = false;
+                self.action_scroll.set_offset(0.0);
+                self.apply_action(UiAction::ResetCamera);
                 self.notifications.info("Started a fresh template session");
             }
             UiAction::Save => self.save_game(),
@@ -150,6 +247,9 @@ impl Game {
     }
 
     fn run_data_action(&mut self, action_id: &str) {
+        if self.paused {
+            return;
+        }
         let Some(action) = self.data.actions.get(action_id) else {
             self.notifications
                 .warning(format!("Unknown action: {}", action_id));

@@ -23,12 +23,10 @@ fn window_conf() -> Conf {
 async fn main() {
     let mut game = Game::new().await;
 
-    // Screenshot harness: when GAME_TEMPLATE_CAPTURE_PATH is set, render
-    // deterministic frames, write a PNG, and exit. This is a minimal starter
-    // template with a single boot state, so the capture just photographs
-    // whatever the boot flow lands on.
+    // Deterministic scenes isolate verification from local saves and preferences.
     if let Some(configs) = capture::CaptureConfig::all_from_env("GAME_TEMPLATE") {
         for config in configs {
+            game.begin_capture_scene(&config.scene);
             capture::run_capture_once(&config, |dt| {
                 game.update(dt);
                 game.draw();

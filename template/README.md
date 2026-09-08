@@ -11,9 +11,18 @@ same shared patterns as the existing games.
 - `DataRegistry` and embedded JSON loading for data-driven actions
 - `save_to_slot_with_version`, `load_from_slot_with_migration`, `delete_slot`, and `get_save_slots`
 - `NotificationManager` with toolkit toast rendering
-- `VirtualUi`, `SurfaceStyle`, `TextStyle`, `GridLayout`, meters, badges, tooltips, and text fitting
+- `VirtualUi`, `SurfaceStyle`, `TextStyle`, `GridLayout`, meters, badges, bounded text fitting
 - `FlatGrid`, `FogState`, `TilePos`, line-of-sight visibility, and flood-fill reachability
-- `Camera2D` with bounds, right-mouse drag, keyboard pan, and zoom limits
+- `CameraTransform` shared by map drawing and picking, with bounded pan,
+  cursor-anchored wheel zoom, right-mouse drag in logical coordinates, and
+  visible Left/Right/Up/Down/Zoom/Reset controls
+- `Pointer` for DPI-correct mouse/touch activation and toolkit button rendering
+- `ScrollArea` with wheel/drag scrolling, fling, scrollbar, and suppression of
+  action activation after a scroll gesture; extra JSON actions stay inside the panel
+- `GameSettings` persistence for the visible Show FPS/Hide FPS control, backed
+  by `DebugOverlay`
+- Pause/Resume controls (Escape shortcut) that stop energy regeneration and
+  actions while leaving map exploration and save controls available
 - `EventBus<UiAction>` so UI returns intents and game logic applies them
 - Rust 2018 module layout using `data.rs`, `state.rs`, and `ui.rs` parent
   files instead of `mod.rs`
@@ -25,6 +34,8 @@ Shared UI math, such as grid layout and mouse selection, is kept in helper
 types so rendering and input do not duplicate coordinate calculations.
 
 ## Run
+
+From `rust_management/`:
 
 ```powershell
 cargo run --manifest-path template/Cargo.toml
@@ -65,3 +76,21 @@ cargo test --manifest-path template/Cargo.toml
 
 For the complete setup, Git, architecture, and publishing checklist, read the
 management repository's `docs/onboarding/README.md`.
+
+## Starter interaction patterns
+
+The UI returns intents through `EventBus`; `Game` owns simulation, settings,
+scroll state, and camera input. Use the explicit logical-coordinate button
+renderer in a virtual frame and let `Pointer` decide activation. Keep every
+card label in a separate text box. Scroll rows are culled with
+`is_fully_visible`, and `absorbs_press` prevents releasing a drag from running
+an action. Save controls remain outside the scroll region.
+
+Arrow keys also select tiles, Space runs the first data action, S/L save/load,
+and +/- zoom. Every core action has a visible tap target. FPS preference is
+stored separately from the game save. No audio or network dependency is added
+solely for a demonstration.
+
+The capture wrapper works both here and after copying the template to a
+workspace-level game directory. Run `./scripts/capture_ui.ps1` to refresh
+the gameplay, paused, scrolled, and zoomed scenes in `docs/verification/`.
