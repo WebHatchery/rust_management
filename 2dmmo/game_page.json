@@ -1,7 +1,6 @@
 {
   "title": "Game Template",
   "wasm": "game_template",
-  "roost_slug": "rust_game_template",
   "status": { "text": "Playable", "class": "playable" },
   "canvas_rendering": "pixelated",
   "about": [

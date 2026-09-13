@@ -60,10 +60,10 @@ cargo test --manifest-path template/Cargo.toml
    `assets/data/texture_manifest.json` and `asset_registry.json`. Keep embedded
    JSON data out of the registry. If the game adds other runtime-loaded assets,
    list each exact `assets/...` path in the registry as well.
-7. Update `game_page.json` with the title, WASM/package name, page copy,
-   controls, and `roost_slug` (`rust_<your_game_dir>`). The publisher generates
-   `index.html` from this file and the shared web template; do not create a
-   hand-maintained game `index.html`.
+7. Update `game_page.json` with the title, WASM/package name, page copy, and
+   controls. The publisher derives the Project Roost slug globally as
+   `rust_<your_game_dir>` and generates `index.html` from this file and the
+   shared web template; do not create a hand-maintained game `index.html`.
 8. Add a root-level 16:9 `catalog_thumbnail.png` showing the title/menu screen.
 9. Update the capture prefix/scenes in `scripts/capture_ui.ps1` if the package
    name and environment-variable prefix differ.

@@ -31,7 +31,7 @@ else has a default derived from the directory name.
 {
   "title": "Dragon's Den",          // <h1> and <title>; may differ from the dir name
   "wasm": "dragons_den",            // default: dir name
-  "roost_slug": "rust_dragons_den", // default: "rust_" + dir name
+  // Project Roost slug is derived globally as "rust_" + dir name.
   "status": { "text": "Playable", "class": "playable" },  // class: playable | in-development
   "controls_hint": "Click the game canvas to start",
   "canvas_rendering": "pixelated",  // pixelated | auto

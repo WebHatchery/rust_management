@@ -919,7 +919,7 @@ function New-RustGameIndexHtml {
 
     $title = if ([string]::IsNullOrWhiteSpace($pageData.title)) { Get-DefaultGameTitle $slug } else { $pageData.title }
     $wasm = if ([string]::IsNullOrWhiteSpace($pageData.wasm)) { $slug } else { $pageData.wasm }
-    $roostSlug = if ([string]::IsNullOrWhiteSpace($pageData.roost_slug)) { "rust_$slug" } else { $pageData.roost_slug }
+    $roostSlug = Get-RustGameRoostSlug -ProjectSlug $null -ProjectName $slug -ProjectDir $Info.ProjectRoot
     $rendering = if ([string]::IsNullOrWhiteSpace($pageData.canvas_rendering)) { "pixelated" } else { $pageData.canvas_rendering }
     $hint = if ([string]::IsNullOrWhiteSpace($pageData.controls_hint)) { "Click the game canvas to start" } else { $pageData.controls_hint }
 

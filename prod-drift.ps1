@@ -52,20 +52,6 @@ function Invoke-Git {
 function Get-RoostSlug {
     param([Parameter(Mandatory = $true)][System.IO.DirectoryInfo]$Project)
 
-    $pagePath = Join-Path $Project.FullName 'game_page.json'
-    if (Test-Path -LiteralPath $pagePath) {
-        try {
-            $page = Get-Content -LiteralPath $pagePath -Raw | ConvertFrom-Json
-            $configured = ([string]$page.roost_slug).Trim()
-            if ($configured) {
-                return $configured
-            }
-        }
-        catch {
-            Write-Warning "Could not read ${pagePath}: $($_.Exception.Message)"
-        }
-    }
-
     $slug = $Project.Name.Trim().ToLowerInvariant()
     $slug = [regex]::Replace($slug, '[^a-z0-9_]+', '_').Trim('_')
     if ($slug.StartsWith('rust_')) {
