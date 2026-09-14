@@ -2838,7 +2838,7 @@ function Publish-RustGameProject {
         # one so they cannot be deployed alongside the live build.
         Get-ChildItem -Path $info.DistDir -Filter "*_windows.zip" -File -ErrorAction SilentlyContinue |
             ForEach-Object { Remove-Item -LiteralPath $_.FullName -Force }
-        Compress-Archive -Path "$windowsPackageDir\*" -DestinationPath $windowsZipPath -CompressionLevel Optimal
+        Compress-Archive -Path "$windowsPackageDir\*" -DestinationPath $windowsZipPath -CompressionLevel Optimal -Force
         # The expanded tree is only staging for Compress-Archive. Keeping it
         # made every asset occupy both raw and archived space in every project.
         Remove-ChildDirectory $info.DistDir $windowsPackageDir
@@ -2922,7 +2922,7 @@ function Publish-RustGameProject {
 
         $webGLZipPath = Join-Path $info.DistDir "$($info.GameSlug)_webgl.zip"
         if (Test-Path $webGLZipPath) { Remove-Item $webGLZipPath -Force }
-        Compress-Archive -Path "$webGLPackageDir\*" -DestinationPath $webGLZipPath -CompressionLevel Optimal
+        Compress-Archive -Path "$webGLPackageDir\*" -DestinationPath $webGLZipPath -CompressionLevel Optimal -Force
         Write-Host "WebGL package created!" -ForegroundColor Green
     }
 
