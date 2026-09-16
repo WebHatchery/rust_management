@@ -11,7 +11,7 @@
     --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Opt-in canvas-only pages; the game owns its title and navigation. */
+/* Itch embeds fill the host viewport. WebHatchery always shows game details. */
 body.viewport-game {
     overflow: hidden;
     overscroll-behavior: none;

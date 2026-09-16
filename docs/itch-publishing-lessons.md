@@ -53,8 +53,8 @@ root script is a parameter-preserving redirect. Each participating game keeps:
 
 - `publish-itch.ps1`, a small project wrapper;
 - `itch.json`, containing only public target/channel/version configuration; and
-- optionally `itch-index.html`, when the normal WebHatchery page is not suitable
-  inside an itch iframe.
+- `game_page.json`, shared with WebHatchery. The central renderer selects an itch
+  canvas-only page; do not maintain a separate `itch-index.html`.
 
 A typical configuration is:
 
@@ -127,10 +127,11 @@ An itch-specific launcher should contain only what the embedded runtime needs:
 
 The shared publisher copies the package to `dist/itch-webgl`, localizes required
 runtime files, rejects missing or parent-relative references, and checks itch's
-HTML5 file/path/size limits. A game-specific wrapper may replace the generated
-page with `itch-index.html` before shared staging.
+HTML5 file/path/size limits. It always regenerates the page from the shared
+template with the itch platform selected. A game-specific wrapper selects demo
+WASM only; the renderer owns the launcher for every game.
 
-For custom launchers:
+When changing the shared launcher:
 
 - make `[hidden]` states explicit in CSS when another display rule could win;
 - never have a `resize` listener dispatch the same event it listens to;

@@ -81,32 +81,66 @@
   var submitBtn = overlay.querySelector(".roost-br-submit");
   var closeBtn = overlay.querySelector(".roost-br-close");
   var summaryInput = overlay.querySelector("#roost-br-summary");
+  var gamePage = document.querySelector(".game-page");
+  var pageWasInert = false;
 
-  trigger.addEventListener("click", openModal);
+  trigger.addEventListener("click", function (event) {
+    event.stopPropagation();
+    openModal();
+  });
   closeBtn.addEventListener("click", closeModal);
   overlay.addEventListener("click", function (event) {
+    // Also protects pages cached with the old window click-to-focus handler.
+    event.stopPropagation();
     if (event.target === overlay) {
       closeModal();
     }
   });
-  document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape" && overlay.classList.contains("roost-br-open")) {
+  // Keep form input out of the engine's document/window handlers, without
+  // cancelling normal typing, selection, paste or touch scrolling.
+  ["pointerdown", "pointerup", "mousedown", "mouseup", "touchstart", "touchend", "keyup", "keypress"].forEach(function (name) {
+    overlay.addEventListener(name, function (event) { event.stopPropagation(); });
+  });
+  overlay.addEventListener("keydown", function (event) {
+    event.stopPropagation();
+    if (event.key === "Escape") {
+      event.preventDefault();
       closeModal();
+    } else if (event.key === "Tab") {
+      var fields = overlay.querySelectorAll('button:not(:disabled), input:not([tabindex="-1"]), textarea');
+      var first = fields[0];
+      var last = fields[fields.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     }
   });
   form.addEventListener("submit", onSubmit);
 
   function openModal() {
+    if (overlay.classList.contains("roost-br-open")) return;
+    if (document.pointerLockElement && document.exitPointerLock) document.exitPointerLock();
+    if (gamePage) {
+      pageWasInert = gamePage.inert;
+      gamePage.inert = true;
+    }
     overlay.classList.add("roost-br-open");
     setStatus("", "");
     fetchChallenge();
     window.setTimeout(function () {
-      summaryInput.focus();
+      if (overlay.classList.contains("roost-br-open")) summaryInput.focus();
     }, 30);
   }
 
   function closeModal() {
+    if (!overlay.classList.contains("roost-br-open")) return;
     overlay.classList.remove("roost-br-open");
+    if (gamePage) gamePage.inert = pageWasInert;
+    trigger.focus();
   }
 
   function fetchChallenge() {

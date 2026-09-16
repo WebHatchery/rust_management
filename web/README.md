@@ -2,8 +2,8 @@
 
 Every game's `index.html` is **generated at publish time** from one canonical
 template plus a small per-game data file. There is no hand-maintained
-`index.html` in any game directory — `publish.ps1` renders one into the WebGL
-package and deploys that. This is what stops the 28 near-identical copies from
+`index.html` or `itch-index.html` in any game directory — the publisher renders
+the correct platform variant from the shared template. This stops copies from
 drifting apart (which is how 18 games ended up silently losing every web save:
 they never loaded `storage.js` at all).
 
@@ -35,7 +35,6 @@ else has a default derived from the directory name.
   "status": { "text": "Playable", "class": "playable" },  // class: playable | in-development
   "controls_hint": "Click the game canvas to start",
   "canvas_rendering": "pixelated",  // pixelated | auto
-  "layout": "viewport",            // optional: canvas fills viewport; hides page chrome
   "canvas": { "width": 1280, "height": 720 },   // omit to leave the canvas unsized
 
   "about": ["<p> inner HTML, one entry per paragraph"],
@@ -98,3 +97,36 @@ reintroduce a per-game file. Presentation belongs in `shared.css`.
 Edit `index.template.html`, then republish the games. Never edit a generated
 `index.html` in a deploy root or a `dist/webgl/` package — it is overwritten on
 the next publish.
+
+## Platform variants
+
+`New-RustGameIndexHtml -Platform webhatchery` is the ordinary publisher's default.
+It shows the title, About, controls, details, downloads, source link, bug report,
+and donations. Legacy `layout: viewport` metadata is ignored so every website
+page exposes these details. Players can still choose Play full screen.
+
+`publish-itch.ps1` renders `-Platform itch` directly from the same template and
+metadata into `dist/itch-webgl/index.html`. It fills the iframe and omits all
+WebHatchery-only blocks before rendering. No bug-report code, donation scripts,
+site navigation, descriptions, or Windows downloads are included. Runtime and
+stylesheet paths are localized into the package, which is checked against
+[itch's HTML5 requirements](https://itch.io/docs/creators/html5).
+Upload `dist/itch-webgl` with Butler, never the WebHatchery ZIP. Configure itch's
+own fullscreen button and keep descriptions/downloads on the itch project page.
+Demo wrappers select a demo WASM; they do not own a separate HTML launcher.
+
+After a shell-only change, refresh existing local packages without compiling or
+uploading (including WebHatchery ZIP entry points and existing itch demo pages):
+
+```powershell
+.\scripts\refresh-web-shell.ps1                 # all games
+.\scripts\refresh-web-shell.ps1 -Project idle_hands
+.\scripts\test-web-shell.ps1                    # both variants for every game
+node .\scripts\test-web-shell-browser.cjs        # requires Playwright + Chromium
+```
+
+The refresh preserves each package's existing WASM. Normal publishing is still
+required to deploy refreshed pages to a server or upload them to itch.
+Bug-report CSS and JS have content-based cache versions. Canvas focus belongs
+only to canvas clicks and explicit play controls; dialog clicks and keystrokes
+must never reach the game's global input handlers.

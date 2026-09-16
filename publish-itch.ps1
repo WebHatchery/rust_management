@@ -219,18 +219,6 @@ function Get-ReferencedRuntimeFiles {
     return @($files)
 }
 
-function Get-ReferencedWindowsDownload {
-    param([string]$Index)
-
-    $match = [regex]::Match($Index, 'href="([^"?]+_windows\.zip)(?:\?[^"?]*)?"')
-    if (-not $match.Success) { return $null }
-    $value = $match.Groups[1].Value.Replace('\', '/')
-    if ($value.Contains('/') -or $value.Contains('..')) {
-        throw "Windows download path must be a file in the package root: $value"
-    }
-    return $value
-}
-
 function Get-RuntimeSource {
     param([string]$Name)
 
@@ -247,15 +235,31 @@ function Get-RuntimeSource {
 function Rewrite-ItchIndex {
     param([string]$Index)
 
-    $Index = $Index.Replace('    <link rel="stylesheet" href="../bug-report.css">', '')
-    $Index = [regex]::Replace($Index, '(?s)\s*<!-- Player bug reporting.*?<script src="\.\./bug-report\.js"></script>', '')
-    $Index = [regex]::Replace($Index, '(?s)\s*<!-- Ko-fi support widget.*?kofiWidgetOverlay\.draw.*?</script>', '')
-    $Index = [regex]::Replace($Index, '<a href="\.\./"[^>]*>.*?</a>', '')
-    $Index = $Index.Replace('<a href="/">Web Hatchery</a>', 'Web Hatchery')
+    # Presentation is selected by the shared renderer, never stripped from an
+    # old WebHatchery page. This pass only localizes package references.
     $Index = $Index.Replace('href="../shared.css', 'href="shared.css')
     $Index = [regex]::Replace($Index, '(?<attribute>(?:src|href)=")\.\./shared-assets/', '${attribute}shared-assets/')
     $Index = [regex]::Replace($Index, 'href="dist/([^"?]+)"', 'href="$1"')
     return $Index
+}
+
+function New-ItchIndexHtml {
+    param([pscustomobject]$Info, [string]$DestinationPath)
+
+    # Load the canonical renderer without dispatching builds or deployments.
+    # Isolate publisher parameters so -Help cannot change this run's switches.
+    & {
+        param($PageInfo, $OutputPath, $PublisherPath)
+        . $PublisherPath -Help *> $null
+        $renderInfo = [pscustomobject]@{
+            ProjectRoot = $PageInfo.ProjectRoot
+            GameSlug = $PageInfo.ProjectSlug
+        }
+        if (-not (New-RustGameIndexHtml -Info $renderInfo -DestinationPath $OutputPath -Platform itch)) {
+            throw "Could not render itch launcher for $($PageInfo.ProjectSlug)"
+        }
+        Update-PackagedIndexPaths $OutputPath
+    } $Info $DestinationPath (Join-Path $ManagementRoot 'publish.ps1')
 }
 
 function Assert-LocalPackageReferences {
@@ -313,8 +317,16 @@ function New-ItchHtml5Package {
     New-Item -ItemType Directory -Path $packageDir -Force | Out-Null
     Copy-Item -Path (Join-Path $Info.WebGLDir "*") -Destination $packageDir -Recurse -Force
 
+    Update-ItchHtml5Shell -Info $Info -PackageDir $packageDir
+    Write-Host "Prepared itch HTML5 package: $packageDir" -ForegroundColor Green
+    return $packageDir
+}
+
+function Update-ItchHtml5Shell {
+    param([pscustomobject]$Info, [string]$PackageDir)
+
     $indexPath = Join-Path $packageDir "index.html"
-    if (-not (Test-Path $indexPath -PathType Leaf)) { throw "WebGL package has no index.html: $indexPath" }
+    New-ItchIndexHtml -Info $Info -DestinationPath $indexPath
     $index = Get-Content $indexPath -Raw -Encoding UTF8
 
     $expectedWasmPath = Join-Path $packageDir $Info.WasmFileName
@@ -345,21 +357,18 @@ function New-ItchHtml5Package {
         Copy-Item $customStorage $packageDir -Force
     }
 
-    $windowsDownload = Get-ReferencedWindowsDownload $index
-    if ($null -ne $windowsDownload) {
-        if ($null -eq $Info.WindowsArchive) {
-            throw "The WebGL page references $windowsDownload, but no *_windows.zip exists in $($Info.DistDir)"
+    # Windows downloads have their own Butler channel. Exclude stale site
+    # widgets/archives even when an older WebGL package included them.
+    foreach ($file in Get-ChildItem $packageDir -File) {
+        if ($file.Name -in @('bug-report.css', 'bug-report.js') -or $file.Name -like '*_windows.zip') {
+            Remove-Item -LiteralPath $file.FullName -Force
         }
-        Copy-Item $Info.WindowsArchive.FullName (Join-Path $packageDir $windowsDownload) -Force
     }
 
     $index = Rewrite-ItchIndex $index
     Write-Utf8File $indexPath $index
     Assert-LocalPackageReferences $packageDir
     Assert-ItchPackageLimits $packageDir
-
-    Write-Host "Prepared itch HTML5 package: $packageDir" -ForegroundColor Green
-    return $packageDir
 }
 
 function Invoke-Butler {
@@ -408,7 +417,7 @@ function Show-ChannelStatus {
 if ($Help) {
     Write-Host "Usage: .\publish-itch.ps1 [-ProjectDir <path>] [-Channel all|html5|windows] [-Preview] [-Status] [-DryRun] [-ButlerPath <path>] [-UserVersion <value>]"
     Write-Host "Run the project's ordinary .\publish.ps1 first; this script only stages and publishes its dist/ artifacts."
-    exit 0
+    return
 }
 
 $info = Get-ProjectInfo $ProjectDir -RequireArtifacts:($Channel -in @("all", "html5") -and -not $Status)

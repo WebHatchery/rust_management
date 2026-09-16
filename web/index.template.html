@@ -15,7 +15,9 @@
     <meta name="description" content="{{DESCRIPTION}}">
     <title>{{TITLE}} | Web Hatchery Games</title>
     <link rel="stylesheet" href="../shared.css">
+    <!-- WEBHATCHERY:START -->
     <link rel="stylesheet" href="../bug-report.css">
+    <!-- WEBHATCHERY:END -->
     <style>
         .game-container canvas {
             image-rendering: {{CANVAS_RENDERING}};
@@ -24,12 +26,14 @@
 {{CUSTOM_CSS}}
 </head>
 
-<body class="{{PAGE_CLASS}}">
+<body class="{{PAGE_CLASS}}" data-platform="{{PLATFORM}}">
     <div class="game-page">
+        <!-- WEBHATCHERY:START -->
         <header class="game-header">
             <h1>{{TITLE}}</h1>
             <a href="../" class="back-link">Back to All Games</a>
         </header>
+        <!-- WEBHATCHERY:END -->
 
         <!-- Game Canvas -->
         <div class="game-container" id="game-container">
@@ -37,7 +41,7 @@
                 <div class="loading-spinner"></div>
                 <p>Loading game...</p>
             </div>
-            <canvas id="glcanvas" tabindex="1"{{CANVAS_SIZE}}></canvas>
+            <canvas id="glcanvas" tabindex="0" aria-label="{{TITLE}}"{{CANVAS_SIZE}}></canvas>
             <!-- Only visible while the container is pinned over the viewport.
                  A browser in real fullscreen offers its own way out; the CSS
                  fallback does not, and a game you cannot leave is worse than
@@ -45,6 +49,7 @@
             <button type="button" class="play-exit" onclick="exitPlayMode()" aria-label="Leave full screen">Done</button>
         </div>
 
+        <!-- WEBHATCHERY:START -->
         <!-- Controls Bar -->
         <div class="game-controls">
             <button class="btn btn-secondary" onclick="toggleFullscreen()" title="Fill the screen">Play full screen</button>
@@ -78,6 +83,7 @@
         <footer class="game-footer">
             <p>Built with Rust + Macroquad | <a href="/">Web Hatchery</a></p>
         </footer>
+        <!-- WEBHATCHERY:END -->
     </div>
 
     <!-- Macroquad JS bundle. -->
@@ -138,11 +144,11 @@
             document.addEventListener('fullscreenchange', function () {
                 syncCanvasSize();
                 setTimeout(syncCanvasSize, 100);
-                setTimeout(function () { if (glcanvas) glcanvas.focus(); }, 0);
+                // Resizing must not steal focus from page controls or a dialog.
             });
         })();
 
-        // Canvas input hygiene, applied to every game: clicking anywhere hands
+        // Canvas input hygiene, applied to every game: clicking the canvas hands
         // focus back to the canvas, the browser context menu never covers the
         // game, and arrow keys / space scroll the game rather than the page.
         (function () {
@@ -150,8 +156,8 @@
             if (!glcanvas) return;
             var scrollKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'Spacebar'];
 
-            glcanvas.focus();
-            window.addEventListener('click', function () { glcanvas.focus(); });
+            glcanvas.addEventListener('pointerdown', function () { glcanvas.focus(); });
+            glcanvas.addEventListener('click', function () { glcanvas.focus(); });
             glcanvas.addEventListener('contextmenu', function (event) { event.preventDefault(); });
 
             // iOS fires these regardless of `touch-action`, and each one is a
@@ -159,7 +165,7 @@
             // back. `gesture*` is pinch; the dblclick guard is the double-tap
             // zoom, which on a game is about every third press.
             ['gesturestart', 'gesturechange', 'gestureend'].forEach(function (name) {
-                document.addEventListener(name, function (event) { event.preventDefault(); });
+                glcanvas.addEventListener(name, function (event) { event.preventDefault(); });
             });
             glcanvas.addEventListener('dblclick', function (event) { event.preventDefault(); });
             // And the rubber-band: dragging the reels must not drag the page
@@ -169,7 +175,7 @@
                 event.preventDefault();
             }, { passive: false });
             window.addEventListener('keydown', function (event) {
-                // Only while the game has focus, so the bug-report form still works.
+                // Only while the game has focus, so page forms still work.
                 if (document.activeElement === glcanvas && scrollKeys.indexOf(event.key) !== -1) {
                     event.preventDefault();
                 }
@@ -267,6 +273,7 @@
     </script>
 {{CUSTOM_JS}}
 
+    <!-- WEBHATCHERY:START -->
     <!-- Player bug reporting -> Project Roost Fix Queue (shared widget). -->
     <div id="roost-bug-report" data-roost-slug="{{ROOST_SLUG}}"></div>
     <script src="../bug-report.js"></script>
@@ -280,6 +287,7 @@
             'floating-chat.donateButton.text-color': '#fff'
         });
     </script>
+    <!-- WEBHATCHERY:END -->
 </body>
 
 </html>

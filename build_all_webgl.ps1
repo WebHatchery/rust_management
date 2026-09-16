@@ -7,7 +7,7 @@ $projects = Get-ChildItem -Path $rootDir -Directory |
     Where-Object {
         $excludedFolders -notcontains $_.Name -and
         (Test-Path (Join-Path $_.FullName "publish.ps1")) -and
-        (Test-Path (Join-Path $_.FullName "index.html"))
+        (Test-Path (Join-Path $_.FullName "game_page.json"))
     } |
     Sort-Object Name |
     Select-Object -ExpandProperty Name
@@ -16,11 +16,8 @@ Write-Host "=== Starting Batch WebGL Build ===" -ForegroundColor Cyan
 Write-Host "Output Directory: $releaseDir"
 Write-Host ""
 
-# Clean release directory
-if (Test-Path $releaseDir) {
-    Write-Host "Cleaning old release directory..." -ForegroundColor Gray
-    Remove-Item $releaseDir -Recurse -Force
-}
+# Preserve the publisher's shared runtimes and existing releases if a build
+# fails; successful publishes replace their files.
 New-Item -ItemType Directory -Path $releaseDir -Force | Out-Null
 
 # Copy shared front-end assets (stylesheet + bug-report widget) referenced by each

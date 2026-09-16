@@ -903,7 +903,12 @@ function ConvertTo-HtmlAttributeText {
 # Renders <game>/game_page.json through web/index.template.html.
 # Returns $true when a page was written.
 function New-RustGameIndexHtml {
-    param([pscustomobject]$Info, [string]$DestinationPath)
+    param(
+        [pscustomobject]$Info,
+        [string]$DestinationPath,
+        [ValidateSet("webhatchery", "itch")]
+        [string]$Platform = "webhatchery"
+    )
 
     $pageData = Get-RustGamePageData $Info.ProjectRoot
     if ($null -eq $pageData) { return $false }
@@ -1037,8 +1042,16 @@ function New-RustGameIndexHtml {
     }
 
     $html = Get-Content $templatePath -Raw -Encoding UTF8
+    # Select platform blocks before inserting game-authored content. Itch gets
+    # only the game; the host page owns descriptions, downloads and support.
+    if ($Platform -eq "itch") {
+        $html = [regex]::Replace($html, '(?s)<!-- WEBHATCHERY:START -->.*?<!-- WEBHATCHERY:END -->', '')
+    } else {
+        $html = $html.Replace('<!-- WEBHATCHERY:START -->', '').Replace('<!-- WEBHATCHERY:END -->', '')
+    }
     $replacements = @{
-        "{{TITLE}}"            = $title
+        "{{TITLE}}"            = (ConvertTo-HtmlAttributeText $title)
+        "{{PLATFORM}}"         = $Platform
         "{{DESCRIPTION}}"      = $description
         "{{CANVAS_RENDERING}}" = $renderingCss
         "{{CANVAS_SIZE}}"      = $canvasSize
@@ -1062,7 +1075,7 @@ function New-RustGameIndexHtml {
         "{{ROOST_SLUG}}"       = $roostSlug
         "{{POINTER_LOCK}}"     = $pointerLock
         "{{CUSTOM_CSS}}"       = ""
-        "{{PAGE_CLASS}}"       = $(if ($pageData.layout -eq "viewport") { "viewport-game" } else { "" })
+        "{{PAGE_CLASS}}"       = $(if ($Platform -eq "itch") { "viewport-game" } else { "" })
         "{{CUSTOM_JS}}"        = ""
         "{{PRE_LOAD_JS}}"      = ""
         "{{POST_LOAD_JS}}"     = ""
@@ -1112,6 +1125,12 @@ function Update-PackagedIndexPaths {
     }
     $stylesheetVersion = (Get-FileHash -LiteralPath $stylesheetPath -Algorithm SHA256).Hash.Substring(0, 16).ToLowerInvariant()
     $content = $content -replace 'href="(?:\.\./)?shared\.css(?:\?[^"]*)?"', "href=`"../shared.css?v=$stylesheetVersion`""
+    foreach ($asset in @('bug-report.css', 'bug-report.js')) {
+        $assetPath = Join-Path (Get-RustGameWebSourceDir) $asset
+        $version = (Get-FileHash -LiteralPath $assetPath -Algorithm SHA256).Hash.Substring(0, 16).ToLowerInvariant()
+        $pattern = '(?<attribute>(?:src|href)=")\.\./' + [regex]::Escape($asset) + '(?:\?[^"]*)?"'
+        $content = [regex]::Replace($content, $pattern, '${attribute}../' + $asset + '?v=' + $version + '"')
+    }
     $content = $content -replace 'src="(?:\./)?mq_js_bundle\.js([^"]*)"', 'src="../shared-assets/runtime/mq_js_bundle.js$1"'
     $content = $content -replace 'src="(?:\./)?sapp_jsutils\.js([^"]*)"', 'src="../shared-assets/runtime/sapp_jsutils.js$1"'
     $content = $content -replace 'href="dist/([^"]+_windows\.zip)"', 'href="$1"'
@@ -2897,15 +2916,10 @@ function Publish-RustGameProject {
             Copy-Item $wasmPath (Join-Path $webGLPackageDir "$($info.BinaryName).wasm") -Force
         }
 
-        # index.html is generated from web/index.template.html + game_page.json;
-        # a hand-written index.html is only a fallback for unmigrated games.
+        # All games use the canonical renderer; never silently ship a stale
+        # hand-written launcher when page metadata is missing or invalid.
         if (-not (New-RustGameIndexHtml -Info $info -DestinationPath (Join-Path $webGLPackageDir "index.html"))) {
-            $indexPath = Join-Path $info.ProjectRoot "index.html"
-            if (Test-Path $indexPath) {
-                Copy-Item $indexPath $webGLPackageDir -Force
-            } else {
-                Write-Warning "No game_page.json and no index.html for $($info.GameSlug); the game will have no web page."
-            }
+            throw "Cannot publish $($info.GameSlug): provide valid game_page.json and the shared page template."
         }
 
         Copy-RustGameAssets $info $webGLPackageDir
