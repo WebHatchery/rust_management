@@ -10,7 +10,7 @@
 > `~~strikethrough~~ — Resolved: ...`).
 >
 > Sources: `[old game path under game_apps/]`, `docs/GAME_DEVELOPMENT_GUIDE.md`,
-> `docs/CODE_STANDARDS.md`, `docs/MACROQUAD_TOOLKIT.md`, `migration_candidates.md`.
+> `docs/CODE_STANDARDS.md`, `docs/MACROQUAD_TOOLKIT.md`.
 
 ---
 
@@ -20,8 +20,8 @@
 bridge between "what the old game did" and "what the Rust port keeps, cuts, or changes."*
 
 - **Old game:** `game_apps/[slug]/` — [one-line description of what it was].
-- **Why it was picked:** [pull the relevant line from `migration_candidates.md` — genre
-  gap? art-cost profile? which tier?]
+- **Why it was picked:** [explain the current genre gap, audience, and art-cost
+  profile that justify this port.]
 - **Art-liability audit** — the whole point of porting this instead of a high-art game.
   List every asset class the old game leaned on and what replaces it:
 

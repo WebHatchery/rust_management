@@ -45,8 +45,17 @@ Some excluded games are their own Cargo workspaces and will compile separately.
 - Route generic JSON loading through `macroquad_toolkit::data_loader`.
 - Make every required browser interaction possible with visible touch/click
   controls. Keyboard shortcuts may supplement, not replace, touch controls.
-- Keep tests in child files such as `foo/tests.rs`, linked with
-  `#[cfg(test)] mod tests;` from `foo.rs`.
+- Keep all tests and test-only helpers in each crate's `tests/` directory beside
+  its `Cargo.toml`, including workspace members. Exercise the public library API;
+  binary games expose testable logic through `src/lib.rs` used by `main.rs`.
+- Do not add test modules, `#[cfg(test)]`, or test helpers under `src/`. Migrate
+  existing source-tree tests separately before expanding coverage (§11.4).
+- Focus on calculations, state transitions, and JSON loading with simple tests
+  that read like rules. UI and rendering generally do not need unit tests.
+- Strongly target no more than five `#[test]` cases per major feature across all
+  its suites. Use table-driven assertions for related inputs, preserve useful
+  regressions, and explain distinct coverage that needs more cases before
+  committing (§11.3).
 - Keep a root `catalog_thumbnail.png`, preferably a 16:9 title/menu capture.
 
 The complete rules live in [../CODE_STANDARDS.md](../CODE_STANDARDS.md) and

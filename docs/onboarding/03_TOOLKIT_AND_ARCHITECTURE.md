@@ -33,13 +33,14 @@ a path dependency, so validate both the toolkit and at least one affected game.
 ├── docs/verification/           accepted UI captures
 ├── scripts/capture_ui.ps1       optional game wrapper
 ├── src/
+│   ├── lib.rs                   public logic used by the binary and tests
 │   ├── main.rs                  Macroquad entry point and frame loop
 │   ├── game.rs                  state ownership/transitions
 │   ├── data.rs + data/          typed content and loading
 │   ├── state.rs + state/        current/persistent state
 │   ├── simulation.rs + ...      deterministic domain services
 │   └── ui.rs + ui/              drawing and returned intents
-└── tests/                       integration/standards tests
+└── tests/                       all tests and test-only helpers for this crate
 ```
 
 Match the existing game before imposing this exact skeleton; mature games vary.
