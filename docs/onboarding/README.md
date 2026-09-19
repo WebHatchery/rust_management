@@ -54,6 +54,7 @@ change, and game change are separate commits in separate repositories.
 | Branch, commit, review, and coordinate | [05_GIT_COLLABORATION.md](05_GIT_COLLABORATION.md) |
 | Diagnose common setup/build failures | [06_TROUBLESHOOTING.md](06_TROUBLESHOOTING.md) |
 | Full code rules | [../CODE_STANDARDS.md](../CODE_STANDARDS.md) |
+| Game UI composition and visual review | [../UI_STYLE.md](../UI_STYLE.md) |
 | Full development guide | [../GAME_DEVELOPMENT_GUIDE.md](../GAME_DEVELOPMENT_GUIDE.md) |
 | Toolkit API/pattern reference | [../MACROQUAD_TOOLKIT.md](../MACROQUAD_TOOLKIT.md) |
 | Commit-message convention | [../COMMIT_STYLE.md](../COMMIT_STYLE.md) |

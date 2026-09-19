@@ -10,7 +10,7 @@
 > `~~strikethrough~~ — Resolved: ...`).
 >
 > Sources: `[old game path under game_apps/]`, `docs/GAME_DEVELOPMENT_GUIDE.md`,
-> `docs/CODE_STANDARDS.md`, `docs/MACROQUAD_TOOLKIT.md`.
+> `docs/CODE_STANDARDS.md`, `docs/UI_STYLE.md`, `docs/MACROQUAD_TOOLKIT.md`.
 
 ---
 
@@ -27,7 +27,7 @@ bridge between "what the old game did" and "what the Rust port keeps, cuts, or c
 
   | Old asset (web) | Art cost | Rust replacement |
   | --- | --- | --- |
-  | [e.g. character portraits] | High | [e.g. cut — represented as name + stat block] |
+  | [e.g. character portraits] | High | [e.g. silhouette/name; detailed stats on inspection] |
   | [e.g. card illustrations] | High | [e.g. icon + color-coded border, `colors` module] |
   | [e.g. UI chrome/CSS] | Low | [toolkit `ui`/`fx` widgets] |
   | [e.g. map/world art] | Medium | [procedural/abstract via `raster`/`fx`, or reused from `[other game]`] |
@@ -178,17 +178,32 @@ an AI implementer from either under- or over-building.*
 
 ## 9. UI/UX & Screen Flow
 
-*UI is a pure view layer per `CODE_STANDARDS.md` §7 — it reads state and returns
-`UiAction` intents; a `*_actions.rs` dispatcher applies them. Never reach into state from
-a panel. List screens and the toolkit widgets each one leans on so this isn't invented
-per-screen during implementation.*
+*Follow `UI_STYLE.md` before selecting widgets. Complete its screen brief for
+each phase; the template's showcase layout is not the new game's screen plan.
+UI is a pure view layer per `CODE_STANDARDS.md` §7 — it reads state and returns
+`UiAction` intents; a `*_actions.rs` dispatcher applies them.*
 
-| Screen | Purpose | Toolkit pieces |
+| Screen / phase | Current player decision | Dominant focus and primary action | Supporting information | Deferred information and how to reveal it |
+| --- | --- | --- | --- | --- |
+| [Main menu] | | | | |
+| [Normal play] | | | | |
+| [Inspection / comparison, if needed] | | | | |
+| [Critical event / result, if needed] | | | | |
+
+- **Progression and pacing:** [what is visible in early play, what is learned or
+  unlocked later, and what changes during calm, pressure, and critical phases]
+- **Camera and layout:** [dominant play area, default zoom, normal and minimum
+  supported viewport sizes, and how secondary content reflows or collapses]
+- **Touch and feedback:** [visible path for each required action, inspection,
+  dismissal, and recovery; first-use teaching and how help is reopened]
+- **Visual review:** [scenes and sizes covering normal, dense, expanded, and
+  urgent states; verify the `UI_STYLE.md` checklist, not just overlap]
+
+Choose toolkit pieces to support this plan. Omit widgets the screen does not need:
+
+| Screen / phase | Toolkit pieces | Why each is needed for this decision |
 | --- | --- | --- |
-| [Main Menu] | | `VirtualUi`, `SurfaceStyle`, buttons |
-| [Main Play Screen] | | `Camera2D`, `FlatGrid`, `GridLayout` |
-| [Detail/Selection Panel] | | `TextStyle`, tooltips, meters, badges |
-| [Event/Modal] | | `NotificationManager` / modal surface |
+| [Screen from the plan above] | [actual toolkit types/functions] | |
 
 Interaction flow (mirror `realmseed/gdd.md` §20's numbered flows if the game has
 turn/season structure; otherwise describe the frame-by-frame input→action→state path):

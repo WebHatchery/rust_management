@@ -7,6 +7,7 @@ This folder is the canonical source for the shared RustGames project documents:
 
 - `AGENTS.md`
 - `CODE_STANDARDS.md`
+- [UI_STYLE.md](UI_STYLE.md) — screen composition, information hierarchy, and visual review
 - `MACROQUAD_TOOLKIT.md`
 - `GAME_DEVELOPMENT_GUIDE.md`
 
@@ -36,6 +37,16 @@ The check script compares every discovered game project copy against the canonic
 ```
 
 The sync script overwrites project-local copies with the canonical files from this folder. By default, it scans game projects under the workspace root and skips the workspace root itself. A game project is a Cargo project with `publish.ps1`.
+
+This includes the nested starter template and archived Cargo games with
+`publish.ps1`. To refresh only the starter used by new games, run these from
+`rust_management/` (relative project targets are resolved from the workspace
+root, not the current directory):
+
+```powershell
+.\docs\sync-project-docs.ps1 -ProjectRoot rust_management/template
+.\docs\check-project-docs.ps1 -ProjectRoot rust_management/template
+```
 
 Before syncing, move project-specific guidance into a project README or another local documentation file such as `PROJECT_AGENTS.md`. The managed shared documents are meant to stay identical across projects.
 

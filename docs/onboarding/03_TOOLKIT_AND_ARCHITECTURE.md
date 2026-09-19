@@ -71,13 +71,19 @@ testable and prevents hidden mutation through widget callbacks.
 
 ## Display and input rules
 
+Read [../UI_STYLE.md](../UI_STYLE.md) for screen composition and visual review.
+Design the current player decision and dominant play area before choosing
+panels or widgets; use contextual disclosure for secondary information.
+
 Macroquad screen and mouse coordinates are logical pixels, but GPU viewports use
 physical framebuffer pixels. Use `VirtualUi::viewport()` or
 `macroquad_toolkit::ui::logical_viewport()` at that boundary; do not put
 `screen_width()` directly in a camera viewport.
 
 UI text is box-bounded. Use toolkit wrapping, fitting, centering, or truncation
-helpers so longer values cannot overlap nearby controls.
+helpers so longer values cannot overlap nearby controls. Reflow or disclose
+secondary content before shrinking text. Essential costs, consequences, and
+warnings must remain legible and complete.
 
 Browser games are touch-first. Every tutorial and recovery path must name and
 expose a tappable control or explicit gesture.

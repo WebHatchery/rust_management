@@ -5,7 +5,7 @@
 1. Confirm which repository owns the change: game, toolkit, or management.
 2. Pull or fetch the latest branch in every affected repository.
 3. Read the game README/GDD and its local copies of `AGENTS.md`,
-   `CODE_STANDARDS.md`, `MACROQUAD_TOOLKIT.md`, and
+   `CODE_STANDARDS.md`, `UI_STYLE.md`, `MACROQUAD_TOOLKIT.md`, and
    `GAME_DEVELOPMENT_GUIDE.md`.
 4. Check `git status` before editing; do not overwrite another person's work.
 5. Create a focused branch as described in
@@ -41,6 +41,8 @@ Some excluded games are their own Cargo workspaces and will compile separately.
 - Use named module files (`foo.rs` plus `foo/bar.rs`), never new `mod.rs` files.
 - Keep UI as a view that returns actions/intents; apply mutations in game/state
   logic.
+- Follow [../UI_STYLE.md](../UI_STYLE.md) for screen composition. Plan the
+  current decision, emphasize gameplay, and defer secondary information.
 - Put content and balance data in JSON under `assets/` where practical.
 - Route generic JSON loading through `macroquad_toolkit::data_loader`.
 - Make every required browser interaction possible with visible touch/click
@@ -58,7 +60,8 @@ Some excluded games are their own Cargo workspaces and will compile separately.
   committing (§11.3).
 - Keep a root `catalog_thumbnail.png`, preferably a 16:9 title/menu capture.
 
-The complete rules live in [../CODE_STANDARDS.md](../CODE_STANDARDS.md) and
+The complete rules live in [../CODE_STANDARDS.md](../CODE_STANDARDS.md),
+[../UI_STYLE.md](../UI_STYLE.md), and
 [../GAME_DEVELOPMENT_GUIDE.md](../GAME_DEVELOPMENT_GUIDE.md).
 
 ## Assets and web pages
@@ -89,7 +92,16 @@ and data files before implementing features. The workspace `members = ["*"]`
 glob normally discovers a new top-level Cargo project automatically unless it
 is explicitly excluded.
 
+Before expanding game content, complete the `UI_STYLE.md` screen brief in
+the game's GDD or README and recompose the template's demo UI. Its collection
+of panels and utility controls demonstrates integration, not the intended
+visual hierarchy for the new game.
+
 ## Visual verification
+
+Use [../UI_STYLE.md](../UI_STYLE.md) §9 to select scenes and assess focus,
+readability, disclosure, and touch interaction at normal and minimum supported
+sizes. Inspect the images after capture; a valid PNG alone is not UI approval.
 
 Games with the capture harness can render deterministic UI scenes headlessly:
 
@@ -130,8 +142,8 @@ Do not run `publish-all.ps1`, `publish-all-ftp.ps1`, or
 
 ## Shared-document and CI maintenance
 
-The four shared documents are edited only in `rust_management/docs/`, then
-synced into games:
+The five shared documents, including `UI_STYLE.md`, are edited only in
+`rust_management/docs/`, then synced into games:
 
 ```powershell
 Set-Location D:\WebHatchery\RustGames\rust_management

@@ -18,6 +18,7 @@ $WorkspaceRoot = Split-Path -Parent $ManagementRoot
 $DocumentNames = @(
     "AGENTS.md",
     "CODE_STANDARDS.md",
+    "UI_STYLE.md",
     "MACROQUAD_TOOLKIT.md",
     "GAME_DEVELOPMENT_GUIDE.md"
 )

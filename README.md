@@ -18,6 +18,11 @@ New collaborators should begin with the
 Repository maintainers should also read [CLAUDE.md](CLAUDE.md), which documents
 the internals of the management scripts and shared web shell.
 
+For new games and screen changes, read [UI_STYLE.md](docs/UI_STYLE.md) before
+building the UI. It covers gameplay focus, hierarchy, contextual information,
+template adaptation, and visual review, and is synced alongside the code
+standards into game projects.
+
 ## Repository map
 
 | Path | Purpose |

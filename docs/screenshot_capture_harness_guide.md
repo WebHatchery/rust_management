@@ -13,6 +13,12 @@ Reference integrations: `carriage_run` (canonical), `finallanding` (custom
 window conf + extra seeding env vars), `monsterhall` (config-driven window,
 capture forces windowed). Verified on macroquad 0.4.15, Windows 11.
 
+Use [UI_STYLE.md](UI_STYLE.md) §9 for scene selection and visual acceptance:
+inspect gameplay focus, hierarchy, readable content, and relevant dense or
+urgent states at normal and minimum supported sizes. A successful capture
+only proves that a PNG was produced; also exercise the affected browser/touch
+interactions and report any verification limitations.
+
 ---
 
 ## How it works (the key idea)

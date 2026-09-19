@@ -2783,6 +2783,7 @@ function Remove-RustGameObsoleteRemoteSharedFiles {
 function Publish-RustGameProject {
     param(
         [string]$ProjectDir,
+        [string]$ProjectSlug,
         [switch]$SkipBuild,
         [switch]$WindowsOnly,
         [switch]$WebGLOnly,
@@ -2797,6 +2798,12 @@ function Publish-RustGameProject {
     if ($FTP) { $Production = $true }
 
     $info = Get-RustGameProjectInfo $ProjectDir
+    if (-not [string]::IsNullOrWhiteSpace($ProjectSlug)) {
+        $info.RoostSlug = Get-RustGameRoostSlug `
+            -ProjectSlug $ProjectSlug `
+            -ProjectName $info.GameSlug `
+            -ProjectDir $info.ProjectRoot
+    }
     $title = ($info.GameSlug -replace '_', ' ').ToUpperInvariant()
     $buildWindows = -not $WebGLOnly -and -not $DeployOnly
     $buildWebGL = -not $WindowsOnly -and -not $DeployOnly
@@ -3082,7 +3089,7 @@ function Publish-RustGameProject {
 
 if ($Help -or (-not $RustGamePublish -and -not $RustGameFtpUpload -and -not $RustGameRecordDeployment -and -not $RustGameArchive -and -not $RustGamesSharedAssetsFtpUpload -and -not $RustGamesCatalogFtpUpload)) {
     Write-Host "Usage:"
-    Write-Host "  .\publish.ps1 -RustGamePublish -ProjectDir <path> [-SkipBuild] [-WebGLOnly] [-WindowsOnly] [-DeployOnly] [-Production|-p] [-FTP] [-SkipFtpSharedAssets] [-SkipFtpCatalog] [-DryRun]"
+    Write-Host "  .\publish.ps1 -RustGamePublish -ProjectDir <path> [-ProjectSlug <slug>] [-SkipBuild] [-WebGLOnly] [-WindowsOnly] [-DeployOnly] [-Production|-p] [-FTP] [-SkipFtpSharedAssets] [-SkipFtpCatalog] [-DryRun]"
     Write-Host "  .\publish.ps1 -RustGameFtpUpload -ProjectName <name> -SourceDir <path> [-ProjectDir <path>] [-DryRun]"
     Write-Host "  .\publish.ps1 -RustGamesSharedAssetsFtpUpload [-DryRun]"
     Write-Host "  .\publish.ps1 -RustGamesCatalogFtpUpload [-DryRun]"
@@ -3097,6 +3104,7 @@ if ($Help -or (-not $RustGamePublish -and -not $RustGameFtpUpload -and -not $Rus
 } elseif ($RustGamePublish) {
     Publish-RustGameProject `
         -ProjectDir $ProjectDir `
+        -ProjectSlug $ProjectSlug `
         -SkipBuild:$SkipBuild `
         -WindowsOnly:$WindowsOnly `
         -WebGLOnly:$WebGLOnly `
