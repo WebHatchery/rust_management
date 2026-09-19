@@ -31,6 +31,8 @@ system or toolkit widget does not automatically deserve a permanent panel.
 
 ## 2. Give each screen one dominant purpose
 
+- **Attention budget:** No more than 2–3 regions should demand strong attention
+  during normal play.
 - Aim for one dominant focus, one supporting area, and quiet utilities. Use
   emphasis, placement, and scale to make the first place to look clear within
   about a second. These are attention roles, not a mandatory three-column grid.
@@ -44,6 +46,8 @@ system or toolkit widget does not automatically deserve a permanent panel.
 - Usually give the action that advances play the strongest treatment. Quiet
   utilities such as settings or save management should not outrank it. Equally
   valid choices can share emphasis; do not invent a preferred choice.
+- **Gameplay vs navigation:** Never visually group gameplay decisions with
+  menu, save, exit, or settings actions.
 
 For an auction, the current lot and bid are dominant, rivals support the
 decision, and affordable limits sit beside the bid control. Detailed research
@@ -111,6 +115,8 @@ disclosure control, briefly after an event, or on a separate screen.
 
 ## 6. Let the world and its changes communicate
 
+- **State vs event:** Persistent UI shows current state; temporary feedback
+  shows what just changed.
 - Prefer readable changes in the world: a raised bidding paddle, damaged
   machinery, smoke, changing posture, or rising water. Supplement these with
   UI when the player needs an exact value or an otherwise ambiguous signal.
