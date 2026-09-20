@@ -175,6 +175,7 @@ foreach ($project in $projects) {
         $rows.Add([pscustomobject]@{
             Project = $project.Name; RoostSlug = $slug; DeployedAt = $null; AgeDays = $null
             DeployedCommit = $null; Comparison = 'unavailable'; LocalCommits = $null
+            DeploymentAncestor = $null
             RemoteCommits = $null; LocalFiles = $null; RemoteFiles = $null
             DirtyFiles = $null; Ahead = $null; Behind = $null; Added = $null
             Deleted = $null; Status = 'Roost error'; Notes = $_.Exception.Message
@@ -187,6 +188,7 @@ foreach ($project in $projects) {
         $rows.Add([pscustomobject]@{
             Project = $project.Name; RoostSlug = $slug; DeployedAt = $null; AgeDays = $null
             DeployedCommit = $null; Comparison = 'none'; LocalCommits = $null
+            DeploymentAncestor = $null
             RemoteCommits = $null; LocalFiles = $null; RemoteFiles = $null
             DirtyFiles = @(Invoke-Git -Repository $project.FullName -Arguments @('status', '--porcelain')).Output.Count
             Ahead = $null; Behind = $null; Added = $null; Deleted = $null
@@ -232,6 +234,7 @@ foreach ($project in $projects) {
 
     $localCommits = $null
     $localStats = $null
+    $deploymentAncestor = $null
     if ($baseValid) {
         $localCommits = Get-IntegerOutput (Invoke-Git -Repository $project.FullName -Arguments @(
             'rev-list', '--count', "$baseCommit..HEAD"
@@ -241,6 +244,7 @@ foreach ($project in $projects) {
         $ancestor = Invoke-Git -Repository $project.FullName -Arguments @(
             'merge-base', '--is-ancestor', $baseCommit, 'HEAD'
         )
+        $deploymentAncestor = $ancestor.ExitCode -eq 0
         if ($ancestor.ExitCode -ne 0) {
             $notes.Add('The deployed commit is not an ancestor of local HEAD.')
         }
@@ -299,6 +303,7 @@ foreach ($project in $projects) {
         AgeDays = $ageDays
         DeployedCommit = [string]$deployment.git_commit
         Comparison = $comparison
+        DeploymentAncestor = $deploymentAncestor
         LocalCommits = $localCommits
         RemoteCommits = $remoteCommits
         LocalFiles = $localFiles
