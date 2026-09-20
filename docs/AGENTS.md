@@ -18,6 +18,7 @@ Applies to all Rust game projects in this workspace. `CODE_STANDARDS.md` is the 
 
 - Keep tests in each crate's `tests/` directory and strongly target five cases per major feature; preserve useful regression coverage (§11).
 - After meaningful game changes, run `.\publish.ps1` without parameters in the affected project and report the result or blocker. Do not substitute a local run unless requested (§8.3).
+- Run formatting, Clippy, source-size checks, tests, and publishing against the actual project checkout being changed and its real workspace/dependency configuration. Do not create or use an isolated project copy, copied source tree, temporary clone, or alternate manifest to bypass failures. A pass in such a copy is not validation of the actual project; report the original failure as a blocker instead (§8.3).
 - Store screenshots directly in `docs/verification/`, replacing captures of the same screen or state (§12).
 - For UI changes, complete the `UI_STYLE.md` visual review at normal and minimum supported sizes, including relevant dense states and touch interactions; report evidence and limitations.
 

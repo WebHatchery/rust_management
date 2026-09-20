@@ -259,6 +259,21 @@ The game must build for:
 ### 8.3 Validation
 After meaningful game changes, run `.\publish.ps1` with no parameters from the affected project directory and report the result. If the script is missing, blocked, or fails for an unrelated environment reason, report that limitation. A local instance or dev server is not a substitute unless the user requests it.
 
+All validation must run against the actual project checkout being changed, with
+its real workspace and dependency configuration. Do not create or use isolated
+project copies, copied source trees, temporary clones, alternate manifests, or
+fabricated workspaces to get formatting, Clippy, source-size gates, tests, or
+publishing to pass. Do not detach a game from its workspace or change dependency
+paths merely to bypass a validation failure.
+
+For example, "Validation passed in the isolated project copy: formatting,
+clippy with `-D warnings`, source-size gate, and 15 gameplay tests" is not an
+acceptable substitute for validating the changed checkout. Even an honestly
+labelled isolated-copy result does not satisfy these requirements. Run the
+checks in the actual checkout; if its workspace cannot load, report that error
+and identify the blocked checks. Fix the real cause within the task's scope,
+then rerun validation there. Never claim completion based on a copied project.
+
 Use project-local asset paths and make missing assets and loading failures clear during publishing.
 
 ### 8.4 WebGL Requirements
