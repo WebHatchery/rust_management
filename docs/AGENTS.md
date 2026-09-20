@@ -21,6 +21,15 @@ Applies to all Rust game projects in this workspace. `CODE_STANDARDS.md` is the 
 - Store screenshots directly in `docs/verification/`, replacing captures of the same screen or state (§12).
 - For UI changes, complete the `UI_STYLE.md` visual review at normal and minimum supported sizes, including relevant dense states and touch interactions; report evidence and limitations.
 
+## Workspace hygiene
+
+- Do not create disposable review files, scratch projects, backup captures, or temporary cleanup directories anywhere, including OS temp directories. Moving them outside the repository is not a workaround. Use the existing tools and keep only required, durable verification evidence at its documented path (§12).
+- Capture directly to stable filenames in `docs/verification/` and replace the same screen/state in place. Do not create `baseline_tmp`, `review_*`, `review_cleanup_*`, or `.previous` copies. Read command output directly instead of writing ad hoc logs.
+- Never move files out of a repository to satisfy a clean Git status or evade staging rules. Preserve existing work in place; report a blocker if it cannot be handled within the task.
+- Never add dummy `Cargo.toml`, `lib.rs`, placeholder crates, or fabricated source files to make workspace checks pass. The workspace uses `members = ["*"]`, so a stray sibling directory can break every game's build. Inspect and report the offending path; do not modify another project's files or the workspace membership to conceal the failure.
+- If an unexpected directory blocks validation, determine its ownership and contents before acting. Remove only verified disposable artifacts created by the current task, within authorized scope; otherwise report the blocker. Do not repeatedly create/delete placeholder files or claim validation passed against a fabricated workspace.
+- Standard build outputs and internal files managed and cleaned by established tools are distinct from agent-created scratch files. Use the shared capture wrapper, keep its hidden-window default, wait for completion, and verify its launched game exits. If it fails or leaves a process running, report or fix the tool rather than inventing a temporary project or alternate capture pipeline.
+
 ## Commits
 
 - Follow `rust_management/docs/COMMIT_STYLE.md` (relative to the workspace root): a subject in the game's voice ending with a clear parenthetical tag, an honest explanatory body, and AI co-authorship. No Conventional-Commits prefixes or forced metaphors for mechanical changes.

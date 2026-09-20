@@ -177,11 +177,20 @@ default scenes (see `carriage_run` or `monsterhall`), so the whole flow is:
 ./scripts/capture_ui.ps1
 ```
 
-Or invoke the exe directly:
+Use the shared wrapper rather than an ad hoc executable launch. Capture mode
+requires `PREFIX_CAPTURE_MANIFEST`; the obsolete `PREFIX_CAPTURE_PATH` and
+`PREFIX_CAPTURE_SCENE` variables do not activate the current capture harness.
+The wrapper supplies the manifest, enables hidden capture, and waits for exit.
+Check its completion status and confirm its game process has exited.
 
-```powershell
-$env:PREFIX_CAPTURE_PATH = "out.png"; $env:PREFIX_CAPTURE_SCENE = "gameplay"; & $exe
-```
+Write required screenshots directly to stable filenames in `docs/verification/`
+and replace them when iterating. Do not create temporary review directories,
+backup images, scratch projects, or extra logs, including in the OS temp directory.
+Do not move artifacts into a sibling cleanup folder to make Git status clean.
+If capture is blocked by a stray workspace directory, investigate and report it;
+never manufacture a dummy Cargo manifest or source file to bypass the failure.
+The wrapper's own managed internal files are its responsibility, not a reason
+to create a second, ad hoc capture workflow. See `CODE_STANDARDS.md` §12.
 
 ---
 

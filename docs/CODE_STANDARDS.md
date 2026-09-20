@@ -329,3 +329,19 @@ Focus tests on:
 - Store verification screenshots directly in `docs/verification/`.
 - Do not create screenshot subfolders under `docs/verification/`.
 - If a new capture represents the same screen or state as an existing screenshot, replace the existing image instead of keeping duplicates.
+- Do not create disposable review files, scratch projects, backup screenshots, or cleanup folders, either inside the workspace or elsewhere. Do not move files out of a repository to make Git status clean. Preserve existing work and report blockers instead.
+- Use existing tooling and direct command output. Established tools may manage their own internal capture manifests, logs, and normal build outputs; do not create an ad hoc parallel set of temporary artifacts.
+- Never fabricate a `Cargo.toml`, source file, or placeholder crate to bypass a workspace failure. A missing manifest in an unexpected directory is a workspace hygiene problem to investigate and report, not a request to invent a project.
+
+Correct capture workflow (from the game directory):
+
+```powershell
+# Capture required evidence directly to its stable, documented location.
+# Use scene names supported by this game; the wrapper is hidden by default.
+& ..\macroquad-toolkit\scripts\capture_ui.ps1 -Scenes gameplay -OutputDir docs\verification
+# Wait for completion and check the exit result before inspecting the image.
+if (-not $?) { throw 'Capture failed; investigate the reported error.' }
+# Re-capture to the same filename when iterating; do not create backup copies.
+# If workspace discovery fails, inspect/report the offending directory.
+# Never create a dummy Cargo.toml or move files into a sibling cleanup folder.
+```
