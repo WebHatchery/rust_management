@@ -17,19 +17,20 @@ Run commands inside the game you are changing:
 
 ```powershell
 cargo fmt
-cargo test
-cargo clippy --all-targets --all-features -- -D warnings
-cargo run
+..\rust_management\cargo.ps1 test
+..\rust_management\cargo.ps1 clippy --all-targets --all-features '--' -D warnings
+..\rust_management\cargo.ps1 run
 ```
 
 For a single test:
 
 ```powershell
-cargo test <test_name>
+..\rust_management\cargo.ps1 test <test_name>
 ```
 
-The workspace shares `target/`, so builds of common dependencies are reused.
-Some excluded games are their own Cargo workspaces and will compile separately.
+The launcher shares three persistent build slots and a compiler cache; all local
+builds, including intentional standalone workspaces, follow this policy. See
+[../CARGO_WORKSPACE.md](../CARGO_WORKSPACE.md) for sccache and editor setup.
 
 ## Required implementation rules
 
@@ -88,9 +89,8 @@ Set-Location .\<new-game-folder>
 Then initialize its independent Git repository, set the intended remote, and
 follow the rename checklist in `rust_management/template/README.md`. Confirm the
 package name, `game_page.json`, capture prefix, root thumbnail, toolkit path,
-and data files before implementing features. The workspace `members = ["*"]`
-glob normally discovers a new top-level Cargo project automatically unless it
-is explicitly excluded.
+and data files before implementing features. Add the game to the explicit members in `rust_management/workspace/Cargo.toml`
+and run `python rust_management/sync-workspace.py` before using Cargo.
 
 Before expanding game content, complete the `UI_STYLE.md` screen brief in
 the game's GDD or README and recompose the template's demo UI. Its collection

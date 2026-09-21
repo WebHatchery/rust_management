@@ -43,6 +43,7 @@ $ProgressPreference = "SilentlyContinue"
 # tooling or shared web assets must use $ManagementRoot.
 $ManagementRoot = $PSScriptRoot
 $WorkspaceRoot = Split-Path -Parent $PSScriptRoot
+Import-Module (Join-Path $ManagementRoot 'scripts/cargo-pool.psm1')
 
 $EnvFile = "D:\WebHatchery\.env"
 $CatalogThumbnailFileName = "catalog_thumbnail.png"
@@ -322,20 +323,11 @@ function Get-MacroquadBundlePath {
         the wasm can never be different versions of each other. Returns $null if
         the crate is not vendored yet.
     #>
-    $lock = Join-Path $WorkspaceRoot 'Cargo.lock'
-    if (-not (Test-Path $lock)) { return $null }
-
-    $version = $null
-    $lines = Get-Content $lock
-    for ($i = 0; $i -lt $lines.Count; $i++) {
-        if ($lines[$i] -match '^name = "macroquad"$') {
-            if ($lines[$i + 1] -match '^version = "(.+)"$') { $version = $Matches[1] }
-            break
-        }
-    }
-    if (-not $version) { return $null }
-
-    $registry = Join-Path $env:USERPROFILE '.cargo/registry/src'
+    # All games explicitly pin this version; publishing verifies their actual
+    # locked resolution before using the single shared runtime.
+    $version = (Get-RustGameBuildPolicy).macroquad_version
+    $cargoHomePath = if ($env:CARGO_HOME) { $env:CARGO_HOME } else { Join-Path $env:USERPROFILE '.cargo' }
+    $registry = Join-Path $cargoHomePath 'registry/src'
     # Materialize all matching candidates before selecting one. Select-Object
     # -First 1 stops the upstream pipeline early, which PowerShell records as a
     # misleading PipelineStoppedError in a batch transcript.
@@ -1659,7 +1651,7 @@ function Invoke-CargoBuild {
     # hand-run cargo commands so the shared target dir stays warm.
     Push-Location $Info.ProjectRoot
     try {
-        & cargo @Arguments
+        Invoke-RustGameCargo -Arguments $Arguments
         if ($LASTEXITCODE -ne 0) {
             Write-Error "Cargo build failed."
             exit 1
@@ -2798,6 +2790,7 @@ function Publish-RustGameProject {
     if ($FTP) { $Production = $true }
 
     $info = Get-RustGameProjectInfo $ProjectDir
+    Assert-RustGameMacroquad -ProjectRoot $info.PackageRoot
     if (-not [string]::IsNullOrWhiteSpace($ProjectSlug)) {
         $info.RoostSlug = Get-RustGameRoostSlug `
             -ProjectSlug $ProjectSlug `
@@ -3102,18 +3095,30 @@ if ($Help -or (-not $RustGamePublish -and -not $RustGameFtpUpload -and -not $Rus
         -SourceDir (Join-Path $WorkspaceRoot "Release") `
         -DryRun:$DryRun
 } elseif ($RustGamePublish) {
-    Publish-RustGameProject `
-        -ProjectDir $ProjectDir `
-        -ProjectSlug $ProjectSlug `
-        -SkipBuild:$SkipBuild `
-        -WindowsOnly:$WindowsOnly `
-        -WebGLOnly:$WebGLOnly `
-        -DeployOnly:$DeployOnly `
-        -Production:$Production `
-        -FTP:$FTP `
-        -SkipFtpCatalog:$SkipFtpCatalog `
-        -SkipFtpSharedAssets:$SkipFtpSharedAssets `
-        -DryRun:$DryRun
+    $publishLease = $null
+    try {
+        # The existing DryRun mode still compiles/packages locally; it only
+        # suppresses deployment. Those builds need a lease too.
+        if (-not $DeployOnly) {
+            $poolProject = if ($ProjectDir) { $ProjectDir } else { (Get-Location).Path }
+            $publishLease = Enter-RustGameBuildPool -ProjectRoot $poolProject -Purpose publish -ReuseLast:$SkipBuild
+        }
+        Publish-RustGameProject `
+            -ProjectDir $ProjectDir `
+            -ProjectSlug $ProjectSlug `
+            -SkipBuild:$SkipBuild `
+            -WindowsOnly:$WindowsOnly `
+            -WebGLOnly:$WebGLOnly `
+            -DeployOnly:$DeployOnly `
+            -Production:$Production `
+            -FTP:$FTP `
+            -SkipFtpCatalog:$SkipFtpCatalog `
+            -SkipFtpSharedAssets:$SkipFtpSharedAssets `
+            -DryRun:$DryRun
+        if ($publishLease) { Save-RustGameBuildLocation $publishLease }
+    } finally {
+        Exit-RustGameBuildPool $publishLease
+    }
 } elseif ($RustGameRecordDeployment) {
     Record-ProjectRoostDeployment `
         -ProjectName $ProjectName `

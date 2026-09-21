@@ -65,3 +65,7 @@ return a nonzero exit code, and each run writes a transcript in `../publish-logs
 Without `-ChangedOnly`, the original full-catalog FTP publish remains available.
 The comparison tracks game repositories; changes only in the shared toolkit or
 management/web tooling still require a full publish to rebuild affected games.
+
+## Concurrent Rust builds
+
+Use the shared [Cargo build pool](docs/CARGO_WORKSPACE.md) for local compilation, tests, editor checks and game runs. Canonical workspace configuration and the exact Macroquad runtime policy live in `workspace/`; deploy/check them with `sync-workspace.py`.

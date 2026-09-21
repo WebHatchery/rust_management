@@ -1,0 +1,66 @@
+# Managed by rust_management/sync-workspace.py. Edit the tracked source.
+[workspace]
+members = [
+    "alchemy_tower",
+    "apartment",
+    "auction_game",
+    "biofoundry",
+    "carriage_run",
+    "cultivation",
+    "daemon_directorate",
+    "dragons_den",
+    "dragons_hoard",
+    "dungeon_core",
+    "dungeon_manager",
+    "eclipse_heart",
+    "feast_frenzy",
+    "finallanding",
+    "frontier",
+    "hatchspire",
+    "idle_hands",
+    "iron_fauna",
+    "kaiju_sim",
+    "kaiju_sim/kaiju_server",
+    "last_assembly",
+    "macroquad-toolkit",
+    "master_thief",
+    "mirexis",
+    "monsterhall",
+    "nanite_swarm",
+    "nightmare_shift",
+    "occupational_hazard",
+    "planet_trader",
+    "planetfall_engineer",
+    "realmseed",
+    "salvage_captain",
+    "scrapyard",
+    "sentience",
+    "stellar_legacy",
+    "tb_realms",
+    "the_enchanters_ledger",
+    "tiny_necromancer",
+    "toybox",
+    "until_you_return",
+    "world_machine",
+]
+# Intentional independent workspaces and management projects.
+exclude = ["mytherra", "tarrowyn", "rust_management"]
+resolver = "2"
+
+[profile.dev]
+opt-level = 1
+
+[profile.release]
+opt-level = "z"
+lto = true
+
+# Feature variants can share the pool without overwriting full-release binaries.
+[profile.demo]
+inherits = "release"
+
+[profile.release.package.dungeon_manager]
+opt-level = 3
+
+[profile.release.package.finallanding]
+opt-level = "s"
+codegen-units = 1

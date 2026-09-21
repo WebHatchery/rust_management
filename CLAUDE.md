@@ -28,12 +28,12 @@ There's no top-level `cargo test`/`cargo build` workflow spanning "the product" 
 
 **Per-game loop** (run from inside a game directory, e.g. `apartment/`):
 ```powershell
-cargo build                          # native debug build
-cargo run                            # run the game
-cargo test                           # run tests; cargo test <name> for a single test
+..\rust_management\cargo.ps1 build                          # native debug build
+..\rust_management\cargo.ps1 run                            # run the game
+..\rust_management\cargo.ps1 test                           # run tests; cargo test <name> for a single test
 cargo fmt -- --check                 # formatting check (CI enforces this)
-cargo clippy --all-targets --all-features -- -D warnings   # lint (CI treats warnings as errors)
-cargo build --release --target wasm32-unknown-unknown      # WebGL/WASM build
+..\rust_management\cargo.ps1 clippy --all-targets --all-features '--' -D warnings   # lint (CI treats warnings as errors)
+..\rust_management\cargo.ps1 build --release --target wasm32-unknown-unknown      # WebGL/WASM build
 ```
 
 **Publishing / validation** — every game has a `publish.ps1` that wraps the root `publish.ps1` (invoked with `-RustGamePublish -ProjectDir <path>`). Per `AGENTS.md`, this is the sanctioned end-to-end validation path after meaningful changes:
@@ -106,11 +106,23 @@ Games wire an env-var-driven headless capture mode so UI can be verified without
 
 ### Cargo workspace specifics
 
-Root `Cargo.toml` workspace `members = ["*", "kaiju_sim/kaiju_server"]` with `exclude` for the build outputs and `rust_management` (which contains `template/` and `archive/`, so those no longer need their own exclude entries). Release profile defaults to `opt-level = "z"` + `lto = true` for small WASM output, with per-package overrides (e.g. `dungeon_manager` uses `opt-level = 3`, `finallanding` uses `opt-level = "s"`). Adding a new top-level game directory with a `Cargo.toml` automatically joins the workspace via the `"*"` glob.
+Workspace membership is explicit in `workspace/Cargo.toml`; the root manifest,
+lockfile and `.cargo/config.toml` are installed with `python sync-workspace.py`.
+Record intentional root lockfile updates with `--capture-lock`; check deployment
+and version policy with `--check`. Do not change membership to avoid build locks.
+Mytherra and Tarrowyn remain intentional multi-crate workspaces.
 
-**Never set `RUSTFLAGS` in a build script or shell.** All wasm link flags live in the workspace `.cargo/config.toml`. A `RUSTFLAGS` env var *replaces* that list rather than merging with it, and cargo fingerprints the flag set — so two different flag sets mean two parallel copies of the entire wasm dependency graph (`macroquad`, `macroquad-toolkit`, `image`, …), each stale whenever the other was built last. `publish.ps1` exported `-C link-arg=--allow-undefined` for years while the config supplied `-C link-arg=--import-undefined`, so alternating a publish with a hand-run `cargo build --target wasm32-unknown-unknown` recompiled the toolkit every single time. Both flags are now in the config and nothing sets the env var. If a build needs a different flag, add it to `.cargo/config.toml`. (The per-repo CI workflows are the one exception — a game repo checked out standalone has no workspace config, so `rust-ci.yml` still sets `RUSTFLAGS` itself.)
+Use `cargo.ps1` for local compilation, checks, tests, Clippy and interactive run.
+The launcher leases one of three persistent slots (four compiler jobs each),
+uses sccache when installed, and restores the caller's environment. Publishing
+and capture integrate the pool automatically. Interactive games run staged
+executables after releasing the compiler slot. All games and the toolkit pin
+Macroquad exactly to `=0.4.16`, checked before publishing the shared runtime.
 
-Games in the root `Cargo.toml`'s `exclude` list (`dragons_den`, `mytherra`, `nft_adventurers`, `dungeon_manager_2d`) are each their own workspace, so they get their own profile resolution and share none of the cached dependency builds — expect a from-scratch toolkit compile on those.
+Shared WASM flags live in `workspace/config.toml`; do not set `RUSTFLAGS` in
+local scripts. CI in standalone checkouts supplies its own matching flags.
+See [docs/CARGO_WORKSPACE.md](docs/CARGO_WORKSPACE.md) for setup, editor routing,
+cache policy, concurrency limits, and dependency maintenance.
 
 ### Web shell (`web/`)
 

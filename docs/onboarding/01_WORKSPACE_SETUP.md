@@ -78,10 +78,17 @@ have a `_rust` suffix while their folder does not.
 
 ## 3. Restore workspace-root files
 
-The `RustGames` root is not itself a Git repository. Its `Cargo.toml`,
-`Cargo.lock`, `.cargo/config.toml`, and PowerShell forwarding scripts therefore
-need to come from the maintainer or an approved workspace bootstrap bundle.
-They are not recreated by cloning `rust_management`.
+The `RustGames` root is not itself a Git repository. After cloning the registered
+repositories, restore its tracked Cargo configuration and configure editor checks:
+
+```powershell
+python rust_management/sync-workspace.py
+.\rust_management\configure-editor.ps1
+winget install --id Mozilla.sccache --exact --scope user
+```
+
+Canonical files are in `rust_management/workspace/`. Root forwarding scripts
+still need to be present for game publishing. See [../CARGO_WORKSPACE.md](../CARGO_WORKSPACE.md).
 
 At minimum, confirm these exist:
 
@@ -125,16 +132,16 @@ From the assigned game repository:
 ```powershell
 Set-Location D:\WebHatchery\RustGames\<game-folder>
 cargo fmt -- --check
-cargo test
-cargo clippy --all-targets --all-features -- -D warnings
-cargo build
-cargo build --release --target wasm32-unknown-unknown
+..\rust_management\cargo.ps1 test
+..\rust_management\cargo.ps1 clippy --all-targets --all-features '--' -D warnings
+..\rust_management\cargo.ps1 build
+..\rust_management\cargo.ps1 build --release --target wasm32-unknown-unknown
 ```
 
 Then run the game interactively:
 
 ```powershell
-cargo run
+..\rust_management\cargo.ps1 run
 ```
 
 Finally, verify publishing without uploading. `-DryRun` still performs builds

@@ -1,0 +1,20 @@
+# Workspace-wide cargo settings for the RustGames monorepo.
+#
+# rust-lld (rustc >= ~1.9x) no longer turns unresolved extern "C" symbols
+# into wasm imports by default, which broke every game's WebGL build: the
+# sapp-jsutils / macroquad-toolkit storage externs (js_create_string,
+# storage_get_extern, ...) are provided by mq_js_bundle.js at runtime and
+# must be linked as imports.
+#
+# These flags MUST be the only source of wasm rustflags locally. A RUSTFLAGS
+# environment variable does not merge with this list — it replaces it — and a
+# different flag set is a different fingerprint, so the entire dependency
+# graph (macroquad, macroquad-toolkit, image, ...) gets recompiled from
+# scratch every time a build alternates between the two. publish.ps1 used to
+# export `-C link-arg=--allow-undefined` here, which meant publishing a game
+# and running `cargo build --target wasm32-unknown-unknown` by hand each
+# invalidated the other's cache. Keep both flags here instead; if a build
+# genuinely needs different ones, add them to this file rather than to the
+# environment.
+[target.wasm32-unknown-unknown]
+rustflags = ["-C", "link-arg=--import-undefined", "-C", "link-arg=--allow-undefined"]

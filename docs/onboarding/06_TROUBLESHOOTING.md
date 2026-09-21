@@ -20,8 +20,7 @@ are installed:
 ```powershell
 rustup show
 rustup default stable-msvc
-cargo clean -p <game-package>
-cargo build
+..\rust_management\cargo.ps1 build
 ```
 
 Avoid deleting the entire shared `target/` as a first response; it discards the
@@ -32,7 +31,7 @@ cache for every game.
 ```powershell
 rustup target add wasm32-unknown-unknown
 Remove-Item Env:RUSTFLAGS -ErrorAction SilentlyContinue
-cargo build --release --target wasm32-unknown-unknown
+..\rust_management\cargo.ps1 build --release --target wasm32-unknown-unknown
 ```
 
 The workspace `.cargo/config.toml` must contain the shared WASM linker flags.
@@ -42,7 +41,8 @@ An externally set `RUSTFLAGS` replaces, rather than extends, them.
 
 Check for `RUSTFLAGS` in the process/user/system environment and remove it. Both
 manual builds and publishing should use the same workspace config and shared
-target directory.
+build-pool policy. The first build in a new slot can compile dependencies;
+sccache reduces eligible repeated compilation across slots.
 
 ## `publish.ps1` is not found or points to the wrong place
 
@@ -116,3 +116,11 @@ Capture:
 - relevant publish destination, with credentials redacted.
 
 Prefer a copyable text log over a screenshot of terminal output.
+
+## Cargo waits for a lock
+
+Use the pooled launcher and configure rust-analyzer through `configure-editor.ps1`.
+Three simultaneous builds are allowed; further builds wait. Do not add exclusions
+or nested workspaces, delete lock files, or create per-task caches to evade a wait.
+A running game launched through `cargo.ps1 run` does not keep a build slot.
+See [../CARGO_WORKSPACE.md](../CARGO_WORKSPACE.md).

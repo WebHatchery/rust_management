@@ -44,13 +44,13 @@ types so rendering and input do not duplicate coordinate calculations.
 From `rust_management/`:
 
 ```powershell
-cargo run --manifest-path template/Cargo.toml
+.\cargo.ps1 run --manifest-path template/Cargo.toml
 ```
 
 ## Test
 
 ```powershell
-cargo test --manifest-path template/Cargo.toml
+.\cargo.ps1 test --manifest-path template/Cargo.toml
 ```
 
 ## Rename For A New Game
@@ -109,3 +109,7 @@ solely for a demonstration.
 The capture wrapper works both here and after copying the template to a
 workspace-level game directory. Run `./scripts/capture_ui.ps1` to refresh
 the gameplay, paused, scrolled, and zoomed scenes in `docs/verification/`.
+
+Register each new game explicitly in `rust_management/workspace/Cargo.toml`, then
+run `python rust_management/sync-workspace.py`. Keep the exact Macroquad version
+pin and use the shared build pool; see `rust_management/docs/CARGO_WORKSPACE.md`.

@@ -1,0 +1,7 @@
+{
+  "slots": 3,
+  "jobs_per_slot": 4,
+  "macroquad_version": "0.4.16",
+  "sccache": true,
+  "sccache_cache_size": "10G"
+}
