@@ -6,8 +6,8 @@ Verified on Windows on 2026-09-21 with Cargo 1.98.0 and sccache 0.17.0.
 
 - 41 explicit root-workspace packages; Mytherra and Tarrowyn retain their
   intentional multi-crate workspaces.
-- 45 registered direct Macroquad dependency declarations pinned to `=0.4.16`,
-  covering active games, toolkit, template and management sample projects.
+- 49 direct or workspace-level Macroquad dependency declarations pinned to
+  `=0.4.16`, covering active games, toolkit, template, samples and archived games.
 - Root, Mytherra and Tarrowyn authoritative locks resolve Macroquad 0.4.16.
 - `python rust_management/sync-workspace.py --check` passes.
 - Shared standards documents were synced; `docs/check-project-docs.ps1` passes.
@@ -71,6 +71,7 @@ The cache is bounded to 10 GB by default; slot outputs still occupy disk.
 ## Boundaries
 
 No catalog-wide production publish or legacy-target deletion was performed.
+Archived games received matching pins and synced guidance but were not rebuilt.
 Direct raw Cargo builds bypass the launcher, so developers and agents must follow
 the synced command guidance. Slots coordinate build outputs, not simultaneous
 edits to shared toolkit source or dependency lockfiles. Existing project-local

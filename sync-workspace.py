@@ -27,6 +27,9 @@ def manifests():
         path = ROOT / name / "Cargo.toml"
         if path.exists():
             paths.add(path)
+    # Archived games receive the shared docs too. Keep their direct or inherited
+    # runtime declaration consistent if one is restored later.
+    paths.update((MANAGEMENT / "archive").glob("*/Cargo.toml"))
     return sorted(paths)
 
 
@@ -50,6 +53,8 @@ def main():
     for path in manifests():
         data = read_toml(path)
         dep = data.get("dependencies", {}).get("macroquad")
+        if dep is None:
+            dep = data.get("workspace", {}).get("dependencies", {}).get("macroquad")
         if dep is None:
             continue
         actual = dep if isinstance(dep, str) else dep.get("version")
