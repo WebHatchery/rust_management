@@ -21,6 +21,7 @@ members = [
     "iron_fauna",
     "kaiju_sim",
     "kaiju_sim/kaiju_server",
+    "kestrum",
     "last_assembly",
     "macroquad-toolkit",
     "master_thief",
