@@ -48,6 +48,19 @@ function Open-PoolLock {
     }
 }
 
+function Restore-PoolEnvironment {
+    param([hashtable]$SavedEnv)
+    foreach ($name in $SavedEnv.Keys) {
+        if ($null -eq $SavedEnv[$name]) {
+            # PowerShell can coerce $null to an empty .NET string. New runtimes
+            # retain that value, and Cargo rejects an empty target directory.
+            Remove-Item "Env:$name" -ErrorAction SilentlyContinue
+        } else {
+            [Environment]::SetEnvironmentVariable($name, $SavedEnv[$name], 'Process')
+        }
+    }
+}
+
 function Enter-RustGameBuildPool {
     param(
         [string]$ProjectRoot = (Get-Location).Path,
@@ -140,7 +153,7 @@ function Enter-RustGameBuildPool {
         [Console]::Error.WriteLine("Cargo pool: slot $slot ($($policy.jobs_per_slot) compiler jobs).")
         return $script:activeLease
     } catch {
-        foreach ($name in $savedEnv.Keys) { [Environment]::SetEnvironmentVariable($name, $savedEnv[$name], 'Process') }
+        Restore-PoolEnvironment $savedEnv
         if ($slotLock) { $slotLock.Dispose() }
         if ($projectLock) { $projectLock.Dispose() }
         throw
@@ -179,9 +192,7 @@ function Exit-RustGameBuildPool {
     $Lease.Depth--
     if ($Lease.Depth -gt 0) { return }
     try {
-        foreach ($name in $Lease.SavedEnv.Keys) {
-            [Environment]::SetEnvironmentVariable($name, $Lease.SavedEnv[$name], 'Process')
-        }
+        Restore-PoolEnvironment $Lease.SavedEnv
     } finally {
         $Lease.SlotLock.Dispose()
         $Lease.ProjectLock.Dispose()

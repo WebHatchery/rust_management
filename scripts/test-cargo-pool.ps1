@@ -9,6 +9,11 @@ function Assert-PoolTest([bool]$Condition, [string]$Message) {
 }
 $workers = @()
 $lease = $null
+$environmentNames = @('CARGO_TARGET_DIR', 'CARGO_BUILD_BUILD_DIR', 'RUSTC_WRAPPER', 'CARGO_INCREMENTAL', 'CARGO_BUILD_JOBS', 'SCCACHE_CACHE_SIZE')
+$originalEnv = @{}
+foreach ($name in $environmentNames) {
+    $originalEnv[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
+}
 try {
     $policy = Get-RustGameBuildPolicy
     Assert-PoolTest ($policy.slots -eq 3) 'This saturation test expects the default three-slot policy.'
@@ -56,21 +61,41 @@ try {
     $lease = $null
     Write-Host 'PASS: abrupt process termination releases the OS lease.'
 
-    $before = @{}
-    foreach ($name in @('CARGO_TARGET_DIR', 'CARGO_BUILD_BUILD_DIR', 'RUSTC_WRAPPER', 'CARGO_INCREMENTAL', 'CARGO_BUILD_JOBS')) {
-        $before[$name] = [Environment]::GetEnvironmentVariable($name)
+    foreach ($scenario in @(
+        @{ Label = 'unset'; Value = $null },
+        @{ Label = 'configured'; Value = 'caller-setting' },
+        @{ Label = 'empty'; Value = '' }
+    )) {
+        $before = @{}
+        foreach ($name in $environmentNames) {
+            if ($null -eq $scenario.Value) {
+                Remove-Item "Env:$name" -ErrorAction SilentlyContinue
+            } else {
+                [Environment]::SetEnvironmentVariable($name, $scenario.Value, 'Process')
+            }
+            $before[$name] = [Environment]::GetEnvironmentVariable($name, 'Process')
+        }
+        # Older PowerShell/.NET versions cannot retain empty environment values.
+        if ($scenario.Label -eq 'empty' -and $null -eq $before['CARGO_TARGET_DIR']) { continue }
+        foreach ($consumerFails in @($false, $true)) {
+            try {
+                $lease = Enter-RustGameBuildPool -ProjectRoot (Join-Path $workspaceRoot 'biofoundry') -TimeoutSeconds 5
+                if ($consumerFails) { throw 'simulated consumer failure' }
+            } catch {
+                Assert-PoolTest ($consumerFails -and $_.Exception.Message -eq 'simulated consumer failure') "Unexpected lease failure: $_"
+            } finally { Exit-RustGameBuildPool $lease; $lease = $null }
+            foreach ($name in $before.Keys) {
+                Assert-PoolTest ((Test-Path "Env:$name") -eq ($null -ne $before[$name])) "Changed environment presence ($($scenario.Label)): $name"
+                Assert-PoolTest ([Environment]::GetEnvironmentVariable($name, 'Process') -ceq $before[$name]) "Leaked environment setting ($($scenario.Label)): $name"
+            }
+        }
     }
-    try {
-        $lease = Enter-RustGameBuildPool -ProjectRoot (Join-Path $workspaceRoot 'biofoundry') -TimeoutSeconds 5
-        throw 'simulated consumer failure'
-    } catch {
-        Assert-PoolTest ($_.Exception.Message -eq 'simulated consumer failure') 'Unexpected lease failure.'
-    } finally { Exit-RustGameBuildPool $lease; $lease = $null }
-    foreach ($name in $before.Keys) {
-        Assert-PoolTest ([Environment]::GetEnvironmentVariable($name) -eq $before[$name]) "Leaked environment setting: $name"
-    }
-    Write-Host 'PASS: failed consumers restore their calling environment.'
+    Write-Host 'PASS: successful and failed consumers preserve unset, configured and supported empty environment values.'
 } finally {
     Exit-RustGameBuildPool $lease
     foreach ($worker in $workers) { Stop-Job $worker -ErrorAction SilentlyContinue; Remove-Job $worker -Force -ErrorAction SilentlyContinue }
+    foreach ($name in $originalEnv.Keys) {
+        if ($null -eq $originalEnv[$name]) { Remove-Item "Env:$name" -ErrorAction SilentlyContinue }
+        else { [Environment]::SetEnvironmentVariable($name, $originalEnv[$name], 'Process') }
+    }
 }

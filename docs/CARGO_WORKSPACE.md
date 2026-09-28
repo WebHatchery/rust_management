@@ -26,6 +26,13 @@ script, so use `cargo.ps1 test '--' --nocapture`, for example. Do not use raw `c
 concurrent local work. Cargo formatting, metadata and dependency maintenance
 commands do not consume a build slot. CI in standalone checkouts still uses Cargo.
 
+If Cargo reports that `CARGO_TARGET_DIR` is an empty string after an earlier
+pooled command, close that terminal and open a fresh PowerShell terminal. Older
+versions of the pool cleanup could restore unset variables as empty strings on
+newer PowerShell/.NET runtimes. The current cleanup removes previously unset
+variables explicitly. Restarting also unloads the old module from the affected
+shell; retry using `..\rust_management\cargo.ps1 run --locked`.
+
 Put the Cargo subcommand first; custom aliases and leading `+toolchain` options
 are rejected so they cannot accidentally bypass pooling.
 
