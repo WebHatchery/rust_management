@@ -51,6 +51,11 @@ resolver = "2"
 [profile.dev]
 opt-level = 1
 
+# Omit bulky type/variable debug information for Kestrum's campaign/Serde types.
+# Retain optimization for responsive simulation and line information for backtraces.
+[profile.dev.package.kestrum]
+debug = 1
+
 [profile.release]
 opt-level = "z"
 lto = true
