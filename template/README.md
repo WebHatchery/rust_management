@@ -50,8 +50,11 @@ From `rust_management/`:
 ## Test
 
 ```powershell
-.\cargo.ps1 test --manifest-path template/Cargo.toml
+.\cargo.ps1 test --manifest-path template/Cargo.toml <relevant_test_filter>
 ```
+
+Omit the filter for a full suite when the integration/release or cross-cutting
+triggers in `CODE_STANDARDS.md` section 8.3 apply.
 
 ## Rename For A New Game
 

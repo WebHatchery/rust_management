@@ -30,7 +30,7 @@ There's no top-level `cargo test`/`cargo build` workflow spanning "the product" 
 ```powershell
 ..\rust_management\cargo.ps1 build                          # native debug build
 ..\rust_management\cargo.ps1 run                            # run the game
-..\rust_management\cargo.ps1 test                           # run tests; cargo test <name> for a single test
+..\rust_management\cargo.ps1 test <relevant_test_filter>    # focused slice checks
 cargo fmt -- --check                 # formatting check (CI enforces this)
 ..\rust_management\cargo.ps1 clippy --all-targets --all-features '--' -D warnings   # lint (CI treats warnings as errors)
 ..\rust_management\cargo.ps1 build --release --target wasm32-unknown-unknown      # WebGL/WASM build

@@ -17,12 +17,13 @@ Run commands inside the game you are changing:
 
 ```powershell
 cargo fmt
-..\rust_management\cargo.ps1 test
+..\rust_management\cargo.ps1 test <relevant_test_filter>
 ..\rust_management\cargo.ps1 clippy --all-targets --all-features '--' -D warnings
 ..\rust_management\cargo.ps1 run
 ```
 
-For a single test:
+Select an existing test target/filter that covers the slice; unfiltered full
+suites are for the broader triggers in section 8.3. For a single test:
 
 ```powershell
 ..\rust_management\cargo.ps1 test <test_name>
