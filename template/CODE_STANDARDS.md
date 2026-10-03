@@ -259,6 +259,12 @@ The game must build for:
 - **Web/WASM**: `..\rust_management\cargo.ps1 build --release --target wasm32-unknown-unknown`
 
 ### 8.3 Validation
+
+- During a slice, run focused tests for the changed behavior. Before each code-slice commit, review the full diff and affected feature suites, run formatting, Clippy (`--all-targets --all-features -- -D warnings`), source-size gates, and the affected project's full test suite (including relevant member crates). Focused tests do not replace full-suite checks; no catalog-wide test/build is required for a single-game slice.
+- After meaningful game changes, complete the publish and applicable visual review below before committing the slice. Smaller commits do not waive those checks.
+- Documentation-only slices require content/link/reference review, `git diff --check`, and relevant sync/check or documentation-tool tests. No gameplay build or publish is required solely for prose; changed executable tooling still needs its relevant checks.
+- Report exact failing commands and distinguish verified pre-existing failures from regressions and unrun checks. A baseline failure is not a pass or an automatic waiver: fix the real cause within scope, or report a blocker and obtain an explicit user exception before committing a slice whose required checks fail. Never commit newly broken code for cadence.
+
 After meaningful game changes, run `.\publish.ps1` with no parameters from the affected project directory and report the result. If the script is missing, blocked, or fails for an unrelated environment reason, report that limitation. A local instance or dev server is not a substitute unless the user requests it.
 
 All validation must run against the actual project checkout being changed, with
