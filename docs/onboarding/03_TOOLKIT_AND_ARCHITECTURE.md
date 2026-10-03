@@ -96,7 +96,8 @@ expose a tappable control or explicit gesture.
 4. Add toolkit tests/examples where appropriate.
 5. Run toolkit formatting, tests, and clippy.
 6. Run tests and `publish.ps1` in an affected game.
-7. Commit/push the toolkit change before a game change that depends on it.
+7. Commit the validated toolkit slice before the dependent game slice; push
+   only when explicitly authorized.
 8. Explain the required toolkit commit/branch in the game pull request.
 
 Do not convert the path dependency to a registry or Git dependency without an

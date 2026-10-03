@@ -108,7 +108,7 @@ other collaborator which commit is safe to build on.
 A game can compile locally against an unpushed toolkit branch, but nobody else
 can reproduce it. Therefore:
 
-1. commit and push the toolkit branch;
+1. commit the validated toolkit slice; push only when explicitly authorized;
 2. record its commit hash in the game PR;
 3. validate an affected game against that exact toolkit state;
 4. merge toolkit first; and

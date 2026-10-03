@@ -3,13 +3,13 @@
 ## Before changing code
 
 1. Confirm which repository owns the change: game, toolkit, or management.
-2. Pull or fetch the latest branch in every affected repository.
-3. Read the game README/GDD and its local copies of `AGENTS.md`,
-   `CODE_STANDARDS.md`, `UI_STYLE.md`, `MACROQUAD_TOOLKIT.md`, and
-   `GAME_DEVELOPMENT_GUIDE.md`.
-4. Check `git status` before editing; do not overwrite another person's work.
-5. Create a focused branch as described in
-   [05_GIT_COLLABORATION.md](05_GIT_COLLABORATION.md).
+2. Read the game README/GDD and `PROJECT_AGENTS.md` if present, then `AGENTS.md`.
+   Load its task-triggered references before the relevant work, not the entire
+   documentation set on every turn.
+3. Inspect branch, status, and diffs; preserve existing/concurrent work. Follow
+   [05_GIT_COLLABORATION.md](05_GIT_COLLABORATION.md) for ownership and commit cadence.
+   Agents stay on `master` unless the user requests a branch; coordinate updates
+   to the branch without overwriting active edits.
 
 ## Tight edit/test loop
 
@@ -34,36 +34,16 @@ builds, including intentional standalone workspaces, follow this policy. See
 
 ## Required implementation rules
 
-- Use Rust, Macroquad, and `macroquad-toolkit` by default.
-- Check whether a reusable runtime, input, rendering, asset, camera, persistence,
-  or platform capability belongs in the toolkit before duplicating it locally.
-- Keep every `.rs` file at or below 800 physical lines. The preferred range is
-  200–400 lines; split by responsibility rather than compressing formatting.
-- Use named module files (`foo.rs` plus `foo/bar.rs`), never new `mod.rs` files.
-- Keep UI as a view that returns actions/intents; apply mutations in game/state
-  logic.
-- Follow [../UI_STYLE.md](../UI_STYLE.md) for screen composition. Plan the
-  current decision, emphasize gameplay, and defer secondary information.
-- Put content and balance data in JSON under `assets/` where practical.
-- Route generic JSON loading through `macroquad_toolkit::data_loader`.
-- Make every required browser interaction possible with visible touch/click
-  controls. Keyboard shortcuts may supplement, not replace, touch controls.
-- Keep all tests and test-only helpers in each crate's `tests/` directory beside
-  its `Cargo.toml`, including workspace members. Exercise the public library API;
-  binary games expose testable logic through `src/lib.rs` used by `main.rs`.
-- Do not add test modules, `#[cfg(test)]`, or test helpers under `src/`. Migrate
-  existing source-tree tests separately before expanding coverage (§11.4).
-- Focus on calculations, state transitions, and JSON loading with simple tests
-  that read like rules. UI and rendering generally do not need unit tests.
-- Strongly target no more than five `#[test]` cases per major feature across all
-  its suites. Use table-driven assertions for related inputs, preserve useful
-  regressions, and explain distinct coverage that needs more cases before
-  committing (§11.3).
-- Keep a root `catalog_thumbnail.png`, preferably a 16:9 title/menu capture.
+Read [../CODE_STANDARDS.md](../CODE_STANDARDS.md) for code/data/behavior work,
+[../UI_STYLE.md](../UI_STYLE.md) before screen/input/rendering work, and the
+relevant [toolkit modules](../MACROQUAD_TOOLKIT.md#modules) before duplicating
+shared capabilities. These are the authorities, not optional background reading.
 
-The complete rules live in [../CODE_STANDARDS.md](../CODE_STANDARDS.md),
-[../UI_STYLE.md](../UI_STYLE.md), and
-[../GAME_DEVELOPMENT_GUIDE.md](../GAME_DEVELOPMENT_GUIDE.md).
+Commit each coherent, buildable feature slice after diff review and required
+checks, before starting the next. Focused tests aid iteration; they do not
+replace full project tests or other pre-commit checks. See
+[validation](../CODE_STANDARDS.md#83-validation) for full-suite scope,
+documentation-only checks, and handling verified baseline failures.
 
 ## Assets and web pages
 
@@ -129,8 +109,9 @@ After meaningful game changes, the sanctioned final check is the game wrapper:
 ```
 
 It builds Windows and WebGL release artifacts, packages them, and deploys to the
-configured preview root. For changes that cannot reasonably support one target,
-use the narrow flag and state that clearly in the handoff:
+configured preview root. If one target is blocked, report the failure; a narrow
+command supplies partial evidence, not a replacement for the required
+parameterless validation without a user exception:
 
 ```powershell
 .\publish.ps1 -WebGLOnly
