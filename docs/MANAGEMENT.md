@@ -36,12 +36,9 @@ cargo fmt -- --check                 # formatting check (CI enforces this)
 ..\rust_management\cargo.ps1 build --release --target wasm32-unknown-unknown      # WebGL/WASM build
 ```
 
-**Publishing / validation** — every game has a `publish.ps1` that wraps the root `publish.ps1` (invoked with `-RustGamePublish -ProjectDir <path>`). Per `AGENTS.md`, this is the sanctioned end-to-end validation path after meaningful changes:
-```powershell
-.\publish.ps1                # from inside the game dir: build Windows + WebGL, deploy
-.\publish.ps1 -WebGLOnly      # -WindowsOnly, -DeployOnly, -Production (-p), -FTP, -DryRun also available
-```
-For tight iteration, use the shared launcher for Clippy and tests before a full publish — that's what each game's CI (`.github/workflows/rust-ci.yml`) actually runs. Only run `publish.ps1` in the specific project directory you changed; don't run workspace-wide publishing (below) without being asked, since it builds and can deploy every game.
+**Local validation and publishing** - use [CODE_STANDARDS.md section 8.3](CODE_STANDARDS.md#83-validation): strict formatting/Clippy, source-size gates, focused relevant tests, and affected UI only. Broaden tests for cross-cutting risk or integration/release acceptance. Local commits do not require publishing.
+
+Each game's `publish.ps1` forwards to the root publisher with `-RustGamePublish -ProjectDir <path>`. It may deploy or contact external services: run only with user authorization. `-WebGLOnly`, `-WindowsOnly`, `-DeployOnly`, `-Production` (`-p`), `-FTP`, and `-DryRun` are publishing options, not substitutes for authorization. Do not batch-publish merely to validate a game.
 
 **itch.io publishing** is intentionally separate from `publish.ps1`. Each game
 has a `publish-itch.ps1` wrapper and an `itch.json` file when it has an itch

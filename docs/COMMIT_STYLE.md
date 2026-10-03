@@ -70,7 +70,8 @@ Example body beneath a save-migration subject:
 Old saves omitted the alloy ledger. Loading now supplies the documented
 initial value and migrates the schema before gameplay reads it. The public
 save API remains unchanged. A regression covers the previous version;
-formatting, Clippy, source-size gates, full tests, and preview publish pass.
+formatting, strict Clippy, source-size gates, and the focused save tests pass.
+Backward migration here is a deliberate game requirement, not a demo default.
 
 Co-Authored-By: Codex <noreply@openai.com>
 ```

@@ -40,9 +40,10 @@ relevant [toolkit modules](../MACROQUAD_TOOLKIT.md#modules) before duplicating
 shared capabilities. These are the authorities, not optional background reading.
 
 Commit each coherent, buildable feature slice after diff review and required
-checks, before starting the next. Focused tests aid iteration; they do not
-replace full project tests or other pre-commit checks. See
-[validation](../CODE_STANDARDS.md#83-validation) for full-suite scope,
+checks, before starting the next. Focused relevant tests are the ordinary slice
+default alongside formatting, strict Clippy, and source-size checks. Broader
+suites need a cross-cutting, integration, or release reason. See
+[validation](../CODE_STANDARDS.md#83-validation) for scope,
 documentation-only checks, and handling verified baseline failures.
 
 ## Assets and web pages
@@ -100,26 +101,17 @@ an existing image when it represents the same scene/state. Read
 [../screenshot_capture_harness_guide.md](../screenshot_capture_harness_guide.md)
 before adding capture support to a game.
 
-## End-to-end validation
+## Integration and release validation
 
-After meaningful game changes, the sanctioned final check is the game wrapper:
+Broaden tests at meaningful integration boundaries or for cross-cutting risk;
+build Windows/WASM as relevant to platform or release acceptance. Review only
+changed UI and affected states. Reuse valid unchanged results.
 
-```powershell
-.\publish.ps1
-```
-
-It builds Windows and WebGL release artifacts, packages them, and deploys to the
-configured preview root. If one target is blocked, report the failure; a narrow
-command supplies partial evidence, not a replacement for the required
-parameterless validation without a user exception:
-
-```powershell
-.\publish.ps1 -WebGLOnly
-.\publish.ps1 -WindowsOnly
-```
-
-Do not run `publish-all.ps1`, `publish-all-ftp.ps1`, or
-`build_all_webgl.ps1` merely to validate one game.
+Publishing is separate from local validation, never a per-slice commit gate.
+`publish.ps1` builds/packages and can deploy or contact external trackers; run
+it only with user authorization. Report deliberately unrun publishing clearly.
+Do not batch-publish games to validate one slice. The full policy is
+[section 8.3](../CODE_STANDARDS.md#83-validation).
 
 ## Shared-document and CI maintenance
 

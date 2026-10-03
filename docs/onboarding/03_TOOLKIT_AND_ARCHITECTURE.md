@@ -95,7 +95,8 @@ expose a tappable control or explicit gesture.
 3. Keep the public API small and consistent with established modules.
 4. Add toolkit tests/examples where appropriate.
 5. Run toolkit formatting, tests, and clippy.
-6. Run tests and `publish.ps1` in an affected game.
+6. Run relevant tests/builds in affected consumers; broaden coverage when the
+   shared change warrants it. Publishing is separate and needs user authorization.
 7. Commit the validated toolkit slice before the dependent game slice; push
    only when explicitly authorized.
 8. Explain the required toolkit commit/branch in the game pull request.

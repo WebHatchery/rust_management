@@ -35,7 +35,7 @@ user/concurrent work and commit the complete authorized slice as required by
 [../AGENTS.md](../AGENTS.md#commits). Never commit broken code for cadence.
 
 [CODE_STANDARDS.md section 8.3](../CODE_STANDARDS.md#83-validation) defines focused
-iteration versus full pre-commit checks, documentation-only validation, and
+slice checks, triggers for broader suites, documentation-only validation, and
 baseline-failure handling. Review `git diff`, `git diff --cached`, and
 `git diff --check`; report the commit hash and any remaining work or blockers.
 
@@ -54,7 +54,8 @@ The foundry remembers every alloy entrusted to it (save migration and tests)
 
 Old saves omitted the newly introduced alloy ledger. Loading now supplies the
 documented default and migrates the schema before gameplay reads it. A focused
-persistence test covers the previous version, and the preview publish passes.
+persistence test covers the previous version; formatting and strict Clippy pass.
+Migration is a deliberate requirement for this example, not the demo default.
 ```
 
 Read a game's recent history before the first commit so its metaphors remain

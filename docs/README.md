@@ -100,6 +100,10 @@ adds the root when eligible. `rust_management` itself has no Cargo manifest and
 uses its root AGENTS pointer, not a managed copy.
 
 For a documentation-only slice: review requirements and links/anchors, run
-`git diff --check`, sync/check the starter only, and inspect the diff. Check
-selected consumers read-only to report pending propagation. Do not publish games
-solely to validate prose or sync active consumers without coordinating ownership.
+`git diff --check`, and inspect the read-only drift check before selecting targets.
+Normally sync/check the starter only; when consumer rollout is requested, inspect
+managed-file status and historical canonical content first. Preserve local notes
+and unrelated/staged work; skip and report unrecognized or locally edited managed
+content instead of silently overwriting it. Commit the canonical policy first,
+then sync/check explicit safe targets and commit only their changed managed files.
+No game suites, builds, captures, or publishing are needed for this policy sync.
