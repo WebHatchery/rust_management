@@ -23,7 +23,7 @@ def manifests():
     # Registered members plus intentional standalone projects and the template.
     workspace = read_toml(CANONICAL / "Cargo.toml")["workspace"]
     paths = {ROOT / name / "Cargo.toml" for name in workspace["members"]}
-    for name in ("mytherra", "tarrowyn", "rust_management/template", "rust_management/2dmmo", "rust_management/archive/romcon"):
+    for name in ("mytherra", "tarrowyn", "rust_management/template"):
         path = ROOT / name / "Cargo.toml"
         if path.exists():
             paths.add(path)
