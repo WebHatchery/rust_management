@@ -36,7 +36,7 @@ cargo fmt -- --check                 # formatting check (CI enforces this)
 ..\rust_management\cargo.ps1 build --release --target wasm32-unknown-unknown      # WebGL/WASM build
 ```
 
-**Local validation and publishing** - use [CODE_STANDARDS.md section 8.3](CODE_STANDARDS.md#83-validation): strict formatting/Clippy, source-size gates, focused relevant tests, and affected UI only. Broaden tests for cross-cutting risk or integration/release acceptance. Local commits do not require publishing.
+**Local validation and publishing** - use [CODE_STANDARDS.md section 8.3](CODE_STANDARDS.md#83-validation): strict formatting/Clippy, source-size gates, focused existing tests, and affected UI only; no new tests by default ([section 11](CODE_STANDARDS.md#11-testing-policy)). Run broader existing suites for cross-cutting risk or integration/release acceptance. Local commits do not require publishing.
 
 Each game's `publish.ps1` forwards to the root publisher with `-RustGamePublish -ProjectDir <path>`. It may deploy or contact external services: run only with user authorization. `-WebGLOnly`, `-WindowsOnly`, `-DeployOnly`, `-Production` (`-p`), `-FTP`, and `-DryRun` are publishing options, not substitutes for authorization. Do not batch-publish merely to validate a game.
 

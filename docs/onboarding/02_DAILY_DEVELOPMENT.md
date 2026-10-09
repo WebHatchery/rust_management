@@ -41,9 +41,18 @@ relevant [toolkit modules](../MACROQUAD_TOOLKIT.md#modules) before duplicating
 shared capabilities. These are the authorities, not optional background reading.
 
 Commit each coherent, buildable feature slice after diff review and required
-checks, before starting the next. Focused relevant tests are the ordinary slice
-default alongside formatting, strict Clippy, and source-size checks. Broader
-suites need a cross-cutting, integration, or release reason. See
+checks, before starting the next. Running the focused existing tests for the
+changed behaviour is the ordinary slice default alongside formatting, strict
+Clippy, and source-size checks. Broader suites need a cross-cutting,
+integration, or release reason.
+
+Games are prototypes, so **do not write tests by default**. Add one only for a
+settled complex algorithm, data integrity, or a recurring regression; never for
+UI layout, experimental rules, temporary balancing, or implementation details.
+When changing experimental behaviour, delete the tests that asserted it rather
+than rewriting them, and keep the source-size and asset-registry gates. Exercise
+the feature itself and report what was and was not verified. See the
+[testing policy](../CODE_STANDARDS.md#11-testing-policy). See
 [validation](../CODE_STANDARDS.md#83-validation) for scope,
 documentation-only checks, and handling verified baseline failures.
 
@@ -104,7 +113,8 @@ before adding capture support to a game.
 
 ## Integration and release validation
 
-Broaden tests at meaningful integration boundaries or for cross-cutting risk;
+Run broader existing suites at meaningful integration boundaries or for
+cross-cutting risk;
 build Windows/WASM as relevant to platform or release acceptance. Review only
 changed UI and affected states. Reuse valid unchanged results.
 

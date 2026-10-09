@@ -85,7 +85,8 @@ triggers in `CODE_STANDARDS.md` section 8.3 apply.
 12. Complete the [UI visual review](UI_STYLE.md#9-review-by-subtraction-then-verify-in-play)
     and [pre-commit validation](CODE_STANDARDS.md#83-validation) in the actual new
     game checkout. Use `..\rust_management\cargo.ps1` for tests/Clippy/builds,
-    `cargo fmt` for formatting, and focused relevant tests. Publishing is separate,
+    `cargo fmt` for formatting, and focused existing tests; write no new tests by
+    default ([testing policy](CODE_STANDARDS.md#11-testing-policy)). Publishing is separate,
     needs user authorization, and never gates the local slice commit.
 
 For the complete setup, Git, architecture, and publishing checklist, read the

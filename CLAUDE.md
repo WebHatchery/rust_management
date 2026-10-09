@@ -12,6 +12,9 @@ The parent is a Cargo workspace of independently versioned games and toolkit.
   `target/`, `Release/`, and `publish-logs/`. Root PowerShell scripts are forwarding
   pointers: mirror parameter changes in their real `param()` blocks; `@args`
   forwarding can corrupt switches and accidentally select production.
+- Shared testing policy: games are prototypes, so agents write no tests by
+  default ([CODE_STANDARDS §11](docs/CODE_STANDARDS.md#11-testing-policy)). Keep
+  every summary of it consistent with that section.
 - Validate only the affected scope. Prose changes need documentation checks,
   not game builds. Do not batch-publish or deploy externally without authorization.
   Commit each validated coherent slice per the shared instructions.

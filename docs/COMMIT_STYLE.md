@@ -77,6 +77,10 @@ Co-Authored-By: Codex <noreply@openai.com>
 ```
 
 The verification sentence is an example, not a result to copy without checking.
+State what was not verified as plainly as what was. If the slice adds or keeps a
+test, say why it earns its place under the
+[testing policy](CODE_STANDARDS.md#11-testing-policy); if it deletes obsolete
+tests, name the design decision they protected.
 
 ## 5. Checklist before you commit
 
