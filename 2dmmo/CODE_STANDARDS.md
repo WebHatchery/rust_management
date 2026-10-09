@@ -314,31 +314,50 @@ Each module should contain a short `//!` comment explaining its purpose:
 - Avoid variable shadowing (hiding)
 - Do not declare a new variable with the same name as an existing one in the same scope
 
-## 11. Testing Guidelines
+## 11. Testing Policy
 
-### 11.1 What to Test
-Focus tests on:  
-- Core game calculations  
-- State machine transitions  
-- JSON data loading  
-- UI and rendering generally do not need unit tests.
+These games are prototypes in active development. Rapid iteration, experimentation, and playable functionality come first. Testing supports development; it does not dictate design.
 
-### 11.2 Test Style
-- Tests should read like rules  
-- Avoid complex setups  
-- If a test is hard to write, the code is probably too tangled.
+### 11.1 Default: No New Tests
+- Do not write unit, integration, snapshot, or end-to-end tests by default, including for new features, bug fixes, and refactors.
+- Do not add coverage targets, testing frameworks, test-only dependencies, or public API that exists only so a test can reach it, unless the user explicitly asks.
+- Validate changes by compiling, running, and exercising the affected feature instead (§11.5).
 
-### 11.3 Feature Test Target
-- Strongly target no more than five `#[test]` cases per major feature: one cohesive responsibility, regardless of how its tests are split or named.
-- Prefer high-value behavior and regression tests. Consolidate related inputs with table-driven assertions; do not bundle unrelated checks or delete useful coverage to meet the target.
-- Before committing, review affected feature suites. If more than five cases are needed, briefly explain why distinct coverage warrants them.
+### 11.2 When a Test Earns Its Place
+A test is justified only where it gives clear, lasting value:
+- **Stable, complex algorithms** whose design has settled, such as pathfinding, procedural generation, or simulation math.
+- **Data integrity**, such as JSON content loading with resolvable cross-references, save/load round-trips, and asset registry coverage.
+- **Recurring regressions**: a bug that has come back, not one fixed once.
 
-### 11.4 Test Placement
+State the reason in the commit body. Keep each suite small: no more than five `#[test]` cases per protected responsibility, using table-driven assertions for related inputs.
+
+The source-size gate (`tests/code_standards.rs`, §2.2) and the asset-registry integrity test are enforcement gates, not behaviour tests. Every crate keeps them.
+
+### 11.3 What Not to Test
+- UI layout, rendering, widget geometry, colours, and copy.
+- Experimental gameplay rules and temporary balancing, including tunable values in `assets/*.json`.
+- Implementation details: private helpers, internal struct shapes, call order, and state or screen wiring that running the game exercises.
+
+### 11.4 Existing Tests
+- Do not preserve behaviour solely because a test asserts it.
+- When you deliberately change experimental behaviour, delete the tests that asserted the old behaviour rather than rewriting them to protect a discarded design. Update a test only when it still covers a §11.2 concern.
+- A failing test means either your change broke a real invariant (fix the code) or the test encodes an obsolete decision (delete it). Never weaken an assertion just to make it pass.
+- While working in an area, remove its tests that §11.3 rules out. Leave unrelated suites for a separate change.
+
+### 11.5 Validation Instead of Tests
+- Run formatting, Clippy with `-D warnings`, and `cargo test`, which runs the gates and any retained suites.
+- Exercise the change for real: run `.\publish.ps1` (§8.3), and for UI changes capture and review the affected screens (§12, `UI_STYLE.md` §9).
+- Do not replace validation with assumptions. Report what was verified and what was not, for example: "published and captured the market screen; did not play through a full season."
+
+### 11.6 Approaching Release
+When the user says a project is approaching release, reassess testing against its actual risks, such as save corruption, progression blockers, and data loss, and agree on any added coverage with the user. Until then, this policy applies.
+
+### 11.7 Test Placement
 - Each crate owns a `tests/` directory beside its `Cargo.toml`, including member crates in multi-crate repositories. Keep all tests and test-only helpers there.
 - Do not add `#[cfg(test)]`, `mod tests`, test helpers, or test source files under `src/`.
-- Tests exercise the crate's public API. For a binary-only game, expose testable logic through `src/lib.rs` and have `main.rs` use that library; keep internals private unless an intentional public seam is needed.
-- Existing `src/**/tests.rs` files are legacy migration work. Migrate them as a separate change before expanding coverage.
-- Split large suites by responsibility while preserving the feature target (§11.3) and file-size rule (§2.2).
+- Tests exercise the crate's public API. For a binary-only game, expose logic through `src/lib.rs` and have `main.rs` use that library; keep internals private unless an intentional public seam is needed.
+- Existing `src/**/tests.rs` files and inline `mod tests` are legacy. Delete the cases this policy rules out when you work in that area; migrate any that remain to `tests/` as a separate change.
+- Split a large retained suite by responsibility while respecting the file-size rule (§2.2).
 
 ## 12. Verification Artifacts
 

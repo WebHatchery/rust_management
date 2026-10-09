@@ -23,7 +23,8 @@ Applies to all Rust game projects in this workspace. `CODE_STANDARDS.md` is the 
 
 ## Validation
 
-- Keep tests in each crate's `tests/` directory and strongly target five cases per major feature; preserve useful regression coverage (§11).
+- Projects are prototypes: do not write tests by default. Add one only for stable complex algorithms, data integrity, or recurring regressions, and keep it in the crate's `tests/` directory. Never test UI layout, experimental rules, temporary balancing, or implementation details. When changing experimental behaviour, delete the tests that asserted it rather than rewriting them. Keep the source-size and asset-registry gates (§11).
+- Validate by building, publishing, and exercising the affected feature. Report what was and was not verified; never claim untested behaviour works (§11.5).
 - After meaningful game changes, run `.\publish.ps1` without parameters in the affected project and report the result or blocker. Do not substitute a local run unless requested (§8.3).
 - Run formatting, Clippy, source-size checks, tests, and publishing against the actual project checkout being changed and its real workspace/dependency configuration. Do not create or use an isolated project copy, copied source tree, temporary clone, or alternate manifest to bypass failures. A pass in such a copy is not validation of the actual project; report the original failure as a blocker instead (§8.3).
 - Store screenshots directly in `docs/verification/`, replacing captures of the same screen or state (§12).

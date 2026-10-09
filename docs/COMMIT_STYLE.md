@@ -134,8 +134,10 @@ of the best commits open by naming what was wrong or missing, so the fix reads a
 number (§6, §7.7), and give real figures (`10 regions, 32 settlements`). The metaphor lives
 in the phrasing, never at the expense of precision.
 
-**2.4 State verification.** If tests were added or the change was checked, say so briefly
-("a persistence test pins the invariant…", "verified end-to-end against the live server…").
+**2.4 State verification.** Say briefly how the change was checked and what was not
+("published and captured the market screen; a full season was not played through…").
+If a test was added or kept, say why it earns its place (`CODE_STANDARDS.md` §11.2);
+if obsolete tests were removed, say which design decision they protected.
 
 **2.5 Be honest about tradeoffs and follow-ups.** Where a change is partial, a decision was
 deliberate, or something is deferred, say it plainly in a closing paragraph rather than
