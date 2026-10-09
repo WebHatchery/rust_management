@@ -120,7 +120,7 @@ game needs. Each one should be resolvable into a JSON schema in §6.]
 ### 5.3 Randomness & Determinism
 
 - **What's randomized:** [ ]
-- **What must stay deterministic:** [replays, saves, tests — per `CODE_STANDARDS.md`
+- **What must stay deterministic:** [replays, saves — per `CODE_STANDARDS.md`
   §5, isolate RNG behind toolkit's `rng` module rather than ad hoc `macroquad::rand`]
 
 ---
@@ -299,6 +299,7 @@ checkable. Smallest complete loop first.*
 | M2 — Playable prototype | [ ] | [ ] |
 | M3 — Content-complete | [ ] | [ ] |
 
-After M1, follow the standard per-game loop: `cargo clippy --all-targets --all-features -- -D warnings`,
-`cargo test`, then `.\publish.ps1` from the game directory to verify at the shared preview
-root — same validation path as every other game in this repo, no exceptions for being new.
+After M1, validate each slice like every other game (`CODE_STANDARDS.md` §8.3): `cargo fmt`,
+strict Clippy (`--all-targets --all-features -- -D warnings`), `cargo test` for the source-size
+and asset-registry gates, then run the game and capture the affected screens. Write no new tests
+by default (§11). Publishing is separate, needs user authorization, and never gates a slice commit.

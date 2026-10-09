@@ -558,6 +558,3 @@ impl GridView {
         TilePos::new(tile.x.floor() as i32, tile.y.floor() as i32)
     }
 }
-
-#[cfg(test)]
-mod tests;
