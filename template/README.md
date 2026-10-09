@@ -50,11 +50,12 @@ From `rust_management/`:
 ## Test
 
 ```powershell
-.\cargo.ps1 test --manifest-path template/Cargo.toml <relevant_test_filter>
+.\cargo.ps1 test --manifest-path template/Cargo.toml
 ```
 
-Omit the filter for a full suite when the integration/release or cross-cutting
-triggers in `CODE_STANDARDS.md` section 8.3 apply.
+The starter ships only the two enforcement gates in `tests/`: the source-size
+gate and the asset-registry check. It has no behaviour tests, and a new game
+adds none by default ([testing policy](CODE_STANDARDS.md#11-testing-policy)).
 
 ## Rename For A New Game
 

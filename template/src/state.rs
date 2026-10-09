@@ -155,6 +155,3 @@ pub fn migrate_save_value(
 
     Ok(session.to_save(&config.version))
 }
-
-#[cfg(test)]
-mod tests;
