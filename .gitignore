@@ -14,3 +14,7 @@ archive/fracture/
 archive/god_manager/
 archive/nft_adventurers/
 archive/quiteville/
+
+# Python bytecode from running the management scripts
+__pycache__/
+*.pyc
