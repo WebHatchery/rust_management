@@ -248,7 +248,7 @@ Each module should contain a short `//!` comment explaining its purpose:
 
 ## 11. Testing Policy
 
-These games are prototypes in active development. Rapid iteration, experimentation, and playable functionality come first. Testing supports development; it does not dictate design.
+These games are prototypes in active development. Rapid iteration, experimentation, and playable functionality come first. Testing supports development; it does not dictate design. The policy stays the same after a game is released (§11.6).
 
 ### 11.1 Default: No New Tests
 - Do not write unit, integration, snapshot, or end-to-end tests by default, including for new features, bug fixes, and refactors.
@@ -261,7 +261,7 @@ A test is justified only where it gives clear, lasting value:
 - **Data integrity**, such as JSON content loading with resolvable cross-references, save/load round-trips, and asset registry coverage.
 - **Recurring regressions**: a bug that has come back, not one fixed once.
 
-State the reason in the commit body. Keep each suite small: no more than five `#[test]` cases per protected responsibility, using table-driven assertions for related inputs.
+State the reason in the commit body. Keep each suite as small as the concern allows, using table-driven assertions for related inputs. Five `#[test]` cases per protected responsibility is a hard ceiling, not a target: there is no test-count or coverage goal, and fewer is better.
 
 The source-size gate (`tests/code_standards.rs`, §2.2) and the asset-registry integrity test are enforcement gates, not behaviour tests. Every crate keeps them.
 
@@ -281,8 +281,8 @@ The source-size gate (`tests/code_standards.rs`, §2.2) and the asset-registry i
 - Exercise the change for real: run the game, and for UI changes capture and review the affected screens (§12, `UI_STYLE.md` §9). Publishing stays separate and needs user authorization (§8.3).
 - Do not replace validation with assumptions. Report what was verified and what was not, for example: "captured the market screen and bought two items; did not play through a full season."
 
-### 11.6 Approaching Release
-When the user says a project is approaching release, reassess testing against its actual risks, such as save corruption, progression blockers, and data loss, and agree on any added coverage with the user. Until then, this policy applies.
+### 11.6 Release and Production
+This policy does not relax when a game nears release or is in production. Do not add coverage passes, suites, or tests for a release. A released game may gain a test only for a specific, demonstrated risk such as save corruption, a progression blocker, or data loss, only after agreeing it with the user, and within the §11.2 rules and ceiling.
 
 ### 11.7 Test Placement
 - Each crate owns a `tests/` directory beside its `Cargo.toml`, including member crates in multi-crate repositories. Keep all tests and test-only helpers there.

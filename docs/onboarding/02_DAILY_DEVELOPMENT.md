@@ -46,9 +46,10 @@ changed behaviour is the ordinary slice default alongside formatting, strict
 Clippy, and source-size checks. Broader suites need a cross-cutting,
 integration, or release reason.
 
-Games are prototypes, so **do not write tests by default**. Add one only for a
-settled complex algorithm, data integrity, or a recurring regression; never for
-UI layout, experimental rules, temporary balancing, or implementation details.
+Games are prototypes, so **do not write tests by default**, even once released.
+Add one only for a settled complex algorithm, data integrity, or a recurring
+regression; never for UI layout, experimental rules, temporary balancing, or
+implementation details.
 When changing experimental behaviour, delete the tests that asserted it rather
 than rewriting them, and keep the source-size and asset-registry gates. Exercise
 the feature itself and report what was and was not verified. See the

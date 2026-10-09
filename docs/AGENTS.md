@@ -60,10 +60,10 @@ Management-only references use workspace-root paths in code spans.
   existing tests. Broader suites need a cross-cutting/integration/release reason;
   publishing never gates a local commit and requires user authorization. Follow
   the validation reference for scope, unchanged results, and failures.
-- Projects are prototypes: **do not write tests by default**. Add one only for
-  a settled complex algorithm, data integrity, or a recurring regression; never
-  for UI layout, experimental rules, temporary balancing, or implementation
-  details. When changing experimental behaviour, delete the tests that asserted
+- Projects are prototypes: **do not write tests by default**, even once
+  released. Add one only for a settled complex algorithm, data integrity, or a
+  recurring regression; never for UI layout, experimental rules, temporary
+  balancing, or implementation details. When changing experimental behaviour, delete the tests that asserted
   it rather than rewriting them. Keep the source-size and asset-registry gates.
   Report what was and was not verified. See [Testing](CODE_STANDARDS.md#11-testing-policy).
 - Demo saves may break compatibility: reject unsupported old saves with a clear
