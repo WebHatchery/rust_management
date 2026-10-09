@@ -6,27 +6,10 @@ committing.
 
 ## Branching
 
-The long-lived branch is currently `master` in the established repositories.
-Confirm rather than assume:
-
-```powershell
-git remote show origin
-git branch --show-current
-git status --short
-```
-
-For shared work, use a short-lived branch from the latest remote default branch:
-
-```powershell
-git fetch origin
-git switch master
-git pull --ff-only origin master
-git switch -c <your-name>/<short-purpose>
-```
-
-If the team standardizes a different prefix, use it consistently. Do not commit
-directly to the shared default branch unless the maintainer has explicitly
-chosen that workflow.
+Agents work on `master` unless the user explicitly requests a branch, per
+[../AGENTS.md](../AGENTS.md). Confirm the repository, branch, status, and ownership
+before editing. The branch/PR workflow below applies when the maintainer has
+requested it; committing locally does not authorize a push.
 
 ## Divide work before editing
 
@@ -46,16 +29,15 @@ management/toolkit prerequisite -> dependent game -> catalog-wide sync
 
 ## Commit scope and message style
 
-Commits should be focused and leave the repository buildable. Before committing:
+Commit each small, coherent, buildable feature slice after review and validation,
+before starting the next; do not accumulate multiple major features. Preserve
+user/concurrent work and commit the complete authorized slice as required by
+[../AGENTS.md](../AGENTS.md#commits). Never commit broken code for cadence.
 
-```powershell
-cargo fmt -- --check
-cargo test
-cargo clippy --all-targets --all-features -- -D warnings
-git status --short
-git diff --check
-git diff
-```
+[CODE_STANDARDS.md section 8.3](../CODE_STANDARDS.md#83-validation) defines focused
+slice checks, triggers for broader suites, documentation-only validation, and
+baseline-failure handling. Review `git diff`, `git diff --cached`, and
+`git diff --check`; report the commit hash and any remaining work or blockers.
 
 Game commits follow [../COMMIT_STYLE.md](../COMMIT_STYLE.md):
 
@@ -72,7 +54,8 @@ The foundry remembers every alloy entrusted to it (save migration and tests)
 
 Old saves omitted the newly introduced alloy ledger. Loading now supplies the
 documented default and migrates the schema before gameplay reads it. A focused
-persistence test covers the previous version, and the preview publish passes.
+persistence test covers the previous version; formatting and strict Clippy pass.
+Migration is a deliberate requirement for this example, not the demo default.
 ```
 
 Read a game's recent history before the first commit so its metaphors remain
@@ -87,7 +70,7 @@ editor settings in a commit.
 
 ## Pull requests and handoff
 
-Push the branch and open a pull request:
+When explicitly authorized, push the requested branch and open a pull request:
 
 ```powershell
 git push -u origin HEAD
@@ -126,7 +109,7 @@ other collaborator which commit is safe to build on.
 A game can compile locally against an unpushed toolkit branch, but nobody else
 can reproduce it. Therefore:
 
-1. commit and push the toolkit branch;
+1. commit the validated toolkit slice; push only when explicitly authorized;
 2. record its commit hash in the game PR;
 3. validate an affected game against that exact toolkit state;
 4. merge toolkit first; and

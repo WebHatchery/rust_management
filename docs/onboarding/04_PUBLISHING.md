@@ -6,6 +6,9 @@ wrapper. Run the game-local wrapper from the game you intend to publish.
 
 ## Safety model
 
+Publishing is separate from local slice validation and requires user authorization;
+neither committing nor ordinary implementation authorizes deployment/tracking.
+
 - No flag means a local **preview** deploy.
 - `-Production` (or `-p`) selects the local production root.
 - `-FTP` implies production and performs a remote upload.

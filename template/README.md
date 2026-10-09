@@ -4,11 +4,11 @@ This is a working starter crate for new Rust + Macroquad games in this workspace
 It intentionally uses `macroquad-toolkit` heavily so new projects begin with the
 same shared patterns as the existing games.
 
-Read [UI_STYLE.md](UI_STYLE.md) before adapting the screens. This starter
-demonstrates toolkit integration, not a finished layout for every game. Its
-demo panels, permanent help, technical labels, and save/debug controls must
-be reconsidered around the new game's current decision and dominant play
-area. Keep useful infrastructure and choose what deserves to remain visible.
+Start with [AGENTS.md](AGENTS.md) and its task-triggered references. Before
+adapting screens, read [UI_STYLE.md](UI_STYLE.md): this starter demonstrates
+integration, and its demo UI must be recomposed around the new game's decision.
+Commit each reviewed, validated, buildable feature slice before the next; do not
+wait for the entire new game. See [validation](CODE_STANDARDS.md#83-validation).
 
 ## Toolkit Features Already Wired
 
@@ -33,8 +33,8 @@ area. Keep useful infrastructure and choose what deserves to remain visible.
 - Rust 2018 module layout using `data.rs`, `state.rs`, and `ui.rs` parent
   files instead of `mod.rs`
 
-The template avoids browser-incompatible filesystem access. Static data is
-embedded with `include_str!()`, runtime browser assets go through Macroquad or
+The template avoids browser-incompatible filesystem access. Static JSON is
+embedded through toolkit loaders, runtime browser assets go through Macroquad or
 toolkit async loaders, and save data uses macroquad-toolkit persistence.
 Shared UI math, such as grid layout and mouse selection, is kept in helper
 types so rendering and input do not duplicate coordinate calculations.
@@ -50,8 +50,11 @@ From `rust_management/`:
 ## Test
 
 ```powershell
-.\cargo.ps1 test --manifest-path template/Cargo.toml
+.\cargo.ps1 test --manifest-path template/Cargo.toml <relevant_test_filter>
 ```
+
+Omit the filter for a full suite when the integration/release or cross-cutting
+triggers in `CODE_STANDARDS.md` section 8.3 apply.
 
 ## Rename For A New Game
 
@@ -60,11 +63,8 @@ From `rust_management/`:
 3. Change the `macroquad-toolkit` dependency path in `Cargo.toml` from
    `../../macroquad-toolkit` to `../macroquad-toolkit`. The former is correct
    only while the template remains nested inside `rust_management/`.
-4. Read `UI_STYLE.md` and record its screen brief in the game's GDD or README:
-   current decision, dominant focus, primary action, supporting/deferred
-   information, viewport/camera plan, and touch interaction. Recompose the
-   demo screen before expanding content; relocate utilities and remove demo
-   copy and unused surfaces.
+4. Record the `UI_STYLE.md` screen brief in the GDD/README and recompose the demo
+   before expanding content. Remove demo copy/unused surfaces; relocate utilities.
 5. Update `assets/data/game_config.json`.
 6. Replace `actions.json` with your game data.
 7. Add externally loaded textures to both
@@ -82,11 +82,12 @@ From `rust_management/`:
     target and stable `html5`/`windows` channels. Run `publish-itch.ps1` from
     the project directory after the ordinary `publish.ps1`; use `-DryRun` and
     `-Preview` before the first upload.
-12. Complete the `UI_STYLE.md` visual review at normal and minimum supported
-    sizes, including relevant dense states and touch interactions. Inspect
-    focus and readability as well as clipping and control placement.
-13. Run `cargo fmt`, `cargo test`, `cargo clippy --all-targets --all-features --
-    -D warnings`, then `./publish.ps1` from the new game folder.
+12. Complete the [UI visual review](UI_STYLE.md#9-review-by-subtraction-then-verify-in-play)
+    and [pre-commit validation](CODE_STANDARDS.md#83-validation) in the actual new
+    game checkout. Use `..\rust_management\cargo.ps1` for tests/Clippy/builds,
+    `cargo fmt` for formatting, and focused existing tests; write no new tests by
+    default ([testing policy](CODE_STANDARDS.md#11-testing-policy)). Publishing is separate,
+    needs user authorization, and never gates the local slice commit.
 
 For the complete setup, Git, architecture, and publishing checklist, read the
 management repository's `docs/onboarding/README.md`.

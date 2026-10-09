@@ -22,6 +22,30 @@ workspace lockfile, including Macroquad's audio and utility plugins.
 use the Macroquad bundle's content hash as their default runtime cache key, so a
 shared runtime repair reaches browsers that have visited a game before.
 
+## Indexed save storage
+
+The shared storage bridge retains its legacy imports and adds checked reads and
+removal plus an exclusive writer-lease API for toolkit indexed catalogues. Checked
+reads distinguish missing keys from blocked storage; removal failures reach the
+game. Writer acquisition uses real Web Locks across tabs and requires HTTPS or
+trusted localhost. An unavailable lock manager is an explicit error, never a
+localStorage mutex fallback. The lease is released when its Rust store is dropped
+or the owning document closes.
+
+Protocol verification is independent of game UI and player storage:
+
+```powershell
+node --test .\scripts\test-storage-bridge.cjs
+node .\scripts\test-storage-bridge-browser.cjs
+```
+
+The first command injects read/write/remove failures and lock contention in
+memory. The second uses blank loopback documents in an isolated Chromium context
+to verify cross-tab exclusion, reload/close lease release, twelve stored payloads,
+and quota/read/remove failures. It creates no screenshots or fixture files.
+Publish the consuming game normally to deploy the updated content-hashed bridge;
+its visible save/load/retry controls still require the game's own UI review.
+
 ## Per-game data file: `game_page.json`
 
 Lives at the root of each game directory. Only `title` is required; everything

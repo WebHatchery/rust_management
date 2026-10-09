@@ -3,13 +3,13 @@
 ## Before changing code
 
 1. Confirm which repository owns the change: game, toolkit, or management.
-2. Pull or fetch the latest branch in every affected repository.
-3. Read the game README/GDD and its local copies of `AGENTS.md`,
-   `CODE_STANDARDS.md`, `UI_STYLE.md`, `MACROQUAD_TOOLKIT.md`, and
-   `GAME_DEVELOPMENT_GUIDE.md`.
-4. Check `git status` before editing; do not overwrite another person's work.
-5. Create a focused branch as described in
-   [05_GIT_COLLABORATION.md](05_GIT_COLLABORATION.md).
+2. Read the game README/GDD and `PROJECT_AGENTS.md` if present, then `AGENTS.md`.
+   Load its task-triggered references before the relevant work, not the entire
+   documentation set on every turn.
+3. Inspect branch, status, and diffs; preserve existing/concurrent work. Follow
+   [05_GIT_COLLABORATION.md](05_GIT_COLLABORATION.md) for ownership and commit cadence.
+   Agents stay on `master` unless the user requests a branch; coordinate updates
+   to the branch without overwriting active edits.
 
 ## Tight edit/test loop
 
@@ -17,12 +17,13 @@ Run commands inside the game you are changing:
 
 ```powershell
 cargo fmt
-..\rust_management\cargo.ps1 test
+..\rust_management\cargo.ps1 test <relevant_test_filter>
 ..\rust_management\cargo.ps1 clippy --all-targets --all-features '--' -D warnings
 ..\rust_management\cargo.ps1 run
 ```
 
-For a single test:
+Select an existing test target/filter that covers the slice; unfiltered full
+suites are for the broader triggers in section 8.3. For a single test:
 
 ```powershell
 ..\rust_management\cargo.ps1 test <test_name>
@@ -34,37 +35,26 @@ builds, including intentional standalone workspaces, follow this policy. See
 
 ## Required implementation rules
 
-- Use Rust, Macroquad, and `macroquad-toolkit` by default.
-- Check whether a reusable runtime, input, rendering, asset, camera, persistence,
-  or platform capability belongs in the toolkit before duplicating it locally.
-- Keep every `.rs` file at or below 800 physical lines. The preferred range is
-  200–400 lines; split by responsibility rather than compressing formatting.
-- Use named module files (`foo.rs` plus `foo/bar.rs`), never new `mod.rs` files.
-- Keep UI as a view that returns actions/intents; apply mutations in game/state
-  logic.
-- Follow [../UI_STYLE.md](../UI_STYLE.md) for screen composition. Plan the
-  current decision, emphasize gameplay, and defer secondary information.
-- Put content and balance data in JSON under `assets/` where practical.
-- Route generic JSON loading through `macroquad_toolkit::data_loader`.
-- Make every required browser interaction possible with visible touch/click
-  controls. Keyboard shortcuts may supplement, not replace, touch controls.
-- Games are prototypes: do not write tests by default. Validate by building,
-  publishing, and exercising the feature, and report what was and was not
-  verified (§11.1, §11.5).
-- Add a test only for a stable complex algorithm, data integrity, or a
-  recurring regression, and say why in the commit. Never test UI layout,
-  experimental rules, temporary balancing, or implementation details (§11.2,
-  §11.3).
-- When changing experimental behaviour, delete the tests that asserted it
-  rather than rewriting them. Keep the source-size and asset-registry gates
-  (§11.4).
-- Retained tests live in each crate's `tests/` directory beside its
-  `Cargo.toml`, never under `src/` (§11.7).
-- Keep a root `catalog_thumbnail.png`, preferably a 16:9 title/menu capture.
+Read [../CODE_STANDARDS.md](../CODE_STANDARDS.md) for code/data/behavior work,
+[../UI_STYLE.md](../UI_STYLE.md) before screen/input/rendering work, and the
+relevant [toolkit modules](../MACROQUAD_TOOLKIT.md#modules) before duplicating
+shared capabilities. These are the authorities, not optional background reading.
 
-The complete rules live in [../CODE_STANDARDS.md](../CODE_STANDARDS.md),
-[../UI_STYLE.md](../UI_STYLE.md), and
-[../GAME_DEVELOPMENT_GUIDE.md](../GAME_DEVELOPMENT_GUIDE.md).
+Commit each coherent, buildable feature slice after diff review and required
+checks, before starting the next. Running the focused existing tests for the
+changed behaviour is the ordinary slice default alongside formatting, strict
+Clippy, and source-size checks. Broader suites need a cross-cutting,
+integration, or release reason.
+
+Games are prototypes, so **do not write tests by default**. Add one only for a
+settled complex algorithm, data integrity, or a recurring regression; never for
+UI layout, experimental rules, temporary balancing, or implementation details.
+When changing experimental behaviour, delete the tests that asserted it rather
+than rewriting them, and keep the source-size and asset-registry gates. Exercise
+the feature itself and report what was and was not verified. See the
+[testing policy](../CODE_STANDARDS.md#11-testing-policy). See
+[validation](../CODE_STANDARDS.md#83-validation) for scope,
+documentation-only checks, and handling verified baseline failures.
 
 ## Assets and web pages
 
@@ -121,25 +111,18 @@ an existing image when it represents the same scene/state. Read
 [../screenshot_capture_harness_guide.md](../screenshot_capture_harness_guide.md)
 before adding capture support to a game.
 
-## End-to-end validation
+## Integration and release validation
 
-After meaningful game changes, the sanctioned final check is the game wrapper:
+Run broader existing suites at meaningful integration boundaries or for
+cross-cutting risk;
+build Windows/WASM as relevant to platform or release acceptance. Review only
+changed UI and affected states. Reuse valid unchanged results.
 
-```powershell
-.\publish.ps1
-```
-
-It builds Windows and WebGL release artifacts, packages them, and deploys to the
-configured preview root. For changes that cannot reasonably support one target,
-use the narrow flag and state that clearly in the handoff:
-
-```powershell
-.\publish.ps1 -WebGLOnly
-.\publish.ps1 -WindowsOnly
-```
-
-Do not run `publish-all.ps1`, `publish-all-ftp.ps1`, or
-`build_all_webgl.ps1` merely to validate one game.
+Publishing is separate from local validation, never a per-slice commit gate.
+`publish.ps1` builds/packages and can deploy or contact external trackers; run
+it only with user authorization. Report deliberately unrun publishing clearly.
+Do not batch-publish games to validate one slice. The full policy is
+[section 8.3](../CODE_STANDARDS.md#83-validation).
 
 ## Shared-document and CI maintenance
 
